@@ -2494,7 +2494,7 @@ function Err({lang,msg}){
 
 /* ─── LOGIN PAGE ─────────────────────────────────────── */
 // URL of the PHP lookup file on your server
-const LOOKUP_URL = "https://better-bookings.com/manage/api/lookup.php";
+const LOOKUP_URL = "https://review.better-bookings.com/api/ext/lookup";
 
 // Login also shows EN
 const LOGIN_T = {
