@@ -115,7 +115,7 @@ a{text-decoration:none}
 `;
 
 /* ─── CONFIG ─────────────────────────────────────────── */
-const API_BASE    = "https://manage.better-bookings.com/api/ext/offer";
+const API_BASE    = "https://review.better-bookings.com/api/ext/offer";
 const LANG_MAP    = { 1:"EN", 2:"IT", 3:"ES", 4:"EN", 5:"NL", 6:"FR", 7:"DE" };
 const STATUS_CODE = {
   "1":"conf",   // CONFIRMED
