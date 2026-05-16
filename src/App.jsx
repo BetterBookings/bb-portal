@@ -2297,7 +2297,7 @@ function Flights({b,lang}){
       : <div style={{margin:"-.75rem -.75rem 0"}}>
           <div style={{overflow:"hidden",borderRadius:16,height:"calc(90vh - 60px)",position:"relative"}}>
             <iframe
-              src={`https://better-bookings.com/offersonline/Flight_booking_detail.html?slug=${encodeURIComponent(slug)}&customerlanguage=${langCode}`}
+              src={`https://better-bookings.com/offersonline/Flight_booking_detail.html?slug=${encodeURIComponent(slug)}&customerlanguage=${langCode}&v=20260516a`}
               style={{width:"100%",height:"calc(90vh + 0px)",border:"none",display:"block",marginTop:"-60px"}}
               title="Flight Details"
               loading="lazy"
