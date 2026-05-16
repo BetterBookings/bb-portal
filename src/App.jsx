@@ -2609,7 +2609,9 @@ function LoginPage({lang,setLang,onFound}){
       );
       const data = await res.json();
       if(data.found && data.slug){
-        window.location.href = `/manage/booking/${data.slug}`;
+        // Redirect via query param: funziona cross-env (GitHub Pages, one.com /manage/, Railway)
+        // senza richiedere SPA path fallback (GitHub Pages e' statico → /manage/booking/<x> = 404).
+        window.location.search = `?slug=${encodeURIComponent(data.slug)}`;
       } else { setErr(t.errNotFound); }
     } catch(e){ setErr(t.errServer); }
     finally { setLoading(false); }
