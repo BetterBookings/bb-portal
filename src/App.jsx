@@ -3062,7 +3062,7 @@ function Support({b,lang}){
           <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
             {[
               {icon:"💬",label:`Chat (${lang})`,onClick:(e)=>{e.preventDefault(); if(window.BBChat&&window.BBChat.open) window.BBChat.open();}},
-              {icon:"📱",label:"WhatsApp",href:"https://wa.me/393312176964"},
+              {icon:"📱",label:"WhatsApp",href:"https://wa.me/447868261509"},
               {icon:"📧",label:"Email",href:"mailto:hello@better-bookings.com"},
             ].map((ch,i)=>(
               <a key={i} href={ch.href||"#"} onClick={ch.onClick}
