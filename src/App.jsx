@@ -1629,6 +1629,65 @@ function VoucherModal({b,lang,onClose}){
                 </tbody>
               </table>
             </div>
+            {/* Virtual Card — mostrata solo se PAN presente nel blob suppliervcc */}
+            {b.VCCCardNumber&&<div style={{marginBottom:20}}>
+              <div style={{display:"inline-block",background:C.orange,color:C.white,
+                padding:"4px 12px",borderRadius:3,fontSize:".62rem",fontWeight:700,
+                letterSpacing:"2px",textTransform:"uppercase",marginBottom:12}}>Virtual Card Payment</div>
+              <div style={{border:"1px solid #e2e2e2",borderRadius:6,overflow:"hidden"}}>
+                {/* Card number — full width */}
+                <div style={{padding:"9px 14px",borderBottom:"1px solid #e2e2e2",background:"#fafafa"}}>
+                  <div style={{fontSize:".65rem",color:"#6b6b6b",textTransform:"uppercase",
+                    letterSpacing:"1px",marginBottom:3}}>Card Number</div>
+                  <div style={{fontSize:"1rem",fontWeight:600,fontFamily:"monospace",letterSpacing:"2px"}}>
+                    {String(b.VCCCardNumber).replace(/(.{4})/g,"$1 ").trim()}
+                  </div>
+                </div>
+                {/* Expiry + CVC — 2 cols */}
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",borderBottom:"1px solid #e2e2e2"}}>
+                  <div style={{padding:"9px 14px",borderRight:"1px solid #e2e2e2"}}>
+                    <div style={{fontSize:".65rem",color:"#6b6b6b",textTransform:"uppercase",
+                      letterSpacing:"1px",marginBottom:3}}>Expires</div>
+                    <div style={{fontSize:".9rem",fontWeight:500,fontFamily:"monospace"}}>
+                      {b.VCCValidThru?`${String(b.VCCValidThru).slice(0,2)}/${String(b.VCCValidThru).slice(2,4)}`:"–"}
+                    </div>
+                  </div>
+                  <div style={{padding:"9px 14px"}}>
+                    <div style={{fontSize:".65rem",color:"#6b6b6b",textTransform:"uppercase",
+                      letterSpacing:"1px",marginBottom:3}}>CVC</div>
+                    <div style={{fontSize:".9rem",fontWeight:500,fontFamily:"monospace"}}>{b.VCCCVC||"–"}</div>
+                  </div>
+                </div>
+                {/* Amount + Currency — full width */}
+                {b.VCCNetAmount&&<div style={{padding:"9px 14px",borderBottom:"1px solid #e2e2e2"}}>
+                  <div style={{fontSize:".65rem",color:"#6b6b6b",textTransform:"uppercase",
+                    letterSpacing:"1px",marginBottom:3}}>Amount Authorized</div>
+                  <div style={{fontSize:"1rem",fontWeight:700,color:C.orange}}>
+                    {Number(b.VCCNetAmount).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}
+                    {b.VCCCurrency?` ${b.VCCCurrency}`:""}
+                  </div>
+                </div>}
+                {/* Activation + Termination dates */}
+                {(b.VCCActivationDate||b.VCCTerminateDate)&&<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",borderBottom:b.VCCHolder?"1px solid #e2e2e2":"none"}}>
+                  <div style={{padding:"9px 14px",borderRight:"1px solid #e2e2e2"}}>
+                    <div style={{fontSize:".65rem",color:"#6b6b6b",textTransform:"uppercase",
+                      letterSpacing:"1px",marginBottom:3}}>Active From</div>
+                    <div style={{fontSize:".9rem",fontWeight:500}}>{b.VCCActivationDate?fmtD(b.VCCActivationDate,"EN"):"–"}</div>
+                  </div>
+                  <div style={{padding:"9px 14px"}}>
+                    <div style={{fontSize:".65rem",color:"#6b6b6b",textTransform:"uppercase",
+                      letterSpacing:"1px",marginBottom:3}}>Valid Until</div>
+                    <div style={{fontSize:".9rem",fontWeight:500}}>{b.VCCTerminateDate?fmtD(b.VCCTerminateDate,"EN"):"–"}</div>
+                  </div>
+                </div>}
+                {/* Cardholder */}
+                {b.VCCHolder&&<div style={{padding:"9px 14px"}}>
+                  <div style={{fontSize:".65rem",color:"#6b6b6b",textTransform:"uppercase",
+                    letterSpacing:"1px",marginBottom:3}}>Cardholder</div>
+                  <div style={{fontSize:".9rem",fontWeight:500}}>{b.VCCHolder}</div>
+                </div>}
+              </div>
+            </div>}
             {/* Note */}
             <div>
               <div style={{display:"inline-block",background:C.orange,color:C.white,
