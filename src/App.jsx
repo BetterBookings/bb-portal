@@ -693,7 +693,7 @@ function fmtDOB(dob, lang){
   return String(dob.d).padStart(2,"0")+" "+months[dob.m-1]+" "+dob.y;
 }
 
-const parseTravellers = (raw, checkIn) => {
+const parseTravellers = (raw, checkIn, counts) => {
   if(!raw) return [];
   const checkinDate = checkIn ? new Date(Number(checkIn)) : null;
 
@@ -774,6 +774,39 @@ const parseTravellers = (raw, checkIn) => {
     if(gender === "unknown" && ageType !== "adult") gender = "child";
 
     result.push({ firstName, lastName, dob, gender, ageType });
+  }
+
+  // Realloca ageType in base ai conteggi autoritativi Ninox (Adults/Child/Infant)
+  // quando passati e quando il totale combacia col numero di righe parsate.
+  // Why: la soglia hardcoded <12 e' arbitraria — la policy "chi e' child" cambia
+  // per hotel/contratto. Ninox e' la fonte di verita'. Ordiniamo per eta'
+  // crescente (DOB sconosciuta in fondo) e assegniamo prima gli infant, poi i
+  // child, poi gli adult fino a coprire i counts.
+  if(counts && result.length){
+    const ad = Math.max(0, parseInt(counts.adults,10)||0);
+    const ch = Math.max(0, parseInt(counts.child,10)||0);
+    const ba = Math.max(0, parseInt(counts.baby,10)||0);
+    if(ad+ch+ba === result.length){
+      const ageAt = (dob) => {
+        if(!dob || !checkinDate) return null;
+        const birth = new Date(dob.y, dob.m-1, dob.d);
+        return (checkinDate - birth) / (365.25*24*3600*1000);
+      };
+      const indices = result.map((_,i)=>i).sort((a,b)=>{
+        const aA = ageAt(result[a].dob), bA = ageAt(result[b].dob);
+        if(aA == null && bA == null) return 0;
+        if(aA == null) return 1;
+        if(bA == null) return -1;
+        return aA - bA;
+      });
+      indices.forEach((idx, pos) => {
+        const r = result[idx];
+        if(pos < ba)            r.ageType = "infant";
+        else if(pos < ba+ch)    r.ageType = "child";
+        else                    r.ageType = "adult";
+        if(r.gender === "unknown" && r.ageType !== "adult") r.gender = "child";
+      });
+    }
   }
 
   return result;
@@ -1403,7 +1436,7 @@ function VoucherOfferItems({b,lang}){
 const NOTE_EN = "Under no circumstances must you charge the guest for the services (including additional services) listed on this voucher. Only payment for extras to be collected from the client.<br><br>If you cannot allocate this booking please call 24/7 emergency number or email us at hello@better-bookings.com";
 
 function VoucherModal({b,lang,onClose}){
-  const travellers = parseTravellers(b.TravellerDetails, b.checkIn);
+  const travellers = parseTravellers(b.TravellerDetails, b.checkIn, {adults:b.adults, child:b.child, baby:b.baby});
   const hName = b.hotelName||b.hotelnameIT||"";
   const img   = getHeroImage(b);
 
@@ -1779,8 +1812,8 @@ function DestinationCard({b,lang,t}){
 }
 
 /* ─── TRAVELLERS LIST ────────────────────────────────── */
-function TravellersList({raw,checkIn,lang,t}){
-  const travellers = parseTravellers(raw, checkIn);
+function TravellersList({raw,checkIn,lang,t,counts}){
+  const travellers = parseTravellers(raw, checkIn, counts);
   const labels = AGE_LABEL[lang]||AGE_LABEL.EN;
   if(!travellers.length) return null;
 
@@ -1995,7 +2028,7 @@ function Overview({b,lang}){
         </div>
         {/* Parsed travellers list */}
         {b.TravellerDetails&&<div style={{marginTop:14,paddingTop:14,borderTop:`1px solid ${C.border}`}}>
-          <TravellersList raw={b.TravellerDetails} checkIn={b.checkIn} lang={lang} t={t}/>
+          <TravellersList raw={b.TravellerDetails} checkIn={b.checkIn} lang={lang} t={t} counts={{adults:b.adults, child:b.child, baby:b.baby}}/>
         </div>}
       </div>
 
