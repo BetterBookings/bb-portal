@@ -1436,7 +1436,13 @@ function VoucherOfferItems({b,lang}){
 const NOTE_EN = "Under no circumstances must you charge the guest for the services (including additional services) listed on this voucher. Only payment for extras to be collected from the client.<br><br>If you cannot allocate this booking please call 24/7 emergency number or email us at hello@better-bookings.com";
 
 function VoucherModal({b,lang,onClose}){
-  const travellers = parseTravellers(b.TravellerDetails, b.checkIn, {adults:b.adults, child:b.child, baby:b.baby});
+  // Counts pax = camera 1 + camera 2 quando addroom=true (altrimenti il numero
+  // di righe in Travellers Details supera adults+child+baby e parseTravellers
+  // non rialloca gli ageType — tutti finiscono adult).
+  const _totAd = (b.adults||0) + (b.addroom ? (b.adults2||0) : 0);
+  const _totCh = (b.child||0)  + (b.addroom ? (b.child2||0)  : 0);
+  const _totBa = (b.baby||0)   + (b.addroom ? (b.baby2||0)   : 0);
+  const travellers = parseTravellers(b.TravellerDetails, b.checkIn, {adults:_totAd, child:_totCh, baby:_totBa});
   const hName = b.hotelName||b.hotelnameIT||"";
   const img   = getHeroImage(b);
 
@@ -2011,9 +2017,14 @@ function Overview({b,lang}){
   // Prefer language-specific field, fall back to EN then IT
   const canc  = getCancPolicy(b,lang)||getCancPolicy(b,"EN")||getCancPolicy(b,"IT");
   const offer = getOfferDesc(b,lang)||getOfferDesc(b,"EN")||getOfferDesc(b,"IT");
-  const pax   = [b.adults>0&&`${b.adults} ${t.adults.toLowerCase()}`,
-    b.child>0&&`${b.child} ${t.children.toLowerCase()}`,
-    b.baby>0&&`${b.baby} ${t.infants.toLowerCase()}`].filter(Boolean).join(" + ");
+  // Somma camera 1 + camera 2 quando addroom=true.
+  // Senza questo, prenotazioni con 2 camere mostravano solo i pax della prima.
+  const totAdults = (b.adults||0) + (b.addroom ? (b.adults2||0) : 0);
+  const totChild  = (b.child||0)  + (b.addroom ? (b.child2||0)  : 0);
+  const totBaby   = (b.baby||0)   + (b.addroom ? (b.baby2||0)   : 0);
+  const pax   = [totAdults>0&&`${totAdults} ${t.adults.toLowerCase()}`,
+    totChild>0&&`${totChild} ${t.children.toLowerCase()}`,
+    totBaby>0&&`${totBaby} ${t.infants.toLowerCase()}`].filter(Boolean).join(" + ");
 
   return <Wrap ch={<>
     <Grid ch={<>
@@ -2087,7 +2098,11 @@ function Overview({b,lang}){
         </div>
         {/* Parsed travellers list */}
         {b.TravellerDetails&&<div style={{marginTop:14,paddingTop:14,borderTop:`1px solid ${C.border}`}}>
-          <TravellersList raw={b.TravellerDetails} checkIn={b.checkIn} lang={lang} t={t} counts={{adults:b.adults, child:b.child, baby:b.baby}}/>
+          <TravellersList raw={b.TravellerDetails} checkIn={b.checkIn} lang={lang} t={t} counts={{
+            adults:(b.adults||0)+(b.addroom?(b.adults2||0):0),
+            child: (b.child||0) +(b.addroom?(b.child2||0):0),
+            baby:  (b.baby||0)  +(b.addroom?(b.baby2||0):0),
+          }}/>
         </div>}
       </div>
 
