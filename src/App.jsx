@@ -1107,7 +1107,9 @@ function parseMessages(b){
   const statuses=b.Messagestatus||b.messagestatus||[];
   const dates=b.dateofmessage||b.Dateofmessage||[];
   if(!msgs.length) return [];
-  const CUST=new Set(["2","5","13",2,5,13]);
+  // ID enum EC.TO destinati al cliente: 2=CUSTOMER, 5=FLIGHT/SERVICES, 9, 13.
+  // Allineato col proxy _CUSTOMER_TO_IDS in ninox_offer.py.
+  const CUST=new Set(["2","5","9","13",2,5,9,13]);
   const result=[];
   msgs.forEach((msg,i)=>{
     const r=recipients[i];
