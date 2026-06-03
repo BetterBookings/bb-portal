@@ -2221,9 +2221,12 @@ function FCard({title,from,to,dep,arr,dur,stop,airline,alImg,pnr,b,lang,first}){
 
 function Flights({b,lang}){
   const t = T[lang]||T.EN;
-  // Hide entirely if flight is cancelled (status 2 or 3)
-  const fs = String(b.FlightStatus||"");
-  // Only hide when explicitly cancelled (FlightStatus=3)
+  // FlightStatus/trainstatus arrivano da Ninox come id ("1"/"2"/"3") OPPURE
+  // come caption del campo choice ("TO RELEASE"/"CONFIRMED"/"CANCELLED").
+  // Normalizziamo a id: 1=da confermare, 2=confermato, 3=cancellato.
+  const normStatus = s => ({"1":"1","2":"2","3":"3","TO RELEASE":"1","CONFIRMED":"2","CANCELLED":"3"})[String(s||"").trim().toUpperCase()]||"";
+  const fs = normStatus(b.FlightStatus);
+  // Nascondi del tutto se volo cancellato (status 3)
   if(fs==="3") return null;
   const LANG_CODE = {EN:4,IT:2,ES:3,NL:5,FR:6,DE:7};
   const langCode = LANG_CODE[lang]||4;
@@ -2231,7 +2234,7 @@ function Flights({b,lang}){
   // status 1 = pending (banner only), status 2 = confirmed (iframe)
   // Train: hide when trainstatus=3 (cancelled)
   // Cover all case variants: trainstatus (lowercase), trainStatus, TrainStatus
-  const trainStatus = String(b.trainstatus||b.trainStatus||b.TrainStatus||"");
+  const trainStatus = normStatus(b.trainstatus||b.trainStatus||b.TrainStatus);
   const hasTrain = !!b.train && trainStatus!=="3";  // trainStatus already covers all case variants
 
   // Helper: format timestamp to time HH:MM
@@ -2406,7 +2409,7 @@ function Flights({b,lang}){
       : <div style={{margin:"-.75rem -.75rem 0"}}>
           <div style={{overflow:"hidden",borderRadius:16,height:"calc(90vh - 60px)",position:"relative"}}>
             <iframe
-              src={`https://better-bookings.com/offersonline/Flight_booking_detail.html?slug=${encodeURIComponent(slug)}&customerlanguage=${langCode}&v=20260516a`}
+              src={`https://better-bookings.com/offersonline/Flight_booking_detail.html?slug=${encodeURIComponent(slug)}&customerlanguage=${langCode}&v=20260603a`}
               style={{width:"100%",height:"calc(90vh + 0px)",border:"none",display:"block",marginTop:"-60px"}}
               title="Flight Details"
               loading="lazy"
