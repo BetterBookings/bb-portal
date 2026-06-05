@@ -3417,18 +3417,30 @@ function Tours({b,lang}){
       }
     });
   } else {
-    // Legacy: TourHotelCheckin array
-    const hotelNames = b.Linktours
-      ? b.Linktours.split("\n").filter(l=>/^ACCO/i.test(l)).map(l=>{const m=l.match(/\((.+?)\)/);return m?m[1]:"";}).filter(Boolean)
+    // Legacy: TourHotelCheckin array. Both the hotel name AND its voucher URL live in the ACCO
+    // lines of Linktours. linkdirecttour is indexed by Linktours-line order (ALL tour types, e.g.
+    // experience first), so it must NOT be indexed by hotel position — that grabs the wrong link
+    // (e.g. the experience URL on the hotel card). Pull the URL from the ACCO line directly.
+    const hotelLines = b.Linktours
+      ? b.Linktours.split("\n").filter(l=>/^ACCO/i.test(l)).map(l=>{
+          const m=l.match(/^[A-Z]+[ \t]*\((.+?)\)[ \t]*:[ \t]*(.+)$/);
+          if(m) return{name:m[1].trim(),url:m[2].trim()};
+          const nm=l.match(/\((.+?)\)/);
+          return{name:nm?nm[1].trim():"",url:""};
+        })
       : [];
     (toArr(b.TourHotelCheckin)).forEach((ci,i)=>{
       if(!ci) return;
-      const name=hotelNames[i]||"Hotel "+(i+1);
+      const name=(hotelLines[i]&&hotelLines[i].name)||"Hotel "+(i+1);
       const img=(toArr(b.TourHotelImage))[i]||"";
       const loc=(toArr(b.TourHotelLocation))[i]||"";
       const cout=(toArr(b.TourHotelCheckout))[i]||"";
-      const nights=(toArr(b.TourHotelNights))[i]||1;
-      const url=(toArr(b.linkdirecttour))[i]||"";
+      // TourHotelNights is often null from Ninox → compute from check-in/out instead of defaulting to 1.
+      const nightsRaw=(toArr(b.TourHotelNights))[i];
+      const nights=(nightsRaw!=null&&nightsRaw!=="")
+        ? nightsRaw
+        : (ci&&cout?Math.max(1,Math.round((parseTourDate(cout)-parseTourDate(ci))/86400000)):1);
+      const url=(hotelLines[i]&&hotelLines[i].url)||"";
       hotels.push({name,img,loc,cin:ci,cout,nights,url,type:1,ok:true,ts:ci});
       allEvents.push({type:1,name,img,loc,cin:ci,cout,url,ts:ci,nights});
     });
