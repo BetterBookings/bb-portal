@@ -1566,6 +1566,22 @@ function VoucherModal({b,lang,onClose}){
                     letterSpacing:"1px",marginBottom:6}}>Included Services</div>
                   <VoucherOfferItems b={b} lang={lang}/>
                 </div>}
+                {/* Additional Services (HB extras, hotel-provided) — full width, bullet points.
+                    Coerente con NOTE_EN: il voucher elenca i servizi (inclusi gli additional) che
+                    l'hotel NON deve addebitare al cliente. Servizi esterni (altro fornitore) esclusi. */}
+                {getExtraList(b,lang).length>0&&<div style={{padding:"9px 14px",borderBottom:"1px solid #e2e2e2"}}>
+                  <div style={{fontSize:".65rem",color:"#6b6b6b",textTransform:"uppercase",
+                    letterSpacing:"1px",marginBottom:6}}>Additional Services</div>
+                  <ul style={{listStyle:"none",padding:0,margin:0}}>
+                    {getExtraList(b,lang).map((x,i)=>(
+                      <li key={i} style={{display:"flex",gap:6,alignItems:"flex-start",
+                        fontSize:".82rem",fontWeight:400,lineHeight:1.5,marginBottom:2}}>
+                        <span style={{color:"#E8501A",fontWeight:700,flexShrink:0,marginTop:1}}>•</span>
+                        <span>{x}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>}
                 {/* Address — full width */}
                 <div style={{padding:"9px 14px"}}>
                   <div style={{fontSize:".65rem",color:"#6b6b6b",textTransform:"uppercase",
