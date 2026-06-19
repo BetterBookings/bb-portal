@@ -3341,7 +3341,7 @@ function Shop({b,lang,services}){
           <div style={{fontSize:17,fontWeight:700,color:"#1f2730",marginBottom:6}}>{pick(card.title)}</div>
           <div style={{fontSize:14,color:"#5b6470",flex:1,marginBottom:16}}>{pick(card.subtitle)}</div>
           {card.type==="affiliate"
-            ? <a href={card.url||"#"} target="_blank" rel="noopener noreferrer"
+            ? <a href={pick(card.url)||"#"} target="_blank" rel="noopener noreferrer"
                 style={{display:"inline-block",textAlign:"center",background:"#0a6cff",color:"#fff",
                   textDecoration:"none",padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14}}>
                 {t.shopOpen} ↗
