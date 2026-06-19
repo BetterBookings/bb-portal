@@ -116,6 +116,8 @@ a{text-decoration:none}
 
 /* ─── CONFIG ─────────────────────────────────────────── */
 const API_BASE    = "https://review.better-bookings.com/api/ext/offer";
+const API_SERVICES = "https://review.better-bookings.com/api/ext/services";
+const API_SVCREQ   = "https://review.better-bookings.com/api/ext/service-request";
 const LANG_MAP    = { 1:"EN", 2:"IT", 3:"ES", 4:"EN", 5:"NL", 6:"FR", 7:"DE" };
 const STATUS_CODE = {
   "1":"conf",   // CONFIRMED
@@ -172,6 +174,7 @@ const T = {
     p1:"1st Payment",p2:"2nd Payment",p3:"3rd Payment",paid:"Paid",due:"Due",admFeeMsg:"We were unable to process the charge as per the booking conditions. Please pay the balance using the button below or by bank transfer to:\n\nAccount name: BETTER BOOKINGS LTD\nIBAN: GB67HBUK40127682816735\nSWIFT: HBUKGB4B\nAmount: {amount} (including admin fee)\nReference: {ref}\n\nPlease send proof of payment to invoices@better-bookings.com. If we do not receive confirmation within 48 hours, the booking will be automatically cancelled and cancellation fees will apply.",cancRefund:"We confirm that your booking has been cancelled. If a refund is due, it will be processed within 10 business days to the original payment method.",salesAuto:"The balance will be charged at the due date to the card used for the deposit payment. If you wish to use an alternative payment method, a 5% administrative fee applies (minimum €35.00).",salesManual:"Before the due date you will receive a reminder. You can pay at any time before the deadline by clicking the invoice link.",
     inv:"Invoices",dlpdf:"Download PDF",noInv:"Not yet available",invAfterCheckout:"Invoices will be available after your check-out.",
     tact:"Tours & Activities",xtra:"Additional Services",extserv:"External Services",
+    shop:"Add Services",shopIntro:"Enhance your trip with these optional extras.",shopOpen:"View / Book",shopRequest:"Request",shopSending:"Sending…",shopSent:"Request sent ✓",shopErr:"Something went wrong. Please try again.",shopPreview:"Preview mode — not visible to customers.",
     guest:"Traveller Details",gname:"Name",gphone:"Phone",
     voucher:"View Hotel Voucher",dest:"About the Destination",stay:"Your Stay",hotelInfo:"Hotel Information",address:"Address",
     adults:"Adults",children:"Children",infants:"Infants",travellers:"All Travellers",
@@ -233,6 +236,7 @@ notfound:"Booking not found.",
     p1:"1° Rata",p2:"2° Rata",p3:"3° Rata",paid:"Pagato",due:"Da pagare",admFeeMsg:"Non siamo riusciti ad effettuare l'addebito come previsto dalle condizioni di prenotazione. Per effettuare il saldo utilizza il pulsante qui sotto oppure il bonifico bancario alle seguenti coordinate:\n\nIntestatario: BETTER BOOKINGS LTD\nIBAN: GB67HBUK40127682816735\nSWIFT Code: HBUKGB4B\nImporto: {amount} (importo comprensivo di spese amministrative)\nCausale: Prenotazione {ref}\n\nLe ricordiamo che per confermare la prenotazione abbiamo bisogno di copia della contabile via email a invoices@better-bookings.com. Nel caso non ricevessimo riscontro entro 48 ore, la prenotazione sarà automaticamente cancellata e le saranno addebitate le spese di cancellazione.",cancRefund:"Ti confermiamo che la tua prenotazione è stata cancellata. Qualora sia previsto il rimborso, verrà elaborato entro i prossimi 10 giorni lavorativi direttamente sul metodo di pagamento utilizzato per la prenotazione.",salesAuto:"Il saldo si effettuerà alla scadenza indicata direttamente sulla carta utilizzata per il pagamento dell'acconto. Se desidera procedere con un metodo di pagamento alternativo, il cambio comporta un supplemento amministrativo del 5% dell'importo da saldare, con un minimo di 35,00 €.",salesManual:"In prossimità della scadenza riceverà una notifica di promemoria. La rata è comunque pagabile in qualsiasi momento prima della scadenza cliccando sul link della fattura.",
     inv:"Fatture",dlpdf:"Scarica PDF",noInv:"Non ancora disponibile",invAfterCheckout:"Le fatture saranno disponibili dopo il check-out.",
     tact:"Tour & Attività",xtra:"Servizi Aggiuntivi",extserv:"Servizi Esterni",
+    shop:"Aggiungi Servizi",shopIntro:"Arricchisci il tuo viaggio con questi extra opzionali.",shopOpen:"Vedi / Prenota",shopRequest:"Richiedi",shopSending:"Invio…",shopSent:"Richiesta inviata ✓",shopErr:"Qualcosa è andato storto. Riprova.",shopPreview:"Modalità anteprima — non visibile ai clienti.",
     guest:"Dati Viaggiatore",gname:"Nome",gphone:"Telefono",
     voucher:"Visualizza Voucher Hotel",dest:"La Destinazione",stay:"Il tuo Soggiorno",hotelInfo:"Informazioni Hotel",address:"Indirizzo",
     adults:"Adulti",children:"Bambini",infants:"Neonati",travellers:"Tutti i Viaggiatori",
@@ -294,6 +298,7 @@ notfound:"Prenotazione non trovata.",
     p1:"1er Pago",p2:"2º Pago",p3:"3er Pago",paid:"Pagado",due:"Pendiente",admFeeMsg:"No hemos podido realizar el cargo según las condiciones de reserva. Le rogamos efectúe el pago usando el botón o mediante transferencia bancaria:\n\nTitular: BETTER BOOKINGS LTD\nIBAN: GB67HBUK40127682816735\nSWIFT: HBUKGB4B\nImporte: {amount} (incluidos gastos administrativos)\nConcepto: Reserva {ref}\n\nEnvíe el justificante a invoices@better-bookings.com. Si no recibimos confirmación en 48 horas, la reserva se cancelará automáticamente con los gastos correspondientes.",cancRefund:"Te confirmamos que tu reserva ha sido cancelada. Si corresponde un reembolso, se procesará en los próximos 10 días hábiles al método de pago original.",salesAuto:"El saldo se realizará en la fecha indicada directamente con la tarjeta utilizada para el pago del depósito. Si desea utilizar otro método de pago, el cambio conlleva un recargo administrativo del 5% del importe a abonar, con un mínimo de 35,00 €.",salesManual:"Antes del vencimiento recibirá un recordatorio. Puede pagar en cualquier momento antes del vencimiento haciendo clic en el enlace de la factura.",
     inv:"Facturas",dlpdf:"Descargar PDF",noInv:"Aún no disponible",invAfterCheckout:"Las facturas estarán disponibles después del check-out.",
     tact:"Tours y Actividades",xtra:"Servicios Adicionales",extserv:"Servicios Externos",
+    shop:"Añadir Servicios",shopIntro:"Mejora tu viaje con estos extras opcionales.",shopOpen:"Ver / Reservar",shopRequest:"Solicitar",shopSending:"Enviando…",shopSent:"Solicitud enviada ✓",shopErr:"Algo salió mal. Inténtalo de nuevo.",shopPreview:"Modo vista previa — no visible para clientes.",
     guest:"Datos del Viajero",gname:"Nombre",gphone:"Teléfono",
     voucher:"Ver Voucher Hotel",dest:"El Destino",stay:"Tu Estancia",hotelInfo:"Información Hotel",address:"Dirección",
     adults:"Adultos",children:"Niños",infants:"Bebés",travellers:"Todos los Viajeros",
@@ -355,6 +360,7 @@ notfound:"Reserva no encontrada.",
     p1:"1er Paiement",p2:"2ème Paiement",p3:"3ème Paiement",paid:"Payé",due:"À payer",admFeeMsg:"Nous n'avons pas pu effectuer le prélèvement comme prévu dans les conditions de réservation. Veuillez régler le solde via le bouton ci-dessous ou par virement bancaire:\n\nBénéficiaire : BETTER BOOKINGS LTD\nIBAN : GB67HBUK40127682816735\nSWIFT : HBUKGB4B\nMontant : {amount} (frais administratifs inclus)\nRéférence : Réservation {ref}\n\nMerci d'envoyer la preuve de paiement à invoices@better-bookings.com. Sans confirmation sous 48h, la réservation sera annulée automatiquement avec les frais correspondants.",cancRefund:"Nous vous confirmons que votre réservation a été annulée. Si un remboursement est prévu, il sera traité dans les 10 jours ouvrables suivants sur le moyen de paiement utilisé.",salesAuto:"Le solde sera débité à l'échéance sur la carte utilisée pour le règlement de l'acompte. Si vous souhaitez utiliser un autre moyen de paiement, un supplément administratif de 5% du montant à régler sera appliqué (minimum 35,00 €).",salesManual:"Avant l'échéance, vous recevrez un rappel. Vous pouvez payer à tout moment avant l'échéance en cliquant sur le lien de la facture.",
     inv:"Factures",dlpdf:"Télécharger PDF",noInv:"Pas encore disponible",invAfterCheckout:"Les factures seront disponibles après le check-out.",
     tact:"Tours & Activités",xtra:"Services Additionnels",extserv:"Services Externes",
+    shop:"Ajouter des Services",shopIntro:"Enrichissez votre voyage avec ces extras en option.",shopOpen:"Voir / Réserver",shopRequest:"Demander",shopSending:"Envoi…",shopSent:"Demande envoyée ✓",shopErr:"Une erreur est survenue. Veuillez réessayer.",shopPreview:"Mode aperçu — non visible par les clients.",
     guest:"Données Voyageur",gname:"Nom",gphone:"Téléphone",
     voucher:"Voir Voucher Hôtel",dest:"La Destination",stay:"Votre Séjour",hotelInfo:"Informations Hôtel",address:"Adresse",
     adults:"Adultes",children:"Enfants",infants:"Nourrissons",travellers:"Tous les Voyageurs",
@@ -416,6 +422,7 @@ notfound:"Réservation introuvable.",
     p1:"1. Zahlung",p2:"2. Zahlung",p3:"3. Zahlung",paid:"Bezahlt",due:"Ausstehend",admFeeMsg:"Wir konnten die Belastung gemäß den Buchungsbedingungen nicht vornehmen. Bitte begleichen Sie den Restbetrag über den Button unten oder per Überweisung:\n\nKontoinh.: BETTER BOOKINGS LTD\nIBAN: GB67HBUK40127682816735\nSWIFT: HBUKGB4B\nBetrag: {amount} (inkl. Verwaltungsgebühr)\nVerwendungszweck: Buchung {ref}\n\nBitte senden Sie den Zahlungsbeleg an invoices@better-bookings.com. Ohne Bestätigung innerhalb von 48 Stunden wird die Buchung storniert und Stornogebühren werden erhoben.",cancRefund:"Wir bestätigen, dass Ihre Buchung storniert wurde. Sofern eine Erstattung vorgesehen ist, wird diese innerhalb von 10 Werktagen auf die ursprüngliche Zahlungsmethode bearbeitet.",salesAuto:"Der Restbetrag wird zum angegebenen Datum automatisch von der für die Anzahlung verwendeten Karte abgebucht. Bei Wahl einer alternativen Zahlungsmethode fällt eine Verwaltungsgebühr von 5% des offenen Betrags an (mindestens 35,00 €).",salesManual:"Vor dem Fälligkeitsdatum erhalten Sie eine Erinnerung. Sie können jederzeit vor Ablauf der Frist bezahlen, indem Sie auf den Rechnungslink klicken.",
     inv:"Rechnungen",dlpdf:"PDF herunterladen",noInv:"Noch nicht verfügbar",invAfterCheckout:"Rechnungen sind nach dem Check-out verfügbar.",
     tact:"Touren & Aktivitäten",xtra:"Zusätzliche Leistungen",extserv:"Externe Dienste",
+    shop:"Services Hinzufügen",shopIntro:"Werte deine Reise mit diesen optionalen Extras auf.",shopOpen:"Ansehen / Buchen",shopRequest:"Anfragen",shopSending:"Senden…",shopSent:"Anfrage gesendet ✓",shopErr:"Etwas ist schiefgelaufen. Bitte versuche es erneut.",shopPreview:"Vorschaumodus — für Kunden nicht sichtbar.",
     guest:"Reisendaten",gname:"Name",gphone:"Telefon",
     voucher:"Hotel-Voucher ansehen",dest:"Das Reiseziel",stay:"Ihr Aufenthalt",hotelInfo:"Hotelinformationen",address:"Adresse",
     adults:"Erwachsene",children:"Kinder",infants:"Kleinkinder",travellers:"Alle Reisenden",
@@ -477,6 +484,7 @@ notfound:"Buchung nicht gefunden.",
     p1:"1e Betaling",p2:"2e Betaling",p3:"3e Betaling",paid:"Betaald",due:"Te betalen",admFeeMsg:"Wij konden de afschrijving niet uitvoeren zoals bepaald in de boekingsvoorwaarden. Betaal het restbedrag via de knop hieronder of bankoverschrijving:\n\nBegunstigde: BETTER BOOKINGS LTD\nIBAN: GB67HBUK40127682816735\nSWIFT: HBUKGB4B\nBedrag: {amount} (inclusief administratiekosten)\nMededeling: Boeking {ref}\n\nStuur betalingsbewijs naar invoices@better-bookings.com. Bij geen bevestiging binnen 48 uur wordt de boeking automatisch geannuleerd met bijbehorende kosten.",cancRefund:"Wij bevestigen dat uw boeking is geannuleerd. Als er recht op terugbetaling is, wordt dit binnen 10 werkdagen verwerkt op de oorspronkelijke betaalmethode.",salesAuto:"Het saldo wordt op de vervaldatum automatisch afgeschreven van de kaart die voor de aanbetaling is gebruikt. Als u een alternatieve betaalmethode wilt gebruiken, wordt een administratieve toeslag van 5% van het te betalen bedrag in rekening gebracht (minimaal € 35,00).",salesManual:"Voor de vervaldatum ontvangt u een herinnering. U kunt op elk moment vóór de vervaldatum betalen door op de factuurlink te klikken.",
     inv:"Facturen",dlpdf:"PDF downloaden",noInv:"Nog niet beschikbaar",invAfterCheckout:"Facturen zijn beschikbaar na uw check-out.",
     tact:"Tours & Activiteiten",xtra:"Extra Diensten",extserv:"Externe Diensten",
+    shop:"Diensten Toevoegen",shopIntro:"Verrijk je reis met deze optionele extra's.",shopOpen:"Bekijk / Boek",shopRequest:"Aanvragen",shopSending:"Versturen…",shopSent:"Aanvraag verzonden ✓",shopErr:"Er ging iets mis. Probeer het opnieuw.",shopPreview:"Voorbeeldmodus — niet zichtbaar voor klanten.",
     guest:"Reizigersgegevens",gname:"Naam",gphone:"Telefoon",
     voucher:"Hotelvoucher bekijken",dest:"De Bestemming",stay:"Uw Verblijf",hotelInfo:"Hotelinformatie",address:"Adres",
     adults:"Volwassenen",children:"Kinderen",infants:"Baby's",travellers:"Alle Reizigers",
@@ -1376,7 +1384,7 @@ function Hero({b,lang}){
 }
 
 /* ─── TAB NAV ────────────────────────────────────────── */
-function TabNav({active,setActive,b,lang}){
+function TabNav({active,setActive,b,lang,services}){
   const t = T[lang]||T.EN;
   // Tours tab: bookingtype=1 always, bookingtype=5 only when Touralldocumentstatus=3
   const btype5 = String(b.bookingtype||"1")==="5";
@@ -1391,6 +1399,7 @@ function TabNav({active,setActive,b,lang}){
     ...((b.flight||b.Airline1||(b.train&&String(b.trainstatus||b.trainStatus||b.TrainStatus||"")!=="3"))&&String(b.FlightStatus||"")!=="3"?[{id:"flights",icon:"✈️",l:t.flights}]:[]),
     ...(String(b.salestype||b.SalesType||"")!=="2"?[{id:"payments",icon:"💳",l:t.payments}]:[]),
     ...(hasTours?[{id:"tours",icon:"🎭",l:t.tours}]:[]),
+    ...((services&&services.length)?[{id:"shop",icon:"➕",l:t.shop}]:[]),
     {id:"support",icon:"💬",l:t.support||"Support"},
   ];
   return <div className="tab-bar">
@@ -3287,6 +3296,71 @@ const PRIVACY_LINKS = {
 };
 
 /* ─── APP ────────────────────────────────────────────── */
+/* ─── ADD SERVICES (self-service upsell) ─────────────── */
+/* Schede servite da GET /api/ext/services/{slug}. Due tipi:
+   - affiliate: bottone che apre il partner (card.url) in nuova tab
+   - request  : bottone che invia una richiesta al team via POST /api/ext/service-request
+   Visibilità controllata lato server (SERVICES_ENABLED / ?preview=services). */
+function Shop({b,lang,services}){
+  const t = T[lang]||T.EN;
+  const [status,setStatus] = useState({});   // { [serviceId]: "sending"|"sent"|"error" }
+  const isPreview = new URLSearchParams(window.location.search).get("preview")==="services";
+  const pick = (o)=> (o&&(o[lang]||o.EN))||"";
+
+  async function submit(card){
+    setStatus(s=>({...s,[card.id]:"sending"}));
+    try{
+      const r = await fetch(API_SVCREQ,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({slug:getSlug(),serviceId:card.id,lang}),
+      });
+      if(!r.ok) throw new Error(`HTTP ${r.status}`);
+      setStatus(s=>({...s,[card.id]:"sent"}));
+    }catch(e){
+      console.error(e);
+      setStatus(s=>({...s,[card.id]:"error"}));
+    }
+  }
+
+  if(!services||!services.length) return null;
+
+  return <div style={{maxWidth:1100,margin:"0 auto",padding:"1.5rem 1.25rem"}}>
+    {isPreview&&<div style={{background:"#fff7e6",border:"1px solid #ffd591",color:"#874d00",
+      borderRadius:10,padding:"8px 12px",fontSize:13,marginBottom:14,fontWeight:600}}>
+      👁️ {t.shopPreview}
+    </div>}
+    <p style={{color:"#5b6470",fontSize:15,margin:"0 0 18px"}}>{t.shopIntro}</p>
+    <div style={{display:"flex",flexWrap:"wrap",gap:16}}>
+      {services.map(card=>{
+        const st = status[card.id];
+        return <div key={card.id} style={{flex:"1 1 320px",minWidth:280,maxWidth:520,
+          background:"#fff",border:"1px solid #e6e9ee",borderRadius:14,padding:"18px 20px",
+          boxShadow:"0 1px 3px rgba(0,0,0,.04)",display:"flex",flexDirection:"column"}}>
+          <div style={{fontSize:30,lineHeight:1,marginBottom:10}}>{card.icon}</div>
+          <div style={{fontSize:17,fontWeight:700,color:"#1f2730",marginBottom:6}}>{pick(card.title)}</div>
+          <div style={{fontSize:14,color:"#5b6470",flex:1,marginBottom:16}}>{pick(card.subtitle)}</div>
+          {card.type==="affiliate"
+            ? <a href={card.url||"#"} target="_blank" rel="noopener noreferrer"
+                style={{display:"inline-block",textAlign:"center",background:"#0a6cff",color:"#fff",
+                  textDecoration:"none",padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14}}>
+                {t.shopOpen} ↗
+              </a>
+            : st==="sent"
+              ? <div style={{textAlign:"center",color:"#13794a",fontWeight:600,padding:"10px 16px",
+                  background:"#e8f6ef",borderRadius:10,fontSize:14}}>{t.shopSent}</div>
+              : <button onClick={()=>submit(card)} disabled={st==="sending"}
+                  style={{background:st==="error"?"#c0392b":"#0a6cff",color:"#fff",border:"none",
+                    padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14,
+                    cursor:st==="sending"?"default":"pointer",opacity:st==="sending"?.7:1}}>
+                  {st==="sending"?t.shopSending:st==="error"?t.shopErr:t.shopRequest}
+                </button>}
+        </div>;
+      })}
+    </div>
+  </div>;
+}
+
 export default function App(){
   const [booking,setBooking]=useState(null);
   const [state,setState]=useState("loading");
@@ -3294,6 +3368,7 @@ export default function App(){
   const [lang,setLang]=useState("EN");
   const [tab,setTab]=useState("overview");
   const [showMessages,setShowMessages]=useState(false);
+  const [services,setServices]=useState([]);
 
   // Sincronizza il widget Bettie con la lingua del portal (lowercase)
   useEffect(()=>{
@@ -3316,6 +3391,13 @@ export default function App(){
         const l=LANG_MAP[data.customerlanguage]||"EN";
         setLang(T[l]?l:"EN");
         setState("ready");
+        // Servizi addizionali — gate lato server: lista vuota se SERVICES_ENABLED
+        // è spento e non c'è ?preview=services nell'URL (invisibile ai clienti).
+        const prev=new URLSearchParams(window.location.search).get("preview")||"";
+        fetch(`${API_SERVICES}/${slug}${prev?`?preview=${encodeURIComponent(prev)}`:""}`)
+          .then(r=>r.ok?r.json():{services:[]})
+          .then(d=>setServices(Array.isArray(d?.services)?d.services:[]))
+          .catch(()=>{});
       })
       .catch(e=>{ console.error(e); setState("error"); setErrMsg(e.message); });
   },[]);
@@ -3330,12 +3412,13 @@ export default function App(){
       <Header b={booking} lang={lang} setLang={setLang} onBell={()=>setShowMessages(true)}/>
       {showMessages&&<MessagesDrawer b={booking} lang={lang} onClose={()=>setShowMessages(false)}/>}
       <Hero   b={booking} lang={lang}/>
-      <TabNav active={tab} setActive={setTab} b={booking} lang={lang}/>
+      <TabNav active={tab} setActive={setTab} b={booking} lang={lang} services={services}/>
       <div className="fade-up">
         {tab==="overview"&&<Overview b={booking} lang={lang}/>}
         {tab==="flights" &&<Flights  b={booking} lang={lang}/>}
         {tab==="payments"&&<Payments b={booking} lang={lang}/>}
         {tab==="tours"   &&<Tours    b={booking} lang={lang}/>}
+        {tab==="shop"    &&<Shop     b={booking} lang={lang} services={services}/>}
         {tab==="support" &&<Support  b={booking} lang={lang}/>}
       </div>
     </div>
