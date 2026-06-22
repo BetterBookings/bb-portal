@@ -2508,7 +2508,13 @@ function InvoiceList({b,t}){
     b.invoice2?{label:t.p2,amount:(hasFee&&!isPaidFull&&b.secondpaymentwithadmfee)||b.amount2Payment,inv:b.invoice2}:null,
     b.invoice3?{label:t.p3,amount:b.amount3Payment,inv:b.invoice3}:null,
   ].filter(Boolean);
-  const visible = isPaidFull ? invRows : invRows.filter(r=>r.inv===b.invoice1);
+  // Mostra ogni fattura effettivamente emessa: se il link (Xero) esiste, la
+  // fattura è disponibile e dev'essere apribile dal cliente — anche quella del
+  // saldo nei pagamenti rateali, indipendentemente da Payment completed. Prima
+  // si nascondeva tutto tranne l'acconto finché il saldo non era pagato, il che
+  // impediva al cliente di aprire/pagare la fattura del saldo. L'empty-state
+  // sotto copre il caso "nessuna fattura ancora emessa".
+  const visible = invRows;
   if(!visible.length) return <div style={{padding:"12px 14px",borderRadius:8,
     background:C.bg,border:"1px dashed "+C.border,
     fontSize:".8rem",color:C.muted,textAlign:"left",lineHeight:1.5}}>
