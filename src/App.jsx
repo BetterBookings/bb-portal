@@ -3321,25 +3321,89 @@ const PRIVACY_LINKS = {
    - affiliate: bottone che apre il partner (card.url) in nuova tab
    - request  : bottone che invia una richiesta al team via POST /api/ext/service-request
    Visibilità controllata lato server (SERVICES_ENABLED / ?preview=services). */
+// Stringhe locali per la card noleggio auto live (Tinoleggio)
+const CART = {
+  EN:{loading:"Checking live availability…",none:"No live availability right now — request a quote below.",cars:"Available cars",book:"Request",sent:"Requested ✓"},
+  IT:{loading:"Verifico la disponibilità…",none:"Nessuna disponibilità live al momento — richiedi un preventivo qui sotto.",cars:"Auto disponibili",book:"Richiedi",sent:"Richiesta inviata ✓"},
+  ES:{loading:"Comprobando disponibilidad…",none:"Sin disponibilidad en directo ahora — solicita presupuesto abajo.",cars:"Coches disponibles",book:"Solicitar",sent:"Solicitado ✓"},
+  FR:{loading:"Vérification des disponibilités…",none:"Pas de disponibilité en direct — demandez un devis ci-dessous.",cars:"Voitures disponibles",book:"Demander",sent:"Demande envoyée ✓"},
+  NL:{loading:"Beschikbaarheid controleren…",none:"Geen live beschikbaarheid — vraag hieronder een offerte aan.",cars:"Beschikbare auto's",book:"Aanvragen",sent:"Aangevraagd ✓"},
+  DE:{loading:"Verfügbarkeit wird geprüft…",none:"Keine Live-Verfügbarkeit — unten Angebot anfordern.",cars:"Verfügbare Autos",book:"Anfragen",sent:"Angefragt ✓"},
+};
+
+// Card noleggio auto: carica le auto reali da /api/ext/carrental e per ognuna
+// invia una richiesta al team (onRequest(note)). Override anteprima: &car=BRI nell'URL.
+function LiveCars({lang,onRequest,fallback}){
+  const tr = CART[lang]||CART.EN;
+  const [state,setState] = useState("loading");   // loading|ok|none|err
+  const [cars,setCars]   = useState([]);
+  const [sent,setSent]   = useState({});          // { [index]: "sending"|"sent"|"error" }
+  useEffect(()=>{
+    const p = new URLSearchParams(window.location.search);
+    const qs = new URLSearchParams({lang});
+    const cityOverride = p.get("car");            // anteprima: forza una città test (es. BRI)
+    if(cityOverride) qs.set("city",cityOverride);
+    fetch(`${API_CARRENTAL}/${getSlug()}?${qs.toString()}`)
+      .then(r=>r.ok?r.json():{cars:[]})
+      .then(d=>{ const l=Array.isArray(d?.cars)?d.cars:[]; setCars(l); setState(l.length?"ok":"none"); })
+      .catch(()=>setState("err"));
+  },[lang]);
+
+  async function reqCar(i,car){
+    setSent(s=>({...s,[i]:"sending"}));
+    try{ await onRequest(`${car.name} — ${Number(car.price).toFixed(2)} ${car.currency||""} (${car.supplier||""})`); setSent(s=>({...s,[i]:"sent"})); }
+    catch{ setSent(s=>({...s,[i]:"error"})); }
+  }
+
+  if(state==="loading") return <div style={{color:"#5b6470",fontSize:14,padding:"6px 0"}}>{tr.loading}</div>;
+  if(state!=="ok") return fallback;   // niente auto live → ricade sul bottone "Richiedi"
+
+  return <div>
+    <div style={{fontSize:13,fontWeight:700,color:"#1f2730",margin:"2px 0 8px"}}>{tr.cars}</div>
+    <div style={{display:"flex",flexDirection:"column",gap:8}}>
+      {cars.slice(0,6).map((car,i)=>{
+        const ss=sent[i];
+        return <div key={i} style={{display:"flex",alignItems:"center",gap:10,
+          border:"1px solid #eef0f3",borderRadius:10,padding:"8px 10px"}}>
+          {car.image&&<img src={car.image} alt="" style={{width:54,height:36,objectFit:"contain"}}/>}
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontSize:14,fontWeight:600,color:"#1f2730",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{car.name}</div>
+            <div style={{fontSize:12,color:"#8a93a0"}}>{car.supplier}{car.onRequest?" · on request":""}</div>
+          </div>
+          <div style={{fontSize:15,fontWeight:700,color:"#1f2730",whiteSpace:"nowrap"}}>{Number(car.price).toFixed(0)} {car.currency}</div>
+          {ss==="sent"
+            ? <span style={{fontSize:12,fontWeight:600,color:"#13794a",whiteSpace:"nowrap"}}>{tr.sent}</span>
+            : <button onClick={()=>reqCar(i,car)} disabled={ss==="sending"}
+                style={{background:"#0a6cff",color:"#fff",border:"none",padding:"7px 12px",
+                  borderRadius:8,fontWeight:600,fontSize:13,cursor:ss==="sending"?"default":"pointer",opacity:ss==="sending"?.7:1,whiteSpace:"nowrap"}}>
+                {tr.book}
+              </button>}
+        </div>;
+      })}
+    </div>
+  </div>;
+}
+
 function Shop({b,lang,services}){
   const t = T[lang]||T.EN;
   const [status,setStatus] = useState({});   // { [serviceId]: "sending"|"sent"|"error" }
   const isPreview = new URLSearchParams(window.location.search).get("preview")==="services";
   const pick = (o)=> (o&&(o[lang]||o.EN))||"";
 
-  async function submit(card){
+  async function submit(card,note){
     setStatus(s=>({...s,[card.id]:"sending"}));
     try{
       const r = await fetch(API_SVCREQ,{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({slug:getSlug(),serviceId:card.id,lang}),
+        body:JSON.stringify({slug:getSlug(),serviceId:card.id,lang,note:note||undefined}),
       });
       if(!r.ok) throw new Error(`HTTP ${r.status}`);
       setStatus(s=>({...s,[card.id]:"sent"}));
     }catch(e){
       console.error(e);
       setStatus(s=>({...s,[card.id]:"error"}));
+      throw e;
     }
   }
 
@@ -3360,21 +3424,25 @@ function Shop({b,lang,services}){
           <div style={{fontSize:30,lineHeight:1,marginBottom:10}}>{card.icon}</div>
           <div style={{fontSize:17,fontWeight:700,color:"#1f2730",marginBottom:6}}>{pick(card.title)}</div>
           <div style={{fontSize:14,color:"#5b6470",flex:1,marginBottom:16}}>{pick(card.subtitle)}</div>
-          {card.type==="affiliate"
-            ? <a href={pick(card.url)||"#"} target="_blank" rel="noopener noreferrer"
+          {(()=>{
+            const sentBox=<div style={{textAlign:"center",color:"#13794a",fontWeight:600,padding:"10px 16px",
+              background:"#e8f6ef",borderRadius:10,fontSize:14}}>{t.shopSent}</div>;
+            const reqBtn=<button onClick={()=>submit(card)} disabled={st==="sending"}
+                style={{background:st==="error"?"#c0392b":"#0a6cff",color:"#fff",border:"none",
+                  padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14,
+                  cursor:st==="sending"?"default":"pointer",opacity:st==="sending"?.7:1}}>
+                {st==="sending"?t.shopSending:st==="error"?t.shopErr:t.shopRequest}
+              </button>;
+            if(card.type==="affiliate")
+              return <a href={pick(card.url)||"#"} target="_blank" rel="noopener noreferrer"
                 style={{display:"inline-block",textAlign:"center",background:"#0a6cff",color:"#fff",
                   textDecoration:"none",padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14}}>
                 {t.shopOpen} ↗
-              </a>
-            : st==="sent"
-              ? <div style={{textAlign:"center",color:"#13794a",fontWeight:600,padding:"10px 16px",
-                  background:"#e8f6ef",borderRadius:10,fontSize:14}}>{t.shopSent}</div>
-              : <button onClick={()=>submit(card)} disabled={st==="sending"}
-                  style={{background:st==="error"?"#c0392b":"#0a6cff",color:"#fff",border:"none",
-                    padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14,
-                    cursor:st==="sending"?"default":"pointer",opacity:st==="sending"?.7:1}}>
-                  {st==="sending"?t.shopSending:st==="error"?t.shopErr:t.shopRequest}
-                </button>}
+              </a>;
+            if(card.live)
+              return <LiveCars lang={lang} onRequest={(note)=>submit(card,note)} fallback={st==="sent"?sentBox:reqBtn}/>;
+            return st==="sent"?sentBox:reqBtn;
+          })()}
         </div>;
       })}
     </div>
