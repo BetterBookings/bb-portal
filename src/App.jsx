@@ -3566,7 +3566,8 @@ function CarRentalFlow({b,lang,onClose}){
       const codes=Object.keys(extras);
       const arrival=b.flight?{transportation_code:1,number:""}:{};
       const r=await fetch(`${API_CARRENTAL}/book`,{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({payment_intent_id:pi.payment_intent_id,quote_id:sel.id,customer:driver,extras:codes,arrival,lang})});
+        body:JSON.stringify({payment_intent_id:pi.payment_intent_id,quote_id:sel.id,customer:driver,extras:codes,arrival,lang,
+          slug:getSlug(),car_name:sel.name,pickup_date:pDate+":00",dropoff_date:dDate+":00"})});
       if(!r.ok) throw new Error("book");
       const d=await r.json(); setConfirmed(d); setStep("done");
     }catch(e){ setPayErr(cf.bookErr); }
