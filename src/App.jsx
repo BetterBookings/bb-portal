@@ -118,6 +118,7 @@ a{text-decoration:none}
 const API_BASE    = "https://review.better-bookings.com/api/ext/offer";
 const API_SERVICES = "https://review.better-bookings.com/api/ext/services";
 const API_SVCREQ   = "https://review.better-bookings.com/api/ext/service-request";
+const API_CARRENTAL = "https://review.better-bookings.com/api/ext/carrental";
 const LANG_MAP    = { 1:"EN", 2:"IT", 3:"ES", 4:"EN", 5:"NL", 6:"FR", 7:"DE" };
 const STATUS_CODE = {
   "1":"conf",   // CONFIRMED
@@ -2539,11 +2540,24 @@ function Payments({b,lang}){
   const hasFee = String(b.Administrationfee||b.administrationfee||"").toLowerCase()==="true";
   const allPaid2 = String(b.Paymentcompleted).toLowerCase()==="true";
   const amount2 = (hasFee&&!allPaid2&&b.secondpaymentwithadmfee) ? b.secondpaymentwithadmfee : b.amount2Payment;
+  // Una rata "esiste" se ha importo, data O fattura emessa — stessa logica della
+  // sezione fatture (InvoiceList). Prima si filtrava solo su amount, così una rata
+  // con fattura+data ma importo non valorizzato su Ninox spariva dai pagamenti pur
+  // comparendo tra le fatture (es. "Amount 3 payment" vuoto su prenotazioni a 3 rate).
+  // `raw` conserva l'importo grezzo (senza admin fee) per il calcolo del residuo.
   const ps=[
-    {label:t.p1,amount:b.amount1Payment,date:b.date1Payment,inv:b.invoice1},
-    ...(b.amount2Payment?[{label:t.p2,amount:amount2,date:b.date2Payment,inv:b.invoice2}]:[]),
-    ...(b.amount3Payment?[{label:t.p3,amount:b.amount3Payment,date:b.date3Payment,inv:b.invoice3}]:[]),
-  ].filter(p=>p.amount);
+    {label:t.p1,amount:b.amount1Payment,raw:b.amount1Payment,date:b.date1Payment,inv:b.invoice1},
+    {label:t.p2,amount:amount2,raw:b.amount2Payment,date:b.date2Payment,inv:b.invoice2},
+    {label:t.p3,amount:b.amount3Payment,raw:b.amount3Payment,date:b.date3Payment,inv:b.invoice3},
+  ].filter(p=>p.amount||p.date||p.inv);
+  // Se a una sola rata esistente manca l'importo, ricavalo dal residuo
+  // (Selling Price − somma delle rate note) così non resta vuoto.
+  const missing=ps.filter(p=>!p.amount);
+  if(missing.length===1){
+    const known=ps.reduce((s,p)=>s+(Number(p.raw)||0),0);
+    const residual=(Number(b.sellingPrice)||0)-known;
+    if(residual>0) missing[0].amount=residual;
+  }
   const now=new Date();
 
   return <Wrap ch={<Grid ch={<>
@@ -2584,7 +2598,7 @@ function Payments({b,lang}){
                 <div style={{fontSize:".72rem",color:C.muted,marginTop:2}}>{fmtDs(p.date,lang)}</div>
               </div>
               <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:5,flexShrink:0}}>
-                <div style={{fontWeight:700,color:C.dark,fontSize:".9rem"}}>{fmtM(p.amount)}</div>
+                {p.amount?<div style={{fontWeight:700,color:C.dark,fontSize:".9rem"}}>{fmtM(p.amount)}</div>:null}
                 <StatusBadge ok={isPaid} warn={!isPaid} label={isPaid?t.paid:t.due}/>
               </div>
             </div>;
