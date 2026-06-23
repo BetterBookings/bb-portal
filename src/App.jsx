@@ -6,7 +6,7 @@
  * BG:    White + peach tint rgb(252,227,223)
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 /* ─── PALETTE ────────────────────────────────────────── */
 const C = {
@@ -3400,8 +3400,8 @@ function fuelLabel(p,lang){ const m=FUEL[p]; return m?(m[lang]||m.EN):(p||"—")
 function dtLocal(ms,defH){ if(!ms) return ""; const d=new Date(ms); const z=n=>String(n).padStart(2,"0"); const hh=defH!=null?z(defH):z(d.getHours()); const mm=defH!=null?"00":z(d.getMinutes()); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}T${hh}:${mm}`; }
 
 const CF = {
-  EN:{open:"Search & book a car",title:"Car rental",pickup:"Pick-up location",dropoff:"Drop-off location",same:"Same as pick-up",from:"Pick-up date & time",to:"Drop-off date & time",age:"Driver age",res:"Country of residence (ISO)",search:"Search cars",searching:"Searching…",results:"Available cars",none:"No cars available for these dates / location.",total:"Total",deposit:"Security deposit",fuel:"Fuel policy",mileage:"Mileage",unlimited:"Unlimited km",limited:"km included",extraKm:"Extra km",excess:"Insurance excess (CDW / theft)",cancel:"Cancellation policy",included:"What's included",extras:"Optional extras",onreq:"On request — confirmed by supplier",driver:"Driver details",fn:"First name",ln:"Last name",email:"Email",phone:"Phone",bdate:"Date of birth",bcountry:"Country of birth (ISO)",rcity:"City of residence",rcountry:"Country of residence (ISO)",raddr:"Address",cont:"Continue",back:"Back",toDriver:"Continue to driver details",toPay:"Continue to payment",payTitle:"Payment",payNote:"💳 Online card payment is being activated. Your car and details are saved — once enabled you'll pay securely here and the booking is confirmed instantly.",payBtn:"Pay & confirm booking",driverSel:"Main driver",choose:"— choose —",yrs:"yrs",freeCancel:"Free cancellation until",cancelFee:"Cancellation fee from",nonref:"Non-refundable",reqFields:"Please select the driver and fill email, phone and date of birth."},
-  IT:{open:"Cerca e prenota un'auto",title:"Noleggio auto",pickup:"Luogo di ritiro",dropoff:"Luogo di riconsegna",same:"Uguale al ritiro",from:"Data e ora ritiro",to:"Data e ora riconsegna",age:"Età conducente",res:"Paese di residenza (ISO)",search:"Cerca auto",searching:"Ricerca…",results:"Auto disponibili",none:"Nessuna auto disponibile per queste date / luogo.",total:"Totale",deposit:"Cauzione",fuel:"Politica carburante",mileage:"Chilometraggio",unlimited:"Km illimitati",limited:"km inclusi",extraKm:"Km extra",excess:"Franchigia (danni / furto)",cancel:"Politica di cancellazione",included:"Cosa è incluso",extras:"Extra opzionali",onreq:"Su richiesta — confermata dal fornitore",driver:"Dati conducente",fn:"Nome",ln:"Cognome",email:"Email",phone:"Telefono",bdate:"Data di nascita",bcountry:"Paese di nascita (ISO)",rcity:"Città di residenza",rcountry:"Paese di residenza (ISO)",raddr:"Indirizzo",cont:"Continua",back:"Indietro",toDriver:"Continua ai dati conducente",toPay:"Continua al pagamento",payTitle:"Pagamento",payNote:"💳 Il pagamento online con carta è in fase di attivazione. L'auto e i tuoi dati sono salvati — una volta attivo pagherai in sicurezza qui e la prenotazione sarà confermata subito.",payBtn:"Paga e conferma prenotazione",driverSel:"Conducente principale",choose:"— scegli —",yrs:"anni",freeCancel:"Cancellazione gratuita fino al",cancelFee:"Penale di cancellazione da",nonref:"Non rimborsabile",reqFields:"Seleziona il conducente e inserisci email, telefono e data di nascita."},
+  EN:{open:"Search & book a car",title:"Car rental",pickup:"Pick-up location",dropoff:"Drop-off location",same:"Same as pick-up",from:"Pick-up date & time",to:"Drop-off date & time",age:"Driver age",res:"Country of residence (ISO)",search:"Search cars",searching:"Searching…",results:"Available cars",none:"No cars available for these dates / location.",total:"Total",deposit:"Security deposit",fuel:"Fuel policy",mileage:"Mileage",unlimited:"Unlimited km",limited:"km included",extraKm:"Extra km",excess:"Insurance excess (CDW / theft)",cancel:"Cancellation policy",included:"What's included",extras:"Optional extras",onreq:"On request — confirmed by supplier",driver:"Driver details",fn:"First name",ln:"Last name",email:"Email",phone:"Phone",bdate:"Date of birth",bcountry:"Country of birth (ISO)",rcity:"City of residence",rcountry:"Country of residence (ISO)",raddr:"Address",cont:"Continue",back:"Back",toDriver:"Continue to driver details",toPay:"Continue to payment",payTitle:"Payment",payNote:"💳 Online card payment is being activated. Your car and details are saved — once enabled you'll pay securely here and the booking is confirmed instantly.",payBtn:"Pay & confirm booking",doneTitle:"Booking confirmed!",doneMsg:"You'll receive the confirmation details by email.",ref:"Booking reference",voucher:"View voucher",close:"Done",payErr:"Payment could not be completed. Please try again.",bookErr:"Payment taken but the booking is still pending — our team will confirm it shortly.",driverSel:"Main driver",choose:"— choose —",yrs:"yrs",freeCancel:"Free cancellation until",cancelFee:"Cancellation fee from",nonref:"Non-refundable",reqFields:"Please select the driver and fill email, phone and date of birth."},
+  IT:{open:"Cerca e prenota un'auto",title:"Noleggio auto",pickup:"Luogo di ritiro",dropoff:"Luogo di riconsegna",same:"Uguale al ritiro",from:"Data e ora ritiro",to:"Data e ora riconsegna",age:"Età conducente",res:"Paese di residenza (ISO)",search:"Cerca auto",searching:"Ricerca…",results:"Auto disponibili",none:"Nessuna auto disponibile per queste date / luogo.",total:"Totale",deposit:"Cauzione",fuel:"Politica carburante",mileage:"Chilometraggio",unlimited:"Km illimitati",limited:"km inclusi",extraKm:"Km extra",excess:"Franchigia (danni / furto)",cancel:"Politica di cancellazione",included:"Cosa è incluso",extras:"Extra opzionali",onreq:"Su richiesta — confermata dal fornitore",driver:"Dati conducente",fn:"Nome",ln:"Cognome",email:"Email",phone:"Telefono",bdate:"Data di nascita",bcountry:"Paese di nascita (ISO)",rcity:"Città di residenza",rcountry:"Paese di residenza (ISO)",raddr:"Indirizzo",cont:"Continua",back:"Indietro",toDriver:"Continua ai dati conducente",toPay:"Continua al pagamento",payTitle:"Pagamento",payNote:"💳 Il pagamento online con carta è in fase di attivazione. L'auto e i tuoi dati sono salvati — una volta attivo pagherai in sicurezza qui e la prenotazione sarà confermata subito.",payBtn:"Paga e conferma prenotazione",doneTitle:"Prenotazione confermata!",doneMsg:"Riceverai i dettagli della conferma via email.",ref:"Riferimento prenotazione",voucher:"Vedi voucher",close:"Fatto",payErr:"Pagamento non riuscito. Riprova.",bookErr:"Pagamento effettuato ma la prenotazione è in attesa — il nostro team la confermerà a breve.",driverSel:"Conducente principale",choose:"— scegli —",yrs:"anni",freeCancel:"Cancellazione gratuita fino al",cancelFee:"Penale di cancellazione da",nonref:"Non rimborsabile",reqFields:"Seleziona il conducente e inserisci email, telefono e data di nascita."},
 };
 
 // Lista paesi (ISO 3166-1 alpha-2) per i combo — set comune ai mercati BB.
@@ -3441,6 +3441,19 @@ function AirportPicker({value,onPick,placeholder}){
         {a.iata?`✈ ${a.iata} · `:""}{a.name}</div>)}
     </div>}
   </div>;
+}
+
+// Carica Stripe.js una sola volta e risolve con window.Stripe
+function loadStripeJs(){
+  return new Promise((res)=>{
+    if(window.Stripe) return res(window.Stripe);
+    const ex=document.getElementById("stripe-js");
+    if(ex){ ex.addEventListener("load",()=>res(window.Stripe)); return; }
+    const s=document.createElement("script");
+    s.id="stripe-js"; s.src="https://js.stripe.com/v3/";
+    s.onload=()=>res(window.Stripe); s.onerror=()=>res(null);
+    document.body.appendChild(s);
+  });
 }
 
 function CarRentalFlow({b,lang,onClose}){
@@ -3515,6 +3528,51 @@ function CarRentalFlow({b,lang,onClose}){
     setStep("payment");
   }
 
+  // ── Pagamento Stripe ──
+  const [pi,setPi]=useState(null);          // {client_secret, publishable_key, payment_intent_id, amount, currency}
+  const [payErr,setPayErr]=useState("");
+  const [paying,setPaying]=useState(false);
+  const [confirmed,setConfirmed]=useState(null);
+  const stripeRef=useRef(null); const elementsRef=useRef(null);
+
+  useEffect(()=>{
+    if(step!=="payment"||pi||!sel) return;
+    let dead=false;
+    (async()=>{
+      setPayErr("");
+      try{
+        const codes=Object.keys(extras);
+        const r=await fetch(`${API_CARRENTAL}/payment-intent`,{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({slug:getSlug(),quote_id:sel.id,extras:codes,lang})});
+        if(!r.ok) throw new Error("init");
+        const d=await r.json(); if(dead) return; setPi(d);
+        const SF=await loadStripeJs(); if(dead||!SF) return;
+        const stripe=SF(d.publishable_key); stripeRef.current=stripe;
+        const elements=stripe.elements({clientSecret:d.client_secret}); elementsRef.current=elements;
+        const el=elements.create("payment");
+        setTimeout(()=>{ if(!dead&&document.getElementById("bb-pay-el")) el.mount("#bb-pay-el"); },30);
+      }catch(e){ if(!dead) setPayErr(cf.payErr); }
+    })();
+    return ()=>{dead=true;};
+  },[step]);
+
+  async function payAndBook(){
+    if(!stripeRef.current||!elementsRef.current||!pi) return;
+    setPaying(true); setPayErr("");
+    try{
+      const {error,paymentIntent}=await stripeRef.current.confirmPayment({elements:elementsRef.current,redirect:"if_required"});
+      if(error){ setPayErr(error.message||cf.payErr); setPaying(false); return; }
+      if(!paymentIntent||(paymentIntent.status!=="requires_capture"&&paymentIntent.status!=="succeeded")){ setPayErr(cf.payErr); setPaying(false); return; }
+      const codes=Object.keys(extras);
+      const arrival=b.flight?{transportation_code:1,number:""}:{};
+      const r=await fetch(`${API_CARRENTAL}/book`,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({payment_intent_id:pi.payment_intent_id,quote_id:sel.id,customer:driver,extras:codes,arrival,lang})});
+      if(!r.ok) throw new Error("book");
+      const d=await r.json(); setConfirmed(d); setStep("done");
+    }catch(e){ setPayErr(cf.bookErr); }
+    finally{ setPaying(false); }
+  }
+
   const overlay={position:"fixed",inset:0,background:"rgba(20,26,33,.55)",zIndex:9999,
     display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"4vh 12px",overflowY:"auto"};
   const sheet={background:"#fff",borderRadius:16,maxWidth:560,width:"100%",boxShadow:"0 20px 60px rgba(0,0,0,.3)",
@@ -3532,7 +3590,7 @@ function CarRentalFlow({b,lang,onClose}){
       <div style={head}>
         <div style={{fontSize:22}}>🚗</div>
         <div style={{flex:1,fontSize:16,fontWeight:700,color:"#1f2730"}}>{cf.title}</div>
-        <div style={{fontSize:12,color:"#8a93a0"}}>{steps.indexOf(step)+1}/5</div>
+        {step!=="done"&&<div style={{fontSize:12,color:"#8a93a0"}}>{steps.indexOf(step)+1}/5</div>}
         <button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#8a93a0",lineHeight:1}}>×</button>
       </div>
 
@@ -3676,22 +3734,34 @@ function CarRentalFlow({b,lang,onClose}){
       {step==="payment"&&<>
         <div style={body}>
           <div style={{fontSize:15,fontWeight:700,color:"#1f2730",marginBottom:10}}>{cf.payTitle}</div>
-          {sel&&<div style={{marginBottom:12}}>
+          {sel&&<div style={{marginBottom:14}}>
             {row(sel.name, `${Number(sel.price).toFixed(0)} ${sel.currency}`)}
             {Object.values(extras).map((e,i)=><div key={i}>{row("+ "+e.name, e.price&&e.price.amount!=null?money(e.price):"")}</div>)}
             {driver.name&&row(cf.driverSel, `${driver.name} ${driver.surname}`)}
-            {detail&&(()=>{
-              const et=Object.values(extras).reduce((s,e)=>s+(e.price&&e.price.amount?Number(e.price.amount):0),0);
-              const base=detail.rate.total&&detail.rate.total.amount?Number(detail.rate.total.amount):0;
-              const cur=(detail.rate.total&&detail.rate.total.currency)||"";
-              return <div style={{display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:"#1f2730",paddingTop:8,borderTop:"2px solid #eef0f3",marginTop:6}}>
-                <span>{cf.total}</span><span>{(base+et).toFixed(2)} {cur}</span></div>;
-            })()}
+            <div style={{display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:"#1f2730",paddingTop:8,borderTop:"2px solid #eef0f3",marginTop:6}}>
+              <span>{cf.total}</span><span>{pi?`${Number(pi.amount).toFixed(2)} ${pi.currency}`:"…"}</span></div>
           </div>}
-          <div style={{background:"#eef5ff",border:"1px solid #b9d4ff",color:"#1d4e80",borderRadius:10,padding:"12px 14px",fontSize:13,lineHeight:1.5}}>{cf.payNote}</div>
+          {!pi&&!payErr&&<div style={{color:"#5b6470",fontSize:14}}>{cf.searching}</div>}
+          <div id="bb-pay-el"/>
+          {payErr&&<div style={{color:"#c0392b",fontSize:13,marginTop:10,fontWeight:600}}>{payErr}</div>}
         </div>
-        <div style={foot}><button onClick={()=>setStep("driver")} style={ghost}>{cf.back}</button>
-          <button disabled style={{...primary,opacity:.5,cursor:"not-allowed"}}>{cf.payBtn}</button></div>
+        <div style={foot}><button onClick={()=>setStep("driver")} disabled={paying} style={ghost}>{cf.back}</button>
+          <button onClick={payAndBook} disabled={!pi||paying} style={{...primary,opacity:(!pi||paying)?.6:1}}>{paying?cf.searching:cf.payBtn}</button></div>
+      </>}
+
+      {step==="done"&&<>
+        <div style={body}>
+          <div style={{textAlign:"center",padding:"14px 0"}}>
+            <div style={{fontSize:46}}>✅</div>
+            <div style={{fontSize:19,fontWeight:800,color:"#1f2730",margin:"10px 0 6px"}}>{cf.doneTitle}</div>
+            <div style={{fontSize:14,color:"#5b6470"}}>{cf.doneMsg}</div>
+            {confirmed&&confirmed.booking&&confirmed.booking.id&&<div style={{marginTop:14,fontSize:14,color:"#1f2730"}}>{cf.ref}: <b>{confirmed.booking.id}</b></div>}
+            {confirmed&&confirmed.booking&&confirmed.booking.voucher_url&&<div style={{marginTop:14}}>
+              <a href={confirmed.booking.voucher_url} target="_blank" rel="noopener noreferrer"
+                style={{display:"inline-block",background:"#0a6cff",color:"#fff",textDecoration:"none",padding:"10px 18px",borderRadius:10,fontWeight:700,fontSize:14}}>{cf.voucher}</a></div>}
+          </div>
+        </div>
+        <div style={foot}><button onClick={onClose} style={primary}>{cf.close}</button></div>
       </>}
     </div>
   </div>;
