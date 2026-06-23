@@ -3400,8 +3400,8 @@ function fuelLabel(p,lang){ const m=FUEL[p]; return m?(m[lang]||m.EN):(p||"—")
 function dtLocal(ms,defH){ if(!ms) return ""; const d=new Date(ms); const z=n=>String(n).padStart(2,"0"); const hh=defH!=null?z(defH):z(d.getHours()); const mm=defH!=null?"00":z(d.getMinutes()); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}T${hh}:${mm}`; }
 
 const CF = {
-  EN:{open:"Search & book a car",title:"Car rental",pickup:"Pick-up location",dropoff:"Drop-off location",same:"Same as pick-up",from:"Pick-up date & time",to:"Drop-off date & time",age:"Driver age",res:"Country of residence (ISO)",search:"Search cars",searching:"Searching…",results:"Available cars",none:"No cars available for these dates / location.",total:"Total",deposit:"Security deposit",fuel:"Fuel policy",mileage:"Mileage",unlimited:"Unlimited km",limited:"km included",extraKm:"Extra km",excess:"Insurance excess (CDW / theft)",cancel:"Cancellation policy",included:"What's included",extras:"Optional extras",onreq:"On request — confirmed by supplier",driver:"Driver details",fn:"First name",ln:"Last name",email:"Email",phone:"Phone",bdate:"Date of birth",bcountry:"Country of birth (ISO)",rcity:"City of residence",rcountry:"Country of residence (ISO)",raddr:"Address",cont:"Continue",back:"Back",toDriver:"Continue to driver details",toPay:"Continue to payment",payTitle:"Payment",payNote:"💳 Online card payment is being activated. Your car and details are saved — once enabled you'll pay securely here and the booking is confirmed instantly.",payBtn:"Pay & confirm booking",driverSel:"Main driver",choose:"— choose —",freeCancel:"Free cancellation until",cancelFee:"Cancellation fee from",nonref:"Non-refundable",reqFields:"Please select the driver and fill email, phone and date of birth."},
-  IT:{open:"Cerca e prenota un'auto",title:"Noleggio auto",pickup:"Luogo di ritiro",dropoff:"Luogo di riconsegna",same:"Uguale al ritiro",from:"Data e ora ritiro",to:"Data e ora riconsegna",age:"Età conducente",res:"Paese di residenza (ISO)",search:"Cerca auto",searching:"Ricerca…",results:"Auto disponibili",none:"Nessuna auto disponibile per queste date / luogo.",total:"Totale",deposit:"Cauzione",fuel:"Politica carburante",mileage:"Chilometraggio",unlimited:"Km illimitati",limited:"km inclusi",extraKm:"Km extra",excess:"Franchigia (danni / furto)",cancel:"Politica di cancellazione",included:"Cosa è incluso",extras:"Extra opzionali",onreq:"Su richiesta — confermata dal fornitore",driver:"Dati conducente",fn:"Nome",ln:"Cognome",email:"Email",phone:"Telefono",bdate:"Data di nascita",bcountry:"Paese di nascita (ISO)",rcity:"Città di residenza",rcountry:"Paese di residenza (ISO)",raddr:"Indirizzo",cont:"Continua",back:"Indietro",toDriver:"Continua ai dati conducente",toPay:"Continua al pagamento",payTitle:"Pagamento",payNote:"💳 Il pagamento online con carta è in fase di attivazione. L'auto e i tuoi dati sono salvati — una volta attivo pagherai in sicurezza qui e la prenotazione sarà confermata subito.",payBtn:"Paga e conferma prenotazione",driverSel:"Conducente principale",choose:"— scegli —",freeCancel:"Cancellazione gratuita fino al",cancelFee:"Penale di cancellazione da",nonref:"Non rimborsabile",reqFields:"Seleziona il conducente e inserisci email, telefono e data di nascita."},
+  EN:{open:"Search & book a car",title:"Car rental",pickup:"Pick-up location",dropoff:"Drop-off location",same:"Same as pick-up",from:"Pick-up date & time",to:"Drop-off date & time",age:"Driver age",res:"Country of residence (ISO)",search:"Search cars",searching:"Searching…",results:"Available cars",none:"No cars available for these dates / location.",total:"Total",deposit:"Security deposit",fuel:"Fuel policy",mileage:"Mileage",unlimited:"Unlimited km",limited:"km included",extraKm:"Extra km",excess:"Insurance excess (CDW / theft)",cancel:"Cancellation policy",included:"What's included",extras:"Optional extras",onreq:"On request — confirmed by supplier",driver:"Driver details",fn:"First name",ln:"Last name",email:"Email",phone:"Phone",bdate:"Date of birth",bcountry:"Country of birth (ISO)",rcity:"City of residence",rcountry:"Country of residence (ISO)",raddr:"Address",cont:"Continue",back:"Back",toDriver:"Continue to driver details",toPay:"Continue to payment",payTitle:"Payment",payNote:"💳 Online card payment is being activated. Your car and details are saved — once enabled you'll pay securely here and the booking is confirmed instantly.",payBtn:"Pay & confirm booking",driverSel:"Main driver",choose:"— choose —",yrs:"yrs",freeCancel:"Free cancellation until",cancelFee:"Cancellation fee from",nonref:"Non-refundable",reqFields:"Please select the driver and fill email, phone and date of birth."},
+  IT:{open:"Cerca e prenota un'auto",title:"Noleggio auto",pickup:"Luogo di ritiro",dropoff:"Luogo di riconsegna",same:"Uguale al ritiro",from:"Data e ora ritiro",to:"Data e ora riconsegna",age:"Età conducente",res:"Paese di residenza (ISO)",search:"Cerca auto",searching:"Ricerca…",results:"Auto disponibili",none:"Nessuna auto disponibile per queste date / luogo.",total:"Totale",deposit:"Cauzione",fuel:"Politica carburante",mileage:"Chilometraggio",unlimited:"Km illimitati",limited:"km inclusi",extraKm:"Km extra",excess:"Franchigia (danni / furto)",cancel:"Politica di cancellazione",included:"Cosa è incluso",extras:"Extra opzionali",onreq:"Su richiesta — confermata dal fornitore",driver:"Dati conducente",fn:"Nome",ln:"Cognome",email:"Email",phone:"Telefono",bdate:"Data di nascita",bcountry:"Paese di nascita (ISO)",rcity:"Città di residenza",rcountry:"Paese di residenza (ISO)",raddr:"Indirizzo",cont:"Continua",back:"Indietro",toDriver:"Continua ai dati conducente",toPay:"Continua al pagamento",payTitle:"Pagamento",payNote:"💳 Il pagamento online con carta è in fase di attivazione. L'auto e i tuoi dati sono salvati — una volta attivo pagherai in sicurezza qui e la prenotazione sarà confermata subito.",payBtn:"Paga e conferma prenotazione",driverSel:"Conducente principale",choose:"— scegli —",yrs:"anni",freeCancel:"Cancellazione gratuita fino al",cancelFee:"Penale di cancellazione da",nonref:"Non rimborsabile",reqFields:"Seleziona il conducente e inserisci email, telefono e data di nascita."},
 };
 
 // Lista paesi (ISO 3166-1 alpha-2) per i combo — set comune ai mercati BB.
@@ -3453,30 +3453,37 @@ function CarRentalFlow({b,lang,onClose}){
   const [dropId,setDropId]=useState(""); const [dropLabel,setDropLabel]=useState("");
   const [pDate,setPDate]=useState(dtLocal(b.checkIn,10)||"");
   const [dDate,setDDate]=useState(dtLocal(b.checkOut,10)||"");
-  const [age,setAge]=useState("30"); const [residence,setResidence]=useState("IT");
+  const [residence,setResidence]=useState(b.customerCountry||"IT");
 
   const [step,setStep]=useState("search");
   const [busy,setBusy]=useState(false);
   const [cars,setCars]=useState([]);
   const [sel,setSel]=useState(null); const [detail,setDetail]=useState(null);
   const [extras,setExtras]=useState({});   // { [code]: {name, price} } extra selezionati
-  const travellers = Array.isArray(b.travellers)?b.travellers:[];
+
+  // Conducente = SOLO viaggiatori ADULTI dalla sezione "Tutti i Viaggiatori".
+  const _ad=(b.adults||0)+(b.addroom?(b.adults2||0):0);
+  const _ch=(b.child||0)+(b.addroom?(b.child2||0):0);
+  const _ba=(b.baby||0)+(b.addroom?(b.baby2||0):0);
+  const adults = parseTravellers(b.TravellerDetails, b.checkIn, {adults:_ad,child:_ch,baby:_ba}).filter(t=>t.ageType==="adult");
+  const dobToStr=(dob)=> dob?`${dob.y}-${String(dob.m).padStart(2,"0")}-${String(dob.d).padStart(2,"0")}`:"";
+  const dobToAge=(dob)=>{ if(!dob) return null; const bd=new Date(dob.y,dob.m-1,dob.d); const a=Math.floor((Date.now()-bd)/(365.25*864e5)); return (a>0&&a<120)?a:null; };
+
   const [driverIdx,setDriverIdx]=useState(-1);
-  const [driver,setDriver]=useState({name:"",surname:"",birth_country:"IT",residence_city:"",
-    residence_country:"IT",residence_address:b.bookerAddress||"",email:(b.guestEmail&&b.guestEmail[0])||"",phone:"",birth_date:""});
+  const [age,setAge]=useState("30");
+  const [driver,setDriver]=useState({name:"",surname:"",birth_country:b.customerCountry||"IT",residence_city:"",
+    residence_country:b.customerCountry||"IT",residence_address:b.bookerAddress||"",
+    email:(b.guestEmail&&b.guestEmail[0])||"",phone:(b.guestTelephone&&b.guestTelephone[0])||"",birth_date:""});
 
   function selectDriver(idx){
     setDriverIdx(idx);
-    const tr=travellers[idx];
+    const tr=adults[idx];
     if(!tr) return;
-    setDriver(d=>({...d,name:tr.name||"",surname:tr.surname||"",
-      email:tr.email||d.email,phone:tr.phone||d.phone,
-      residence_address:tr.address||b.bookerAddress||d.residence_address}));
+    const a=dobToAge(tr.dob); if(a) setAge(String(a));
+    setDriver(d=>({...d,name:tr.firstName||"",surname:tr.lastName||"",birth_date:dobToStr(tr.dob)||d.birth_date}));
   }
-  // preseleziona il lead guest (o il primo) come conducente
-  useEffect(()=>{
-    if(travellers.length){ const li=travellers.findIndex(t=>t.lead); selectDriver(li>=0?li:0); }
-  },[]);
+  // preseleziona il primo adulto come conducente
+  useEffect(()=>{ if(adults.length) selectDriver(0); },[]);
 
   useEffect(()=>{
     const cand = carOverride || (b.flight ? (b.destination||"") : "");
@@ -3542,9 +3549,18 @@ function CarRentalFlow({b,lang,onClose}){
             <div style={{flex:1}}><label style={cfLbl}>{cf.from}</label><input type="datetime-local" value={pDate} onChange={e=>setPDate(e.target.value)} style={cfInp}/></div>
             <div style={{flex:1}}><label style={cfLbl}>{cf.to}</label><input type="datetime-local" value={dDate} onChange={e=>setDDate(e.target.value)} style={cfInp}/></div>
           </div>
-          <div style={{display:"flex",gap:10,marginTop:10}}>
-            <div style={{flex:1}}><label style={cfLbl}>{cf.age}</label><input type="number" min="18" value={age} onChange={e=>setAge(e.target.value)} style={cfInp}/></div>
-            <div style={{flex:1}}><label style={cfLbl}>{cf.res}</label><input value={residence} maxLength={2} onChange={e=>setResidence(e.target.value.toUpperCase())} style={cfInp}/></div>
+          {adults.length>0&&<div style={{marginTop:10}}>
+            <label style={cfLbl}>{cf.driverSel}</label>
+            <select value={driverIdx} onChange={e=>selectDriver(Number(e.target.value))} style={cfInp}>
+              <option value={-1} disabled>{cf.choose}</option>
+              {adults.map((tr,i)=><option key={i} value={i}>{tr.firstName} {tr.lastName}{dobToAge(tr.dob)?` · ${dobToAge(tr.dob)} ${cf.yrs}`:""}</option>)}
+            </select>
+          </div>}
+          <div style={{marginTop:10}}>
+            <label style={cfLbl}>{cf.res}</label>
+            <select value={residence} onChange={e=>setResidence(e.target.value)} style={cfInp}>
+              {COUNTRIES.map(([c,n])=><option key={c} value={c}>{n}</option>)}
+            </select>
           </div>
         </div>
         <div style={foot}><button onClick={runSearch} disabled={!pickupId||busy} style={{...primary,opacity:(!pickupId||busy)?.6:1}}>{busy?cf.searching:cf.search}</button></div>
@@ -3631,13 +3647,6 @@ function CarRentalFlow({b,lang,onClose}){
       {step==="driver"&&<>
         <div style={body}>
           <div style={{fontSize:15,fontWeight:700,color:"#1f2730",marginBottom:10}}>{cf.driver}</div>
-          {travellers.length>0&&<div style={{marginBottom:10}}>
-            <label style={cfLbl}>{cf.driverSel}</label>
-            <select value={driverIdx} onChange={e=>selectDriver(Number(e.target.value))} style={cfInp}>
-              <option value={-1} disabled>{cf.choose}</option>
-              {travellers.map((tr,i)=><option key={i} value={i}>{tr.name} {tr.surname}{tr.lead?" ★":""}</option>)}
-            </select>
-          </div>}
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
             <div style={{display:"flex",gap:8}}>
               <div style={{flex:1}}><label style={cfLbl}>{cf.fn}</label><input value={driver.name} onChange={e=>setDriver(d=>({...d,name:e.target.value}))} style={cfInp}/></div>
