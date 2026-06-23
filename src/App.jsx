@@ -3384,9 +3384,233 @@ function LiveCars({lang,onRequest,fallback}){
   </div>;
 }
 
+/* ─── CAR RENTAL FUNNEL (Tinoleggio) ─────────────────── */
+const FUEL = {
+  fullfull:{EN:"Full to full (return full)",IT:"Pieno/pieno (riconsegna col pieno)"},
+  emptyempty:{EN:"Empty to empty",IT:"Vuoto/vuoto"},
+  fullempty:{EN:"Full, return empty",IT:"Pieno, riconsegna vuoto"},
+  fullemptyrefund:{EN:"Full, unused fuel refunded",IT:"Pieno, carburante non usato rimborsato"},
+  fullemptyfree:{EN:"Full, return empty (free)",IT:"Pieno, riconsegna vuoto (gratis)"},
+  halfhalf:{EN:"Half to half",IT:"Metà/metà"},
+  samelevel:{EN:"Same level",IT:"Stesso livello"},
+  unknown:{EN:"Not specified",IT:"Non specificato"},
+};
+function fuelLabel(p,lang){ const m=FUEL[p]; return m?(m[lang]||m.EN):(p||"—"); }
+function dtLocal(ms,defH){ if(!ms) return ""; const d=new Date(ms); const z=n=>String(n).padStart(2,"0"); const hh=defH!=null?z(defH):z(d.getHours()); const mm=defH!=null?"00":z(d.getMinutes()); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}T${hh}:${mm}`; }
+
+const CF = {
+  EN:{open:"Search & book a car",title:"Car rental",pickup:"Pick-up location",dropoff:"Drop-off location",same:"Same as pick-up",from:"Pick-up date & time",to:"Drop-off date & time",age:"Driver age",res:"Country of residence (ISO)",search:"Search cars",searching:"Searching…",results:"Available cars",none:"No cars available for these dates / location.",total:"Total",deposit:"Security deposit",fuel:"Fuel policy",mileage:"Mileage",unlimited:"Unlimited km",limited:"km included",extraKm:"Extra km",excess:"Insurance excess (CDW / theft)",cancel:"Cancellation policy",included:"What's included",extras:"Optional extras",onreq:"On request — confirmed by supplier",driver:"Driver details",fn:"First name",ln:"Last name",email:"Email",phone:"Phone",bdate:"Date of birth",bcountry:"Country of birth (ISO)",rcity:"City of residence",rcountry:"Country of residence (ISO)",raddr:"Address",cont:"Continue",back:"Back",toDriver:"Continue to driver details",toPay:"Continue to payment",payTitle:"Payment",payNote:"💳 Online card payment is being activated. Your car and details are saved — once enabled you'll pay securely here and the booking is confirmed instantly.",payBtn:"Pay & confirm booking",reqFields:"Please fill first name, surname, email, phone and date of birth."},
+  IT:{open:"Cerca e prenota un'auto",title:"Noleggio auto",pickup:"Luogo di ritiro",dropoff:"Luogo di riconsegna",same:"Uguale al ritiro",from:"Data e ora ritiro",to:"Data e ora riconsegna",age:"Età conducente",res:"Paese di residenza (ISO)",search:"Cerca auto",searching:"Ricerca…",results:"Auto disponibili",none:"Nessuna auto disponibile per queste date / luogo.",total:"Totale",deposit:"Cauzione",fuel:"Politica carburante",mileage:"Chilometraggio",unlimited:"Km illimitati",limited:"km inclusi",extraKm:"Km extra",excess:"Franchigia (danni / furto)",cancel:"Politica di cancellazione",included:"Cosa è incluso",extras:"Extra opzionali",onreq:"Su richiesta — confermata dal fornitore",driver:"Dati conducente",fn:"Nome",ln:"Cognome",email:"Email",phone:"Telefono",bdate:"Data di nascita",bcountry:"Paese di nascita (ISO)",rcity:"Città di residenza",rcountry:"Paese di residenza (ISO)",raddr:"Indirizzo",cont:"Continua",back:"Indietro",toDriver:"Continua ai dati conducente",toPay:"Continua al pagamento",payTitle:"Pagamento",payNote:"💳 Il pagamento online con carta è in fase di attivazione. L'auto e i tuoi dati sono salvati — una volta attivo pagherai in sicurezza qui e la prenotazione sarà confermata subito.",payBtn:"Paga e conferma prenotazione",reqFields:"Inserisci nome, cognome, email, telefono e data di nascita."},
+};
+
+const cfInp={width:"100%",padding:"9px 11px",border:"1px solid #d7dce2",borderRadius:9,fontSize:14,boxSizing:"border-box",background:"#fff"};
+const cfLbl={fontSize:12,fontWeight:600,color:"#5b6470",margin:"0 0 4px",display:"block"};
+
+function AirportPicker({value,onPick,placeholder}){
+  const [q,setQ]=useState(value||"");
+  const [sugg,setSugg]=useState([]);
+  const [open,setOpen]=useState(false);
+  useEffect(()=>{ setQ(value||""); },[value]);
+  function onChange(v){
+    setQ(v); onPick(null,v); setOpen(true);
+    if(!v||v.length<2){ setSugg([]); return; }
+    fetch(`${API_CARRENTAL}/airports?q=${encodeURIComponent(v)}`).then(r=>r.json())
+      .then(d=>setSugg((d.airports||[]).slice(0,8))).catch(()=>setSugg([]));
+  }
+  return <div style={{position:"relative"}}>
+    <input value={q} placeholder={placeholder} onChange={e=>onChange(e.target.value)} onFocus={()=>setOpen(true)} style={cfInp}/>
+    {open&&sugg.length>0&&<div style={{position:"absolute",zIndex:5,top:"100%",left:0,right:0,background:"#fff",
+      border:"1px solid #d7dce2",borderRadius:9,marginTop:4,maxHeight:220,overflowY:"auto",boxShadow:"0 6px 18px rgba(0,0,0,.10)"}}>
+      {sugg.map(a=><div key={a.id} onClick={()=>{onPick(a.id,a.name);setQ(a.name);setOpen(false);}}
+        style={{padding:"8px 11px",fontSize:13,cursor:"pointer",borderBottom:"1px solid #f1f3f6"}}>
+        {a.iata?`✈ ${a.iata} · `:""}{a.name}</div>)}
+    </div>}
+  </div>;
+}
+
+function CarRentalFlow({b,lang,onClose}){
+  const cf = CF[lang]||CF.EN;
+  const money=(m)=> m&&m.amount!=null ? `${Number(m.amount).toFixed(2)} ${m.currency||""}` : "—";
+  const carOverride = new URLSearchParams(window.location.search).get("car")||"";
+
+  const [pickupId,setPickupId]=useState(""); const [pickupLabel,setPickupLabel]=useState("");
+  const [sameDrop,setSameDrop]=useState(true);
+  const [dropId,setDropId]=useState(""); const [dropLabel,setDropLabel]=useState("");
+  const [pDate,setPDate]=useState(dtLocal(b.checkIn,10)||"");
+  const [dDate,setDDate]=useState(dtLocal(b.checkOut,10)||"");
+  const [age,setAge]=useState("30"); const [residence,setResidence]=useState("IT");
+
+  const [step,setStep]=useState("search");
+  const [busy,setBusy]=useState(false);
+  const [cars,setCars]=useState([]);
+  const [sel,setSel]=useState(null); const [detail,setDetail]=useState(null);
+  const [driver,setDriver]=useState({name:"",surname:"",birth_country:"IT",residence_city:"",
+    residence_country:"IT",residence_address:"",email:(b.guestEmail&&b.guestEmail[0])||"",phone:"",birth_date:""});
+
+  useEffect(()=>{
+    const cand = carOverride || (b.flight ? (b.destination||"") : "");
+    if(cand){
+      fetch(`${API_CARRENTAL}/airports?q=${encodeURIComponent(cand)}`).then(r=>r.json()).then(d=>{
+        const a=(d.airports||[])[0]; if(a){ setPickupId(a.id); setPickupLabel(a.name); }
+      }).catch(()=>{});
+    }
+  },[]);
+
+  async function runSearch(){
+    if(!pickupId||!pDate||!dDate){ return; }
+    setBusy(true);
+    try{
+      const r=await fetch(`${API_CARRENTAL}/search`,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({pickup_id:pickupId,dropoff_id:sameDrop?pickupId:dropId,
+          pickup_date:pDate+":00",dropoff_date:dDate+":00",age,residence,lang,category:"CAR"})});
+      const d=await r.json(); setCars(Array.isArray(d.cars)?d.cars:[]);
+    }catch{ setCars([]); } finally{ setBusy(false); setStep("results"); }
+  }
+  async function openDetail(car){
+    setSel(car); setDetail(null); setStep("detail"); setBusy(true);
+    try{ const r=await fetch(`${API_CARRENTAL}/quote/${encodeURIComponent(car.id)}?lang=${lang}`); setDetail(r.ok?await r.json():null); }
+    catch{ setDetail(null); } finally{ setBusy(false); }
+  }
+  function gotoPay(){
+    const d=driver;
+    if(!d.name||!d.surname||!d.email||!d.phone||!d.birth_date){ alert(cf.reqFields); return; }
+    setStep("payment");
+  }
+
+  const overlay={position:"fixed",inset:0,background:"rgba(20,26,33,.55)",zIndex:9999,
+    display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"4vh 12px",overflowY:"auto"};
+  const sheet={background:"#fff",borderRadius:16,maxWidth:560,width:"100%",boxShadow:"0 20px 60px rgba(0,0,0,.3)",
+    display:"flex",flexDirection:"column",maxHeight:"92vh"};
+  const head={display:"flex",alignItems:"center",gap:10,padding:"14px 18px",borderBottom:"1px solid #eef0f3"};
+  const body={padding:"16px 18px",overflowY:"auto"};
+  const foot={display:"flex",gap:10,padding:"12px 18px",borderTop:"1px solid #eef0f3"};
+  const primary={flex:1,background:"#0a6cff",color:"#fff",border:"none",padding:"11px",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"};
+  const ghost={background:"#eef1f5",color:"#1f2730",border:"none",padding:"11px 16px",borderRadius:10,fontWeight:600,fontSize:14,cursor:"pointer"};
+  const steps=["search","results","detail","driver","payment"];
+  const row=(k,v)=> <div style={{display:"flex",justifyContent:"space-between",gap:12,fontSize:13,padding:"5px 0",borderBottom:"1px solid #f4f6f8"}}><span style={{color:"#5b6470"}}>{k}</span><span style={{fontWeight:600,color:"#1f2730",textAlign:"right"}}>{v}</span></div>;
+
+  return <div style={overlay} onClick={onClose}>
+    <div style={sheet} onClick={e=>e.stopPropagation()}>
+      <div style={head}>
+        <div style={{fontSize:22}}>🚗</div>
+        <div style={{flex:1,fontSize:16,fontWeight:700,color:"#1f2730"}}>{cf.title}</div>
+        <div style={{fontSize:12,color:"#8a93a0"}}>{steps.indexOf(step)+1}/5</div>
+        <button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#8a93a0",lineHeight:1}}>×</button>
+      </div>
+
+      {step==="search"&&<>
+        <div style={body}>
+          <label style={cfLbl}>{cf.pickup}</label>
+          <AirportPicker value={pickupLabel} placeholder="✈ IATA / città…" onPick={(id,label)=>{setPickupId(id||"");setPickupLabel(label||"");}}/>
+          <label style={{...cfLbl,marginTop:6,display:"flex",alignItems:"center",gap:6,fontWeight:500}}>
+            <input type="checkbox" checked={sameDrop} onChange={e=>setSameDrop(e.target.checked)}/> {cf.same}
+          </label>
+          {!sameDrop&&<><label style={cfLbl}>{cf.dropoff}</label>
+            <AirportPicker value={dropLabel} placeholder="✈ IATA / città…" onPick={(id,label)=>{setDropId(id||"");setDropLabel(label||"");}}/></>}
+          <div style={{display:"flex",gap:10,marginTop:10}}>
+            <div style={{flex:1}}><label style={cfLbl}>{cf.from}</label><input type="datetime-local" value={pDate} onChange={e=>setPDate(e.target.value)} style={cfInp}/></div>
+            <div style={{flex:1}}><label style={cfLbl}>{cf.to}</label><input type="datetime-local" value={dDate} onChange={e=>setDDate(e.target.value)} style={cfInp}/></div>
+          </div>
+          <div style={{display:"flex",gap:10,marginTop:10}}>
+            <div style={{flex:1}}><label style={cfLbl}>{cf.age}</label><input type="number" min="18" value={age} onChange={e=>setAge(e.target.value)} style={cfInp}/></div>
+            <div style={{flex:1}}><label style={cfLbl}>{cf.res}</label><input value={residence} maxLength={2} onChange={e=>setResidence(e.target.value.toUpperCase())} style={cfInp}/></div>
+          </div>
+        </div>
+        <div style={foot}><button onClick={runSearch} disabled={!pickupId||busy} style={{...primary,opacity:(!pickupId||busy)?.6:1}}>{busy?cf.searching:cf.search}</button></div>
+      </>}
+
+      {step==="results"&&<>
+        <div style={body}>
+          {busy&&<div style={{color:"#5b6470",fontSize:14}}>{cf.searching}</div>}
+          {!busy&&cars.length===0&&<div style={{color:"#5b6470",fontSize:14}}>{cf.none}</div>}
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            {cars.map((car,i)=><div key={i} onClick={()=>openDetail(car)} style={{display:"flex",alignItems:"center",gap:10,
+              border:"1px solid #eef0f3",borderRadius:10,padding:"9px 11px",cursor:"pointer"}}>
+              {car.image&&<img src={car.image} alt="" style={{width:58,height:38,objectFit:"contain"}}/>}
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:14,fontWeight:600,color:"#1f2730"}}>{car.name}</div>
+                <div style={{fontSize:12,color:"#8a93a0"}}>{car.supplier}{car.onRequest?" · "+cf.onreq:""}</div>
+              </div>
+              <div style={{fontSize:16,fontWeight:700,color:"#1f2730",whiteSpace:"nowrap"}}>{Number(car.price).toFixed(0)} {car.currency}</div>
+            </div>)}
+          </div>
+        </div>
+        <div style={foot}><button onClick={()=>setStep("search")} style={ghost}>{cf.back}</button></div>
+      </>}
+
+      {step==="detail"&&<>
+        <div style={body}>
+          {busy&&<div style={{color:"#5b6470",fontSize:14}}>{cf.searching}</div>}
+          {sel&&<div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
+            {sel.image&&<img src={sel.image} alt="" style={{width:84,height:54,objectFit:"contain"}}/>}
+            <div style={{flex:1}}>
+              <div style={{fontSize:17,fontWeight:700,color:"#1f2730"}}>{sel.name}</div>
+              <div style={{fontSize:12,color:"#8a93a0"}}>{sel.supplier}{sel.onRequest?" · "+cf.onreq:""}</div>
+            </div>
+            <div style={{fontSize:20,fontWeight:800,color:"#0a6cff"}}>{Number(sel.price).toFixed(0)} {sel.currency}</div>
+          </div>}
+          {detail&&<div>
+            {row(cf.total, money(detail.rate.total))}
+            {detail.rate.deposit&&detail.rate.deposit.amount!=null&&row(cf.deposit, money(detail.rate.deposit))}
+            {row(cf.fuel, fuelLabel(detail.rate.fuelPolicy,lang))}
+            {row(cf.mileage, detail.rate.distance.unlimited?cf.unlimited:`${detail.rate.distance.quantity||0} ${detail.rate.distance.unit||"km"} ${cf.limited}`)}
+            {detail.rate.distance.extraKmPrice&&detail.rate.distance.extraKmPrice.amount!=null&&row(cf.extraKm, money(detail.rate.distance.extraKmPrice))}
+            {detail.rate.excessCDW&&detail.rate.excessCDW.amount!=null&&row(cf.excess, money(detail.rate.excessCDW))}
+            {detail.rate.cancellation&&detail.rate.cancellation.length>0&&<div style={{marginTop:10}}>
+              <div style={{fontSize:13,fontWeight:700,color:"#1f2730",marginBottom:4}}>{cf.cancel}</div>
+              {detail.rate.cancellation.map((c,i)=><div key={i} style={{fontSize:12,color:"#5b6470"}}>
+                {(c.from?c.from.slice(0,10):"")}{c.to?` → ${c.to.slice(0,10)}`:""}: {money({amount:c.amount,currency:c.currency})}</div>)}
+            </div>}
+            {detail.rate.fees&&detail.rate.fees.filter(f=>f.included).length>0&&<div style={{marginTop:10}}>
+              <div style={{fontSize:13,fontWeight:700,color:"#1f2730",marginBottom:4}}>{cf.included}</div>
+              {detail.rate.fees.filter(f=>f.included).map((f,i)=><div key={i} style={{fontSize:12,color:"#13794a"}}>✓ {f.name}</div>)}
+            </div>}
+            {(detail.equipments.length>0||detail.services.length>0)&&<div style={{marginTop:10}}>
+              <div style={{fontSize:13,fontWeight:700,color:"#1f2730",marginBottom:4}}>{cf.extras}</div>
+              {[...detail.equipments,...detail.services].filter(e=>!e.included).map((e,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"#5b6470",padding:"2px 0"}}>
+                <span>{e.name}</span><span>{e.price&&e.price.amount!=null?money(e.price):""}</span></div>)}
+            </div>}
+          </div>}
+        </div>
+        <div style={foot}><button onClick={()=>setStep("results")} style={ghost}>{cf.back}</button>
+          <button onClick={()=>setStep("driver")} disabled={!detail} style={{...primary,opacity:detail?1:.6}}>{cf.toDriver}</button></div>
+      </>}
+
+      {step==="driver"&&<>
+        <div style={body}>
+          <div style={{fontSize:15,fontWeight:700,color:"#1f2730",marginBottom:10}}>{cf.driver}</div>
+          <div style={{display:"flex",flexDirection:"column",gap:8}}>
+            {[["fn","name"],["ln","surname"],["email","email"],["phone","phone"],["bdate","birth_date"],["bcountry","birth_country"],["rcity","residence_city"],["rcountry","residence_country"],["raddr","residence_address"]].map(([lk,fk])=>
+              <div key={fk}><label style={cfLbl}>{cf[lk]}</label>
+                <input type={fk==="birth_date"?"date":fk==="email"?"email":"text"}
+                  maxLength={fk==="birth_country"||fk==="residence_country"?2:undefined}
+                  value={driver[fk]} onChange={e=>setDriver(d=>({...d,[fk]:fk.endsWith("country")?e.target.value.toUpperCase():e.target.value}))} style={cfInp}/></div>)}
+          </div>
+        </div>
+        <div style={foot}><button onClick={()=>setStep("detail")} style={ghost}>{cf.back}</button>
+          <button onClick={gotoPay} style={primary}>{cf.toPay}</button></div>
+      </>}
+
+      {step==="payment"&&<>
+        <div style={body}>
+          <div style={{fontSize:15,fontWeight:700,color:"#1f2730",marginBottom:10}}>{cf.payTitle}</div>
+          {sel&&<div style={{marginBottom:12}}>
+            {row(sel.name, `${Number(sel.price).toFixed(0)} ${sel.currency}`)}
+            {detail&&row(cf.total, money(detail.rate.total))}
+          </div>}
+          <div style={{background:"#eef5ff",border:"1px solid #b9d4ff",color:"#1d4e80",borderRadius:10,padding:"12px 14px",fontSize:13,lineHeight:1.5}}>{cf.payNote}</div>
+        </div>
+        <div style={foot}><button onClick={()=>setStep("driver")} style={ghost}>{cf.back}</button>
+          <button disabled style={{...primary,opacity:.5,cursor:"not-allowed"}}>{cf.payBtn}</button></div>
+      </>}
+    </div>
+  </div>;
+}
+
 function Shop({b,lang,services}){
   const t = T[lang]||T.EN;
   const [status,setStatus] = useState({});   // { [serviceId]: "sending"|"sent"|"error" }
+  const [flowOpen,setFlowOpen] = useState(false);
   const isPreview = new URLSearchParams(window.location.search).get("preview")==="services";
   const pick = (o)=> (o&&(o[lang]||o.EN))||"";
 
@@ -3440,12 +3664,16 @@ function Shop({b,lang,services}){
                 {t.shopOpen} ↗
               </a>;
             if(card.live)
-              return <LiveCars lang={lang} onRequest={(note)=>submit(card,note)} fallback={st==="sent"?sentBox:reqBtn}/>;
+              return <button onClick={()=>setFlowOpen(true)} style={{background:"#0a6cff",color:"#fff",border:"none",
+                  padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14,cursor:"pointer"}}>
+                  🔎 {(CF[lang]||CF.EN).open}
+                </button>;
             return st==="sent"?sentBox:reqBtn;
           })()}
         </div>;
       })}
     </div>
+    {flowOpen&&<CarRentalFlow b={b} lang={lang} onClose={()=>setFlowOpen(false)}/>}
   </div>;
 }
 
