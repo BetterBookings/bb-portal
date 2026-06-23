@@ -39,6 +39,7 @@ const CSS = `
 .fa-male{color:#2563eb}.fa-female{color:#db2777}.fa-child{color:#16a34a}.fa-baby{color:#ca8a04}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Poppins',sans-serif;background:${C.bg};color:${C.charcoal}}
+input,select,textarea,button{font-family:'Poppins',sans-serif}
 a{text-decoration:none}
 .tab-bar{background:${C.white};border-bottom:1px solid ${C.border};position:sticky;top:68px;z-index:40}
 @media(max-width:600px){.tab-bar{top:56px}}
@@ -3399,9 +3400,23 @@ function fuelLabel(p,lang){ const m=FUEL[p]; return m?(m[lang]||m.EN):(p||"—")
 function dtLocal(ms,defH){ if(!ms) return ""; const d=new Date(ms); const z=n=>String(n).padStart(2,"0"); const hh=defH!=null?z(defH):z(d.getHours()); const mm=defH!=null?"00":z(d.getMinutes()); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}T${hh}:${mm}`; }
 
 const CF = {
-  EN:{open:"Search & book a car",title:"Car rental",pickup:"Pick-up location",dropoff:"Drop-off location",same:"Same as pick-up",from:"Pick-up date & time",to:"Drop-off date & time",age:"Driver age",res:"Country of residence (ISO)",search:"Search cars",searching:"Searching…",results:"Available cars",none:"No cars available for these dates / location.",total:"Total",deposit:"Security deposit",fuel:"Fuel policy",mileage:"Mileage",unlimited:"Unlimited km",limited:"km included",extraKm:"Extra km",excess:"Insurance excess (CDW / theft)",cancel:"Cancellation policy",included:"What's included",extras:"Optional extras",onreq:"On request — confirmed by supplier",driver:"Driver details",fn:"First name",ln:"Last name",email:"Email",phone:"Phone",bdate:"Date of birth",bcountry:"Country of birth (ISO)",rcity:"City of residence",rcountry:"Country of residence (ISO)",raddr:"Address",cont:"Continue",back:"Back",toDriver:"Continue to driver details",toPay:"Continue to payment",payTitle:"Payment",payNote:"💳 Online card payment is being activated. Your car and details are saved — once enabled you'll pay securely here and the booking is confirmed instantly.",payBtn:"Pay & confirm booking",reqFields:"Please fill first name, surname, email, phone and date of birth."},
-  IT:{open:"Cerca e prenota un'auto",title:"Noleggio auto",pickup:"Luogo di ritiro",dropoff:"Luogo di riconsegna",same:"Uguale al ritiro",from:"Data e ora ritiro",to:"Data e ora riconsegna",age:"Età conducente",res:"Paese di residenza (ISO)",search:"Cerca auto",searching:"Ricerca…",results:"Auto disponibili",none:"Nessuna auto disponibile per queste date / luogo.",total:"Totale",deposit:"Cauzione",fuel:"Politica carburante",mileage:"Chilometraggio",unlimited:"Km illimitati",limited:"km inclusi",extraKm:"Km extra",excess:"Franchigia (danni / furto)",cancel:"Politica di cancellazione",included:"Cosa è incluso",extras:"Extra opzionali",onreq:"Su richiesta — confermata dal fornitore",driver:"Dati conducente",fn:"Nome",ln:"Cognome",email:"Email",phone:"Telefono",bdate:"Data di nascita",bcountry:"Paese di nascita (ISO)",rcity:"Città di residenza",rcountry:"Paese di residenza (ISO)",raddr:"Indirizzo",cont:"Continua",back:"Indietro",toDriver:"Continua ai dati conducente",toPay:"Continua al pagamento",payTitle:"Pagamento",payNote:"💳 Il pagamento online con carta è in fase di attivazione. L'auto e i tuoi dati sono salvati — una volta attivo pagherai in sicurezza qui e la prenotazione sarà confermata subito.",payBtn:"Paga e conferma prenotazione",reqFields:"Inserisci nome, cognome, email, telefono e data di nascita."},
+  EN:{open:"Search & book a car",title:"Car rental",pickup:"Pick-up location",dropoff:"Drop-off location",same:"Same as pick-up",from:"Pick-up date & time",to:"Drop-off date & time",age:"Driver age",res:"Country of residence (ISO)",search:"Search cars",searching:"Searching…",results:"Available cars",none:"No cars available for these dates / location.",total:"Total",deposit:"Security deposit",fuel:"Fuel policy",mileage:"Mileage",unlimited:"Unlimited km",limited:"km included",extraKm:"Extra km",excess:"Insurance excess (CDW / theft)",cancel:"Cancellation policy",included:"What's included",extras:"Optional extras",onreq:"On request — confirmed by supplier",driver:"Driver details",fn:"First name",ln:"Last name",email:"Email",phone:"Phone",bdate:"Date of birth",bcountry:"Country of birth (ISO)",rcity:"City of residence",rcountry:"Country of residence (ISO)",raddr:"Address",cont:"Continue",back:"Back",toDriver:"Continue to driver details",toPay:"Continue to payment",payTitle:"Payment",payNote:"💳 Online card payment is being activated. Your car and details are saved — once enabled you'll pay securely here and the booking is confirmed instantly.",payBtn:"Pay & confirm booking",driverSel:"Main driver",choose:"— choose —",freeCancel:"Free cancellation until",cancelFee:"Cancellation fee from",nonref:"Non-refundable",reqFields:"Please select the driver and fill email, phone and date of birth."},
+  IT:{open:"Cerca e prenota un'auto",title:"Noleggio auto",pickup:"Luogo di ritiro",dropoff:"Luogo di riconsegna",same:"Uguale al ritiro",from:"Data e ora ritiro",to:"Data e ora riconsegna",age:"Età conducente",res:"Paese di residenza (ISO)",search:"Cerca auto",searching:"Ricerca…",results:"Auto disponibili",none:"Nessuna auto disponibile per queste date / luogo.",total:"Totale",deposit:"Cauzione",fuel:"Politica carburante",mileage:"Chilometraggio",unlimited:"Km illimitati",limited:"km inclusi",extraKm:"Km extra",excess:"Franchigia (danni / furto)",cancel:"Politica di cancellazione",included:"Cosa è incluso",extras:"Extra opzionali",onreq:"Su richiesta — confermata dal fornitore",driver:"Dati conducente",fn:"Nome",ln:"Cognome",email:"Email",phone:"Telefono",bdate:"Data di nascita",bcountry:"Paese di nascita (ISO)",rcity:"Città di residenza",rcountry:"Paese di residenza (ISO)",raddr:"Indirizzo",cont:"Continua",back:"Indietro",toDriver:"Continua ai dati conducente",toPay:"Continua al pagamento",payTitle:"Pagamento",payNote:"💳 Il pagamento online con carta è in fase di attivazione. L'auto e i tuoi dati sono salvati — una volta attivo pagherai in sicurezza qui e la prenotazione sarà confermata subito.",payBtn:"Paga e conferma prenotazione",driverSel:"Conducente principale",choose:"— scegli —",freeCancel:"Cancellazione gratuita fino al",cancelFee:"Penale di cancellazione da",nonref:"Non rimborsabile",reqFields:"Seleziona il conducente e inserisci email, telefono e data di nascita."},
 };
+
+// Lista paesi (ISO 3166-1 alpha-2) per i combo — set comune ai mercati BB.
+const COUNTRIES = [
+  ["IT","Italia / Italy"],["FR","France"],["ES","España / Spain"],["DE","Deutschland / Germany"],
+  ["NL","Nederland / Netherlands"],["BE","Belgique / Belgium"],["GB","United Kingdom"],["IE","Ireland"],
+  ["PT","Portugal"],["CH","Schweiz / Switzerland"],["AT","Österreich / Austria"],["LU","Luxembourg"],
+  ["DK","Danmark / Denmark"],["SE","Sverige / Sweden"],["NO","Norge / Norway"],["FI","Suomi / Finland"],
+  ["PL","Polska / Poland"],["CZ","Czechia"],["SK","Slovakia"],["HU","Hungary"],["RO","România / Romania"],
+  ["BG","Bulgaria"],["GR","Ελλάδα / Greece"],["HR","Hrvatska / Croatia"],["SI","Slovenia"],["EE","Estonia"],
+  ["LV","Latvia"],["LT","Lithuania"],["MT","Malta"],["CY","Cyprus"],["IS","Iceland"],
+  ["US","United States"],["CA","Canada"],["AU","Australia"],["NZ","New Zealand"],["BR","Brazil"],
+  ["AR","Argentina"],["MX","Mexico"],["JP","Japan"],["CN","China"],["IN","India"],["AE","UAE"],
+  ["MA","Morocco"],["TR","Türkiye / Turkey"],["RU","Russia"],["ZA","South Africa"],
+];
 
 const cfInp={width:"100%",padding:"9px 11px",border:"1px solid #d7dce2",borderRadius:9,fontSize:14,boxSizing:"border-box",background:"#fff"};
 const cfLbl={fontSize:12,fontWeight:600,color:"#5b6470",margin:"0 0 4px",display:"block"};
@@ -3444,8 +3459,24 @@ function CarRentalFlow({b,lang,onClose}){
   const [busy,setBusy]=useState(false);
   const [cars,setCars]=useState([]);
   const [sel,setSel]=useState(null); const [detail,setDetail]=useState(null);
+  const [extras,setExtras]=useState({});   // { [code]: {name, price} } extra selezionati
+  const travellers = Array.isArray(b.travellers)?b.travellers:[];
+  const [driverIdx,setDriverIdx]=useState(-1);
   const [driver,setDriver]=useState({name:"",surname:"",birth_country:"IT",residence_city:"",
-    residence_country:"IT",residence_address:"",email:(b.guestEmail&&b.guestEmail[0])||"",phone:"",birth_date:""});
+    residence_country:"IT",residence_address:b.bookerAddress||"",email:(b.guestEmail&&b.guestEmail[0])||"",phone:"",birth_date:""});
+
+  function selectDriver(idx){
+    setDriverIdx(idx);
+    const tr=travellers[idx];
+    if(!tr) return;
+    setDriver(d=>({...d,name:tr.name||"",surname:tr.surname||"",
+      email:tr.email||d.email,phone:tr.phone||d.phone,
+      residence_address:tr.address||b.bookerAddress||d.residence_address}));
+  }
+  // preseleziona il lead guest (o il primo) come conducente
+  useEffect(()=>{
+    if(travellers.length){ const li=travellers.findIndex(t=>t.lead); selectDriver(li>=0?li:0); }
+  },[]);
 
   useEffect(()=>{
     const cand = carOverride || (b.flight ? (b.destination||"") : "");
@@ -3556,20 +3587,41 @@ function CarRentalFlow({b,lang,onClose}){
             {row(cf.mileage, detail.rate.distance.unlimited?cf.unlimited:`${detail.rate.distance.quantity||0} ${detail.rate.distance.unit||"km"} ${cf.limited}`)}
             {detail.rate.distance.extraKmPrice&&detail.rate.distance.extraKmPrice.amount!=null&&row(cf.extraKm, money(detail.rate.distance.extraKmPrice))}
             {detail.rate.excessCDW&&detail.rate.excessCDW.amount!=null&&row(cf.excess, money(detail.rate.excessCDW))}
-            {detail.rate.cancellation&&detail.rate.cancellation.length>0&&<div style={{marginTop:10}}>
-              <div style={{fontSize:13,fontWeight:700,color:"#1f2730",marginBottom:4}}>{cf.cancel}</div>
-              {detail.rate.cancellation.map((c,i)=><div key={i} style={{fontSize:12,color:"#5b6470"}}>
-                {(c.from?c.from.slice(0,10):"")}{c.to?` → ${c.to.slice(0,10)}`:""}: {money({amount:c.amount,currency:c.currency})}</div>)}
-            </div>}
+            {detail.rate.cancellation&&detail.rate.cancellation.length>0&&(()=>{
+              const cp=detail.rate.cancellation;
+              const free=cp.find(c=>(!c.amount||Number(c.amount)===0)&&c.to);
+              const fees=cp.filter(c=>c.amount&&Number(c.amount)>0);
+              let txt;
+              if(free) txt=`✓ ${cf.freeCancel} ${free.to.slice(0,10)}`;
+              else if(fees.length){ const m=fees.reduce((a,b)=>Number(a.amount)<Number(b.amount)?a:b); txt=`${cf.cancelFee} ${money({amount:m.amount,currency:m.currency})}`; }
+              else txt=cf.nonref;
+              return row(cf.cancel, txt);
+            })()}
             {detail.rate.fees&&detail.rate.fees.filter(f=>f.included).length>0&&<div style={{marginTop:10}}>
               <div style={{fontSize:13,fontWeight:700,color:"#1f2730",marginBottom:4}}>{cf.included}</div>
               {detail.rate.fees.filter(f=>f.included).map((f,i)=><div key={i} style={{fontSize:12,color:"#13794a"}}>✓ {f.name}</div>)}
             </div>}
-            {(detail.equipments.length>0||detail.services.length>0)&&<div style={{marginTop:10}}>
-              <div style={{fontSize:13,fontWeight:700,color:"#1f2730",marginBottom:4}}>{cf.extras}</div>
-              {[...detail.equipments,...detail.services].filter(e=>!e.included).map((e,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"#5b6470",padding:"2px 0"}}>
-                <span>{e.name}</span><span>{e.price&&e.price.amount!=null?money(e.price):""}</span></div>)}
-            </div>}
+            {(()=>{
+              const opt=[...detail.equipments,...detail.services].filter(e=>!e.included&&e.code&&e.name);
+              return opt.length>0&&<div style={{marginTop:12}}>
+                <div style={{fontSize:13,fontWeight:700,color:"#1f2730",marginBottom:6}}>{cf.extras}</div>
+                {opt.map((e,i)=>{const on=!!extras[e.code]; return <label key={e.code||i}
+                  style={{display:"flex",alignItems:"center",gap:9,fontSize:13,color:"#3a4654",padding:"5px 0",cursor:"pointer"}}>
+                  <input type="checkbox" checked={on} onChange={ev=>setExtras(x=>{const n={...x}; if(ev.target.checked)n[e.code]={name:e.name,price:e.price}; else delete n[e.code]; return n;})}/>
+                  <span style={{flex:1}}>{e.name}</span>
+                  <span style={{fontWeight:600,color:"#1f2730"}}>{e.price&&e.price.amount!=null?money(e.price):"—"}</span>
+                </label>;})}
+              </div>;
+            })()}
+            {(()=>{
+              const et=Object.values(extras).reduce((s,e)=>s+(e.price&&e.price.amount?Number(e.price.amount):0),0);
+              if(!et) return null;
+              const base=detail.rate.total&&detail.rate.total.amount?Number(detail.rate.total.amount):0;
+              const cur=(detail.rate.total&&detail.rate.total.currency)||"";
+              return <div style={{marginTop:10,paddingTop:8,borderTop:"2px solid #eef0f3",display:"flex",
+                justifyContent:"space-between",fontWeight:800,fontSize:15,color:"#0a6cff"}}>
+                <span>{cf.total}</span><span>{(base+et).toFixed(2)} {cur}</span></div>;
+            })()}
           </div>}
         </div>
         <div style={foot}><button onClick={()=>setStep("results")} style={ghost}>{cf.back}</button>
@@ -3579,12 +3631,33 @@ function CarRentalFlow({b,lang,onClose}){
       {step==="driver"&&<>
         <div style={body}>
           <div style={{fontSize:15,fontWeight:700,color:"#1f2730",marginBottom:10}}>{cf.driver}</div>
+          {travellers.length>0&&<div style={{marginBottom:10}}>
+            <label style={cfLbl}>{cf.driverSel}</label>
+            <select value={driverIdx} onChange={e=>selectDriver(Number(e.target.value))} style={cfInp}>
+              <option value={-1} disabled>{cf.choose}</option>
+              {travellers.map((tr,i)=><option key={i} value={i}>{tr.name} {tr.surname}{tr.lead?" ★":""}</option>)}
+            </select>
+          </div>}
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
-            {[["fn","name"],["ln","surname"],["email","email"],["phone","phone"],["bdate","birth_date"],["bcountry","birth_country"],["rcity","residence_city"],["rcountry","residence_country"],["raddr","residence_address"]].map(([lk,fk])=>
-              <div key={fk}><label style={cfLbl}>{cf[lk]}</label>
-                <input type={fk==="birth_date"?"date":fk==="email"?"email":"text"}
-                  maxLength={fk==="birth_country"||fk==="residence_country"?2:undefined}
-                  value={driver[fk]} onChange={e=>setDriver(d=>({...d,[fk]:fk.endsWith("country")?e.target.value.toUpperCase():e.target.value}))} style={cfInp}/></div>)}
+            <div style={{display:"flex",gap:8}}>
+              <div style={{flex:1}}><label style={cfLbl}>{cf.fn}</label><input value={driver.name} onChange={e=>setDriver(d=>({...d,name:e.target.value}))} style={cfInp}/></div>
+              <div style={{flex:1}}><label style={cfLbl}>{cf.ln}</label><input value={driver.surname} onChange={e=>setDriver(d=>({...d,surname:e.target.value}))} style={cfInp}/></div>
+            </div>
+            <div><label style={cfLbl}>{cf.email}</label><input type="email" value={driver.email} onChange={e=>setDriver(d=>({...d,email:e.target.value}))} style={cfInp}/></div>
+            <div style={{display:"flex",gap:8}}>
+              <div style={{flex:1}}><label style={cfLbl}>{cf.phone}</label><input value={driver.phone} onChange={e=>setDriver(d=>({...d,phone:e.target.value}))} style={cfInp}/></div>
+              <div style={{flex:1}}><label style={cfLbl}>{cf.bdate}</label><input type="date" value={driver.birth_date} onChange={e=>setDriver(d=>({...d,birth_date:e.target.value}))} style={cfInp}/></div>
+            </div>
+            <div style={{display:"flex",gap:8}}>
+              <div style={{flex:1}}><label style={cfLbl}>{cf.bcountry}</label>
+                <select value={driver.birth_country} onChange={e=>setDriver(d=>({...d,birth_country:e.target.value}))} style={cfInp}>
+                  {COUNTRIES.map(([c,n])=><option key={c} value={c}>{n}</option>)}</select></div>
+              <div style={{flex:1}}><label style={cfLbl}>{cf.rcountry}</label>
+                <select value={driver.residence_country} onChange={e=>setDriver(d=>({...d,residence_country:e.target.value}))} style={cfInp}>
+                  {COUNTRIES.map(([c,n])=><option key={c} value={c}>{n}</option>)}</select></div>
+            </div>
+            <div><label style={cfLbl}>{cf.rcity}</label><input value={driver.residence_city} onChange={e=>setDriver(d=>({...d,residence_city:e.target.value}))} style={cfInp}/></div>
+            <div><label style={cfLbl}>{cf.raddr}</label><input value={driver.residence_address} onChange={e=>setDriver(d=>({...d,residence_address:e.target.value}))} style={cfInp}/></div>
           </div>
         </div>
         <div style={foot}><button onClick={()=>setStep("detail")} style={ghost}>{cf.back}</button>
@@ -3596,7 +3669,15 @@ function CarRentalFlow({b,lang,onClose}){
           <div style={{fontSize:15,fontWeight:700,color:"#1f2730",marginBottom:10}}>{cf.payTitle}</div>
           {sel&&<div style={{marginBottom:12}}>
             {row(sel.name, `${Number(sel.price).toFixed(0)} ${sel.currency}`)}
-            {detail&&row(cf.total, money(detail.rate.total))}
+            {Object.values(extras).map((e,i)=><div key={i}>{row("+ "+e.name, e.price&&e.price.amount!=null?money(e.price):"")}</div>)}
+            {driver.name&&row(cf.driverSel, `${driver.name} ${driver.surname}`)}
+            {detail&&(()=>{
+              const et=Object.values(extras).reduce((s,e)=>s+(e.price&&e.price.amount?Number(e.price.amount):0),0);
+              const base=detail.rate.total&&detail.rate.total.amount?Number(detail.rate.total.amount):0;
+              const cur=(detail.rate.total&&detail.rate.total.currency)||"";
+              return <div style={{display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:"#1f2730",paddingTop:8,borderTop:"2px solid #eef0f3",marginTop:6}}>
+                <span>{cf.total}</span><span>{(base+et).toFixed(2)} {cur}</span></div>;
+            })()}
           </div>}
           <div style={{background:"#eef5ff",border:"1px solid #b9d4ff",color:"#1d4e80",borderRadius:10,padding:"12px 14px",fontSize:13,lineHeight:1.5}}>{cf.payNote}</div>
         </div>
