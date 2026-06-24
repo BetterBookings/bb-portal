@@ -3434,7 +3434,7 @@ const COUNTRIES = [
   ["MA","Morocco"],["TR","Türkiye / Turkey"],["RU","Russia"],["ZA","South Africa"],
 ];
 
-const cfInp={width:"100%",padding:"9px 11px",border:"1px solid #d7dce2",borderRadius:9,fontSize:14,boxSizing:"border-box",background:"#fff"};
+const cfInp={width:"100%",padding:"9px 11px",border:"1px solid #d7dce2",borderRadius:9,fontSize:14,boxSizing:"border-box",background:"#fff",color:"#1f2730",fontFamily:"'Poppins',sans-serif"};
 const cfLbl={fontSize:12,fontWeight:600,color:"#5b6470",margin:"0 0 4px",display:"block"};
 
 function AirportPicker({value,onPick,placeholder}){
@@ -3601,13 +3601,18 @@ function CarRentalFlow({b,lang,onClose}){
     finally{ setPaying(false); }
   }
 
+  const isMobile = typeof window!=="undefined" && window.matchMedia && window.matchMedia("(max-width:600px)").matches;
+  // blocca lo scroll della pagina sotto mentre il modale è aperto
+  useEffect(()=>{ const prev=document.body.style.overflow; document.body.style.overflow="hidden"; return ()=>{document.body.style.overflow=prev;}; },[]);
   const overlay={position:"fixed",inset:0,background:"rgba(20,26,33,.55)",zIndex:9999,
-    display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"4vh 12px",overflowY:"auto"};
-  const sheet={background:"#fff",borderRadius:16,maxWidth:560,width:"100%",boxShadow:"0 20px 60px rgba(0,0,0,.3)",
-    display:"flex",flexDirection:"column",maxHeight:"92vh"};
-  const head={display:"flex",alignItems:"center",gap:10,padding:"14px 18px",borderBottom:"1px solid #eef0f3"};
-  const body={padding:"16px 18px",overflowY:"auto"};
-  const foot={display:"flex",gap:10,padding:"12px 18px",borderTop:"1px solid #eef0f3"};
+    display:"flex",alignItems:isMobile?"stretch":"flex-start",justifyContent:"center",
+    padding:isMobile?0:"4vh 12px",overflowY:isMobile?"hidden":"auto"};
+  const sheet={background:"#fff",color:"#1f2730",borderRadius:isMobile?0:16,maxWidth:isMobile?"100%":560,width:"100%",
+    boxShadow:"0 20px 60px rgba(0,0,0,.3)",display:"flex",flexDirection:"column",
+    height:isMobile?"100vh":"auto",maxHeight:isMobile?"100vh":"92vh"};
+  const head={display:"flex",alignItems:"center",gap:10,padding:"14px 18px",borderBottom:"1px solid #eef0f3",flexShrink:0};
+  const body={padding:"16px 18px",overflowY:"auto",flex:1,minHeight:0,WebkitOverflowScrolling:"touch"};
+  const foot={display:"flex",gap:10,padding:"12px 18px",borderTop:"1px solid #eef0f3",flexShrink:0};
   const primary={flex:1,background:"#0a6cff",color:"#fff",border:"none",padding:"11px",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"};
   const ghost={background:"#eef1f5",color:"#1f2730",border:"none",padding:"11px 16px",borderRadius:10,fontWeight:600,fontSize:14,cursor:"pointer"};
   const steps=["search","results","detail","driver","payment"];
@@ -4037,6 +4042,7 @@ function Tours({b,lang}){
     try{
       const r=await fetch(`${API_CARRENTAL}/cancel`,{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({tino_ref:ref,slug:getSlug()})});
+      if(r.status===409){ setCxState(s=>({...s,[ref]:"notfree"})); return; }
       if(!r.ok) throw new Error(`HTTP ${r.status}`);
       setCxState(s=>({...s,[ref]:"cancelled"}));
     }catch(e){ console.error(e); setCxState(s=>({...s,[ref]:"error"})); }
@@ -4253,6 +4259,8 @@ function Tours({b,lang}){
               </a>}
               {v.type===6&&v.ref&&(cxState[v.ref]==="cancelled"
                 ? <div style={{marginTop:10,fontSize:".75rem",fontWeight:600,color:"#c0392b"}}>✓ {lang==="IT"?"Annullato":lang==="ES"?"Anulado":lang==="FR"?"Annulé":lang==="DE"?"Storniert":lang==="NL"?"Geannuleerd":"Cancelled"}</div>
+                : cxState[v.ref]==="notfree"
+                ? <div style={{marginTop:10,fontSize:".72rem",color:"#874d00",background:"#fff7e6",border:"1px solid #ffd591",borderRadius:7,padding:"7px 10px",lineHeight:1.4}}>{lang==="IT"?"Il periodo di cancellazione gratuita è terminato. Per annullare contatta il servizio clienti.":lang==="ES"?"El periodo de cancelación gratuita ha terminado. Para anular contacta con atención al cliente.":lang==="FR"?"La période d'annulation gratuite est terminée. Pour annuler, contactez le service client.":lang==="DE"?"Der kostenlose Stornierungszeitraum ist abgelaufen. Zum Stornieren kontaktieren Sie den Kundenservice.":lang==="NL"?"De gratis annuleringsperiode is voorbij. Neem contact op met de klantenservice om te annuleren.":"The free cancellation period has ended. Please contact customer service to cancel."}</div>
                 : <button onClick={()=>cancelCar(v.ref)} disabled={cxState[v.ref]==="cancelling"}
                     style={{marginTop:10,display:"block",background:"none",border:"none",color:"#c0392b",
                       fontSize:".75rem",fontWeight:600,cursor:cxState[v.ref]==="cancelling"?"default":"pointer",
