@@ -1188,7 +1188,7 @@ function MessagesDrawer({b,lang,onClose}){
         display:"flex",alignItems:"center",justifyContent:"space-between",
         background:C.white,flexShrink:0}}>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
-          <span style={{fontSize:"1.1rem"}}>🔔</span>
+          <Ico name="bb-notification" size={18}/>
           <h3 style={{fontSize:"1rem",fontWeight:700,color:C.dark,margin:0}}>
             {t.msgTitle||"Messages"}
           </h3>
@@ -1206,7 +1206,7 @@ function MessagesDrawer({b,lang,onClose}){
       <div style={{flex:1,overflowY:"auto",padding:"1rem"}}>
         {msgs.length===0
           ?<div style={{textAlign:"center",padding:"3rem 1rem",color:C.muted}}>
-            <div style={{fontSize:"2rem",marginBottom:8}}>📭</div>
+            <div style={{marginBottom:8}}><Ico name="bb-inbox" size={36} style={{opacity:.5}}/></div>
             <p style={{fontSize:".88rem"}}>{t.msgNoMsg||"No messages."}</p>
           </div>
           :msgs.map((msg,i)=>{
@@ -1261,7 +1261,7 @@ function BellButton({b,onClick}){
         fontSize:"1.2rem",lineHeight:1,display:"inline-block",
         transformOrigin:"top center",
         animation:unread>0?"bellRing 2s ease-in-out infinite":undefined,
-      }}>🔔</span>
+      }}><Ico name="bb-notification" size={21}/></span>
       {unread>0&&<span style={{position:"absolute",top:0,right:0,
         width:16,height:16,borderRadius:"50%",
         background:C.orange,color:"#fff",fontSize:".6rem",fontWeight:700,
@@ -1500,7 +1500,7 @@ function VoucherModal({b,lang,onClose}){
               "</style></head><body>"+el.innerHTML+"</body></html>");
             w.document.close();
             w.onload=function(){w.focus();w.print();};
-          }} className="btn-orange" style={{padding:"6px 16px"}}>🖨️ Print</button>
+          }} className="btn-orange" style={{padding:"6px 16px",display:"inline-flex",alignItems:"center",gap:6}}><Ico name="bb-print" size={14} light/> Print</button>
           <button onClick={onClose} style={{background:"rgba(255,255,255,.12)",border:"none",
             color:C.white,padding:"6px 14px",borderRadius:7,cursor:"pointer",fontSize:".85rem"}}>✕ Close</button>
         </div>
@@ -1764,8 +1764,8 @@ function DocsModal({t,onClose}){
         <div style={{padding:"1.25rem 1.5rem",borderBottom:`1px solid ${C.border}`,
           display:"flex",justifyContent:"space-between",alignItems:"center",
           position:"sticky",top:0,background:C.white,zIndex:1}}>
-          <h3 style={{fontSize:"1rem",fontWeight:700,color:C.dark}}>
-            📋 {t.docsInfoTitle}
+          <h3 style={{fontSize:"1rem",fontWeight:700,color:C.dark,display:"inline-flex",alignItems:"center",gap:7}}>
+            <Ico name="bb-invoice" size={16}/> {t.docsInfoTitle}
           </h3>
           <button onClick={onClose} style={{background:"none",border:"none",
             cursor:"pointer",fontSize:"1.2rem",color:C.muted,lineHeight:1}}>✕</button>
@@ -1832,7 +1832,7 @@ function DocsButton({b,lang,t}){
       <div style={{display:"inline-flex",alignItems:"center",gap:8,padding:"9px 16px",
         borderRadius:50,border:`1.5px dashed ${C.border}`,
         background:C.bg,color:C.muted,fontSize:".82rem",fontWeight:500}}>
-        <span>⏳</span>
+        <Ico name="bb-pending" size={15}/>
         <span>{t.docsNotReady}</span>
       </div>
       {/* Info button — opens modal to explain when docs will arrive */}
@@ -1843,7 +1843,7 @@ function DocsButton({b,lang,t}){
         fontSize:".82rem",fontWeight:600,cursor:"pointer",
         fontFamily:"'Poppins',sans-serif",
       }}>
-        <span>📋</span>
+        <Ico name="bb-invoice" size={15}/>
         <span>{t.docsInfoTitle||"When will you receive your documents?"}</span>
         <span style={{fontSize:".75rem",opacity:.8}}>›</span>
       </button>
@@ -1860,7 +1860,7 @@ function DocsButton({b,lang,t}){
       fontSize:".82rem",fontWeight:600,cursor:"pointer",
       fontFamily:"'Poppins',sans-serif",
     }}>
-      <span>📋</span>
+      <Ico name="bb-invoice" size={15}/>
       <span>{t.docsInfoTitle||"When will you receive your documents?"}</span>
       <span style={{fontSize:".75rem",opacity:.8}}>›</span>
     </button>
@@ -1884,8 +1884,8 @@ function DestinationCard({b,lang,t}){
       {!imgSrc&&<div style={{
         width:"100%",height:"100%",
         background:`linear-gradient(135deg, ${C.peach} 0%, ${C.peachBorder} 100%)`,
-        display:"flex",alignItems:"center",justifyContent:"center",fontSize:"2.5rem"
-      }}>🌍</div>}
+        display:"flex",alignItems:"center",justifyContent:"center"
+      }}><Ico name="bb-destination" size={44} style={{opacity:.55}}/></div>}
       {/* city label overlay */}
       <div style={{position:"absolute",bottom:0,left:0,right:0,
         background:"linear-gradient(to top,rgba(0,0,0,.55),transparent)",
@@ -1945,7 +1945,7 @@ function TravellersList({raw,checkIn,lang,t,counts}){
             </div>
             {tr.dob&&tr.dob.d&&<div style={{fontSize:".73rem",color:C.muted,marginTop:1,
               display:"flex",alignItems:"center",gap:4}}>
-              <i className="fas fa-birthday-cake" style={{fontSize:".65rem",color:C.orange}}/>
+              <Ico name="bb-calendar" size={11}/>
               {dobLabel}: {tr.dob?fmtDOB(tr.dob,lang):"–"}
             </div>}
           </div>
@@ -2062,7 +2062,7 @@ function Overview({b,lang}){
     <Grid ch={<>
       {/* Stay details */}
       <div className="card" style={{padding:"1.5rem"}}>
-        <SectionLabel icon="📅" ch={t.stay}/>
+        <SectionLabel icon={<Ico name="bb-calendar" size={14}/>} ch={t.stay}/>
         <IRow label={t.ref}     val={b.bookingReference} hi/>
         {b.SupplierBookingReference&&<IRow label={t.hconf} val={b.SupplierBookingReference}/>}
         {b.checkIn&&<IRow label={t.checkin} val={fmtD(b.checkIn,lang)}/>}
@@ -2093,7 +2093,7 @@ function Overview({b,lang}){
             ))}
           </ul>
         </div>}
-        {pax&&<IRow label={`👥 ${t.adults}`} val={pax}/>}
+        {pax&&<IRow label={<span style={{display:"inline-flex",alignItems:"center",gap:5}}><Ico name="bb-guests" size={13}/> {t.adults}</span>} val={pax}/>}
         <div style={{marginTop:14}}>
           <DocsButton b={b} lang={lang} t={t}/>
         </div>
@@ -2101,7 +2101,7 @@ function Overview({b,lang}){
 
       {/* Booking person contact — moved after stay */}
       <div className="card" style={{padding:"1.5rem"}}>
-        <SectionLabel icon="👤" ch={t.bookingPerson||t.guest}/>
+        <SectionLabel icon={<Ico name="bb-user" size={14}/>} ch={t.bookingPerson||t.guest}/>
         <div style={{display:"flex",flexDirection:"column",gap:0}}>
           <div style={{fontSize:".95rem",fontWeight:700,color:C.dark,
             marginBottom:10,paddingBottom:10,borderBottom:`1px solid ${C.border}`}}>
@@ -2113,7 +2113,7 @@ function Overview({b,lang}){
             <div style={{width:30,height:30,borderRadius:"50%",
               background:"#EFF6FF",display:"flex",alignItems:"center",
               justifyContent:"center",flexShrink:0}}>
-              <i className="fas fa-envelope" style={{fontSize:".78rem",color:"#2563eb"}}/>
+              <Ico name="bb-email" size={15} style={{"--bb-ico-line":"#2563eb","--bb-ico-fill":"#DBEAFE"}}/>
             </div>
             <span style={{fontSize:".85rem",color:C.charcoal}}>{arr1(b.guestEmail)}</span>
           </div>}
@@ -2123,7 +2123,7 @@ function Overview({b,lang}){
             <div style={{width:30,height:30,borderRadius:"50%",
               background:"#F0FDF4",display:"flex",alignItems:"center",
               justifyContent:"center",flexShrink:0}}>
-              <i className="fas fa-phone-alt" style={{fontSize:".78rem",color:"#16a34a"}}/>
+              <Ico name="bb-phone" size={15} style={{"--bb-ico-line":"#16a34a","--bb-ico-fill":"#DCFCE7"}}/>
             </div>
             <span style={{fontSize:".85rem",color:C.charcoal}}>{arr1(b.guestTelephone)}</span>
           </div>}
@@ -2143,16 +2143,16 @@ function Overview({b,lang}){
       <div className="card" style={{padding:"1.5rem"}}>
         <SectionLabel icon={<Ico name="bb-hotel" size={16}/>} ch={t.hotelInfo||"Hotel Info"}/>
         {(b.checkinTime&&b.checkinTime!=="00:00"&&b.checkinTime!=="null")&&
-          <IRow label={"⏰ Check-in"} val={String(b.checkinTime).slice(0,5)}/>}
+          <IRow label={<span style={{display:"inline-flex",alignItems:"center",gap:5}}><Ico name="bb-pending" size={13}/> Check-in</span>} val={String(b.checkinTime).slice(0,5)}/>}
         {(b.checkoutTime&&b.checkoutTime!=="00:00"&&b.checkoutTime!=="null")&&
-          <IRow label={"⏰ Check-out"} val={String(b.checkoutTime).slice(0,5)}/>}
+          <IRow label={<span style={{display:"inline-flex",alignItems:"center",gap:5}}><Ico name="bb-pending" size={13}/> Check-out</span>} val={String(b.checkoutTime).slice(0,5)}/>}
         {(b.hoteladdress||b.hotelAddress)&&
           <IRow label={t.address||"Address"} val={cleanAddress(b.hoteladdress||b.hotelAddress)}/>}
         {(b.DepositRequest)&&
           <InfoBlock icon={<Ico name="bb-card" size={20}/>} label={t.deposit} val={`${b.DepositRequest}${b.AmountDeposit?` (${b.AmountDeposit})`:""}`} bg={C.warningBg}/>}
-        {(TAXES[lang]||TAXES.EN)[String(b.Localtaxes)]&&<InfoBlock icon="🏛️" label={t.taxes} val={(TAXES[lang]||TAXES.EN)[String(b.Localtaxes)]}/>}
-        {(PET[lang]||PET.EN)[String(b.PetPolicy)]&&<InfoBlock icon="🐾" label={t.pets} val={(PET[lang]||PET.EN)[String(b.PetPolicy)]}/>}
-        {(ACCESS[lang]||ACCESS.EN)[String(b.DisableAccess)]&&<InfoBlock icon="♿" label={t.access} val={(ACCESS[lang]||ACCESS.EN)[String(b.DisableAccess)]}/>}
+        {(TAXES[lang]||TAXES.EN)[String(b.Localtaxes)]&&<InfoBlock icon={<Ico name="bb-tax" size={20}/>} label={t.taxes} val={(TAXES[lang]||TAXES.EN)[String(b.Localtaxes)]}/>}
+        {(PET[lang]||PET.EN)[String(b.PetPolicy)]&&<InfoBlock icon={<Ico name="bb-pet" size={20}/>} label={t.pets} val={(PET[lang]||PET.EN)[String(b.PetPolicy)]}/>}
+        {(ACCESS[lang]||ACCESS.EN)[String(b.DisableAccess)]&&<InfoBlock icon={<Ico name="bb-accessibility" size={20}/>} label={t.access} val={(ACCESS[lang]||ACCESS.EN)[String(b.DisableAccess)]}/>}
       </div>}
 
       {/* Cancellation policy + T&C */}
@@ -2223,7 +2223,7 @@ function FCard({title,from,to,dep,arr,dur,stop,airline,alImg,pnr,b,lang,first}){
           <div style={{flex:1,height:1.5,background:C.border,borderRadius:1}}/>
           <div style={{width:34,height:34,borderRadius:"50%",background:C.peach,
             border:`1px solid ${C.peachBorder}`,display:"flex",alignItems:"center",
-            justifyContent:"center",fontSize:"1rem",flexShrink:0}}>✈</div>
+            justifyContent:"center",flexShrink:0}}><Ico name="bb-flight" size={16}/></div>
           <div style={{flex:1,height:1.5,background:C.border,borderRadius:1}}/>
         </div>
         {airline&&<div style={{display:"flex",alignItems:"center",gap:5}}>
@@ -2242,9 +2242,9 @@ function FCard({title,from,to,dep,arr,dur,stop,airline,alImg,pnr,b,lang,first}){
     {first&&(b.flightEticket||b.ManageFlightURL)&&
       <div style={{borderTop:`1px solid ${C.border}`,paddingTop:"1rem",display:"flex",gap:8,flexWrap:"wrap"}}>
         {b.flightEticket&&b.flightEticket!=="false"&&
-          <a href={b.flightEticket} target="_blank" rel="noopener noreferrer" className="btn-orange">⬇ {t.eticket}</a>}
+          <a href={b.flightEticket} target="_blank" rel="noopener noreferrer" className="btn-orange"><Ico name="bb-download" size={14} light/> {t.eticket}</a>}
         {b.ManageFlightURL&&b.ManageFlightURL!=="false"&&
-          <a href={b.ManageFlightURL} target="_blank" rel="noopener noreferrer" className="btn-outline">↗ {t.mflight}</a>}
+          <a href={b.ManageFlightURL} target="_blank" rel="noopener noreferrer" className="btn-outline"><Ico name="bb-external" size={14}/> {t.mflight}</a>}
       </div>}
   </div>;
 }
@@ -2287,7 +2287,7 @@ function Flights({b,lang}){
         <SectionLabel icon={<Ico name="bb-train" size={16}/>} ch={t.trainbk}/>
         <div style={{display:"flex",alignItems:"flex-start",gap:12,padding:"14px 16px",
           borderRadius:10,background:"#FFF8E6",border:"1px solid #F5D76E"}}>
-          <span style={{fontSize:"1.3rem",flexShrink:0}}>⏳</span>
+          <Ico name="bb-pending" size={20} style={{flexShrink:0,"--bb-ico-line":"#B8860B","--bb-ico-fill":"#FBE3B0"}}/>
           <div>
             <div style={{fontWeight:700,color:"#7A5800",marginBottom:4,fontSize:".9rem"}}>{t.trainbk}</div>
             <p style={{fontSize:".84rem",color:"#7A5800",lineHeight:1.65,margin:0}}>{t.trainPending}</p>
@@ -2305,7 +2305,7 @@ function Flights({b,lang}){
           flexWrap:"wrap",gap:8,marginBottom:16,paddingBottom:14,borderBottom:`1px solid ${C.border}`}}>
           <div style={{display:"flex",alignItems:"center",gap:10}}>
             <div style={{width:38,height:38,borderRadius:9,background:"#f0fdf4",
-              display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.2rem"}}>🚆</div>
+              display:"flex",alignItems:"center",justifyContent:"center"}}><Ico name="bb-train" size={20} style={{"--bb-ico-line":"#16a34a","--bb-ico-fill":"#DCFCE7"}}/></div>
             <div>
               <div style={{fontSize:".7rem",color:C.muted,fontWeight:600,
                 letterSpacing:".1em",textTransform:"uppercase"}}>{t.trainLine}</div>
@@ -2390,7 +2390,7 @@ function Flights({b,lang}){
         {b.trainticketlink&&b.trainticketlink!=="false"&&
           <a href={b.trainticketlink} target="_blank" rel="noopener noreferrer" className="btn-orange"
             style={{display:"inline-flex",alignItems:"center",gap:7}}>
-            🚆 {t.trainManage}
+            <Ico name="bb-train" size={15} light/> {t.trainManage}
           </a>}
       </div>
     );
@@ -2403,7 +2403,7 @@ function Flights({b,lang}){
         {b.trainticketlink&&b.trainticketlink!=="false"&&
           <div style={{marginTop:12}}>
             <a href={b.trainticketlink} target="_blank" rel="noopener noreferrer" className="btn-orange">
-              🚆 {t.trainManage}
+              <Ico name="bb-train" size={15} light/> {t.trainManage}
             </a>
           </div>}
       </div>
@@ -2414,7 +2414,7 @@ function Flights({b,lang}){
   if(!b.flight && !b.Airline1 && !hasTrain){
     return <Wrap ch={
       <div style={{textAlign:"center",padding:"3rem 1rem",color:C.mid}}>
-        <div style={{fontSize:"2.5rem",marginBottom:12}}>✈️</div>
+        <div style={{marginBottom:12}}><Ico name="bb-flight" size={40} style={{opacity:.5}}/></div>
         <p style={{fontSize:".9rem"}}>{t.flights}</p>
       </div>
     }/>;
@@ -2428,7 +2428,7 @@ function Flights({b,lang}){
     {(b.flight||b.Airline1)&&(fs==="1"
       ? <div style={{display:"flex",alignItems:"flex-start",gap:12,padding:"20px",
           borderRadius:12,background:"#FFF8E6",border:"1px solid #F5D76E"}}>
-          <span style={{fontSize:"1.5rem",flexShrink:0}}>⏳</span>
+          <Ico name="bb-pending" size={24} style={{flexShrink:0,"--bb-ico-line":"#B8860B","--bb-ico-fill":"#FBE3B0"}}/>
           <div>
             <div style={{fontWeight:700,color:"#7A5800",marginBottom:6,fontSize:".9rem"}}>
               {t.flights}
@@ -2465,7 +2465,7 @@ function AdminFeeNote({b,t,inv2}){
     background:"#FFF3CD",border:"1px solid #F0C040",textAlign:"left"}}>
     <div style={{fontWeight:700,fontSize:".88rem",color:"#7A4A00",marginBottom:10,
       display:"flex",alignItems:"center",gap:6}}>
-      <span>⚠️</span> {t.due||"Payment required"}
+      <Ico name="bb-error" size={15} style={{"--bb-ico-line":"#B8860B","--bb-ico-fill":"#FBE3B0"}}/> {t.due||"Payment required"}
     </div>
     {/* Pay Now button */}
     {inv2&&<div style={{marginBottom:12}}>
@@ -2522,8 +2522,9 @@ function InvoiceList({b,t}){
   const visible = invRows;
   if(!visible.length) return <div style={{padding:"12px 14px",borderRadius:8,
     background:C.bg,border:"1px dashed "+C.border,
-    fontSize:".8rem",color:C.muted,textAlign:"left",lineHeight:1.5}}>
-    ℹ️ {t.invAfterCheckout}
+    fontSize:".8rem",color:C.muted,textAlign:"left",lineHeight:1.5,
+    display:"flex",alignItems:"flex-start",gap:6}}>
+    <Ico name="bb-info" size={14} style={{marginTop:1,flexShrink:0}}/> <span>{t.invAfterCheckout}</span>
   </div>;
   return <>{visible.map((p,i)=>(
     <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",
@@ -2532,7 +2533,7 @@ function InvoiceList({b,t}){
         <div style={{fontSize:".85rem",fontWeight:500,color:C.dark}}>{p.label}</div>
         {p.amount&&<div style={{fontSize:".72rem",color:C.muted}}>{fmtM(p.amount)}</div>}
       </div>
-      <a href={p.inv} target="_blank" rel="noopener noreferrer" className="btn-orange">⬇ PDF</a>
+      <a href={p.inv} target="_blank" rel="noopener noreferrer" className="btn-orange"><Ico name="bb-download" size={14} light/> PDF</a>
     </div>
   ))}</>;
 }
@@ -2571,7 +2572,7 @@ function Payments({b,lang}){
       {STATUS_CODE[String(b.bookingstatus)]==="canc"&&t.cancRefund&&
         <div style={{display:"flex",gap:10,padding:"14px",borderRadius:10,
           background:"#FEEEEE",border:"1px solid #F5C6C6",marginBottom:"1rem"}}>
-          <span style={{fontSize:"1.2rem",flexShrink:0}}>❌</span>
+          <Ico name="bb-error" size={18} style={{flexShrink:0,"--bb-ico-line":"#C0392B","--bb-ico-fill":"#FAD4D4"}}/>
           <p style={{fontSize:".85rem",color:"#C0392B",lineHeight:1.65,margin:0}}>{t.cancRefund}</p>
         </div>}
       {/* Total card */}
@@ -2646,7 +2647,7 @@ function Err({lang,msg}){
     <Logo h={32}/>
     <div style={{width:64,height:64,borderRadius:"50%",background:C.peach,
       display:"flex",alignItems:"center",justifyContent:"center",
-      fontSize:"1.75rem",margin:"24px 0 16px"}}>🔍</div>
+      margin:"24px 0 16px"}}><Ico name="bb-search" size={28}/></div>
     <h2 style={{fontSize:"1.4rem",fontWeight:800,color:C.dark,marginBottom:8}}>{t.errtitle}</h2>
     <p style={{color:C.mid,fontSize:".88rem",marginBottom:6}}>{msg||t.notfound}</p>
     <p style={{color:C.muted,fontSize:".78rem"}}>{t.errsub}</p>
@@ -2897,8 +2898,8 @@ function LoginPage({lang,setLang,onFound}){
           {err&&<div style={{background:"rgba(220,38,38,.15)",
             border:"1px solid rgba(220,38,38,.5)",borderRadius:8,
             padding:"10px 14px",fontSize:".82rem",color:"#FFCDD2",
-            marginBottom:14,lineHeight:1.5,display:"flex",gap:8}}>
-            <span>⚠️</span><span>{err}</span>
+            marginBottom:14,lineHeight:1.5,display:"flex",gap:8,alignItems:"flex-start"}}>
+            <Ico name="bb-error" size={15} style={{flexShrink:0,marginTop:1,"--bb-ico-line":"#FFCDD2","--bb-ico-fill":"rgba(255,255,255,.18)"}}/><span>{err}</span>
           </div>}
 
           {/* CTA */}
@@ -3247,7 +3248,7 @@ function Support({b,lang}){
 
         {formSent
           ?<div style={{padding:"2rem",textAlign:"center"}}>
-            <div style={{fontSize:"2.5rem",marginBottom:12}}>✅</div>
+            <div style={{marginBottom:12}}><Ico name="bb-check" size={40} style={{"--bb-ico-line":C.success,"--bb-ico-fill":C.successBg}}/></div>
             <p style={{fontWeight:600,color:C.dark,marginBottom:6}}>{t.formOk}</p>
             <button onClick={()=>setFormSent(false)} className="btn-outline"
               style={{marginTop:12,borderRadius:50}}>← Torna</button>
@@ -3592,7 +3593,7 @@ function CarRentalFlow({b,lang,onClose}){
   return <div style={overlay} onClick={onClose}>
     <div style={sheet} onClick={e=>e.stopPropagation()}>
       <div style={head}>
-        <div style={{fontSize:22}}>🚗</div>
+        <Ico name="bb-car" size={22}/>
         <div style={{flex:1,fontSize:16,fontWeight:700,color:"#1f2730"}}>{cf.title}</div>
         {step!=="done"&&<div style={{fontSize:12,color:"#8a93a0"}}>{steps.indexOf(step)+1}/5</div>}
         <button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#8a93a0",lineHeight:1}}>×</button>
@@ -3756,7 +3757,7 @@ function CarRentalFlow({b,lang,onClose}){
       {step==="done"&&<>
         <div style={body}>
           <div style={{textAlign:"center",padding:"14px 0"}}>
-            <div style={{fontSize:46}}>✅</div>
+            <Ico name="bb-check" size={44} style={{"--bb-ico-line":"#13794a","--bb-ico-fill":"#d6f0e2"}}/>
             <div style={{fontSize:19,fontWeight:800,color:"#1f2730",margin:"10px 0 6px"}}>{cf.doneTitle}</div>
             <div style={{fontSize:14,color:"#5b6470"}}>{cf.doneMsg}</div>
             {confirmed&&confirmed.booking&&confirmed.booking.id&&<div style={{marginTop:14,fontSize:14,color:"#1f2730"}}>{cf.ref}: <b>{confirmed.booking.id}</b></div>}
@@ -3799,8 +3800,9 @@ function Shop({b,lang,services}){
 
   return <div style={{maxWidth:1100,margin:"0 auto",padding:"1.5rem 1.25rem"}}>
     {isPreview&&<div style={{background:"#fff7e6",border:"1px solid #ffd591",color:"#874d00",
-      borderRadius:10,padding:"8px 12px",fontSize:13,marginBottom:14,fontWeight:600}}>
-      👁️ {t.shopPreview}
+      borderRadius:10,padding:"8px 12px",fontSize:13,marginBottom:14,fontWeight:600,
+      display:"flex",alignItems:"center",gap:7}}>
+      <Ico name="bb-eye" size={15} style={{"--bb-ico-line":"#874d00","--bb-ico-fill":"#ffe3ad"}}/> {t.shopPreview}
     </div>}
     <p style={{color:"#5b6470",fontSize:15,margin:"0 0 18px"}}>{t.shopIntro}</p>
     <div style={{display:"flex",flexWrap:"wrap",gap:16}}>
@@ -3809,7 +3811,11 @@ function Shop({b,lang,services}){
         return <div key={card.id} style={{flex:"1 1 320px",minWidth:280,maxWidth:520,
           background:"#fff",border:"1px solid #e6e9ee",borderRadius:14,padding:"18px 20px",
           boxShadow:"0 1px 3px rgba(0,0,0,.04)",display:"flex",flexDirection:"column"}}>
-          <div style={{fontSize:30,lineHeight:1,marginBottom:10}}>{card.icon}</div>
+          <div style={{marginBottom:10}}>
+            {String(card.icon||"").startsWith("bb-")
+              ? <Ico name={card.icon} size={30}/>
+              : <span style={{fontSize:30,lineHeight:1}}>{card.icon}</span>}
+          </div>
           <div style={{fontSize:17,fontWeight:700,color:"#1f2730",marginBottom:6}}>{pick(card.title)}</div>
           <div style={{fontSize:14,color:"#5b6470",flex:1,marginBottom:16}}>{pick(card.subtitle)}</div>
           {(()=>{
@@ -3824,13 +3830,15 @@ function Shop({b,lang,services}){
             if(card.type==="affiliate")
               return <a href={pick(card.url)||"#"} target="_blank" rel="noopener noreferrer"
                 style={{display:"inline-block",textAlign:"center",background:"#0a6cff",color:"#fff",
-                  textDecoration:"none",padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14}}>
-                {t.shopOpen} ↗
+                  textDecoration:"none",padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14,
+                  display:"inline-flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                {t.shopOpen} <Ico name="bb-external" size={14} light/>
               </a>;
             if(card.live)
               return <button onClick={()=>setFlowOpen(true)} style={{background:"#0a6cff",color:"#fff",border:"none",
-                  padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14,cursor:"pointer"}}>
-                  🔎 {(CF[lang]||CF.EN).open}
+                  padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14,cursor:"pointer",
+                  display:"inline-flex",alignItems:"center",justifyContent:"center",gap:6}}>
+                  <Ico name="bb-search" size={14} light/> {(CF[lang]||CF.EN).open}
                 </button>;
             return st==="sent"?sentBox:reqBtn;
           })()}
@@ -4059,7 +4067,7 @@ function Tours({b,lang}){
   });
   const days=Object.values(dayMap);
 
-  const typeIcon={1:"🏨",2:"🎫",3:"🚆",5:"✈️",6:"🚗"};
+  const typeIcon={1:"bb-hotel",2:"bb-ticket",3:"bb-train",5:"bb-flight",6:"bb-car"};
   const typeCls={1:"hotel",2:"experience",3:"transfer",5:"flight",6:"carrental"};
   const typeLabel={
     EN:{1:"Accommodation",2:"Experience",3:"Transfer",5:"Flight",6:"Car Rental"},
@@ -4095,7 +4103,7 @@ function Tours({b,lang}){
             <div className="bb-hotel-img">
               {h.img
                 ?<img src={h.img} alt={h.name} onError={e=>{e.target.src=HOTEL_FALLBACK_IMG;}}/>
-                :"🏨"}
+                :<Ico name="bb-hotel" size={38} style={{opacity:.5}}/>}
             </div>
             <div style={{padding:"18px"}}>
               <div style={{fontFamily:"Georgia,serif",fontSize:"1.15rem",fontWeight:500,
@@ -4119,11 +4127,11 @@ function Tours({b,lang}){
               <span style={{display:"inline-flex",alignItems:"center",gap:5,
                 background:"#fff3ee",borderRadius:6,padding:"3px 10px",
                 fontSize:".75rem",fontWeight:600,color:C.orange}}>
-                🌙 {nights} {lang==="IT"?"notte/i":lang==="ES"?"noche(s)":lang==="FR"?"nuit(s)":lang==="DE"?"Nacht/Nächte":lang==="NL"?"nacht(en)":"night(s)"}
+                <Ico name="bb-nights" size={13}/> {nights} {lang==="IT"?"notte/i":lang==="ES"?"noche(s)":lang==="FR"?"nuit(s)":lang==="DE"?"Nacht/Nächte":lang==="NL"?"nacht(en)":"night(s)"}
               </span>
               {loc.address&&<div style={{display:"flex",alignItems:"flex-start",gap:7,
                 marginTop:10,fontSize:".78rem",color:C.mid,lineHeight:1.45}}>
-                <i className="fas fa-map-marker-alt" style={{color:C.orange,marginTop:2,flexShrink:0}}/>
+                <Ico name="bb-destination" size={13} style={{marginTop:1,flexShrink:0}}/>
                 <span>{loc.address}</span>
               </div>}
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",
@@ -4131,14 +4139,14 @@ function Tours({b,lang}){
                 {h.url&&<a href={h.url} target="_blank" rel="noopener noreferrer"
                   style={{display:"inline-flex",alignItems:"center",gap:5,fontSize:".8rem",
                     fontWeight:600,color:C.orange,textDecoration:"none"}}>
-                  <i className="fas fa-external-link-alt" style={{fontSize:".75em"}}/>
+                  <Ico name="bb-external" size={12}/>
                   {lang==="IT"?"Apri →":lang==="ES"?"Abrir →":lang==="FR"?"Ouvrir →":lang==="DE"?"Öffnen →":lang==="NL"?"Openen →":"Open →"}
                 </a>}
                 {loc.maps&&<a href={loc.maps} target="_blank" rel="noopener noreferrer"
                   style={{display:"inline-flex",alignItems:"center",gap:6,padding:"7px 14px",
                     background:C.orange,color:"#fff",fontSize:".78rem",fontWeight:600,
                     borderRadius:8,textDecoration:"none"}}>
-                  <i className="fas fa-location-arrow"/>
+                  <Ico name="bb-navigation" size={13} light/>
                   {lang==="IT"?"Indicazioni":lang==="ES"?"Cómo llegar":lang==="FR"?"Itinéraire":lang==="DE"?"Wegbeschreibung":lang==="NL"?"Routebeschrijving":"Directions"}
                 </a>}
               </div>
@@ -4163,7 +4171,7 @@ function Tours({b,lang}){
               justifyContent:"space-between",borderBottom:`1px solid ${C.border}`}}>
               <span style={{fontSize:".65rem",fontWeight:700,letterSpacing:".14em",
                 textTransform:"uppercase",color:clr}}>{TL[v.type]||""}</span>
-              <span style={{fontSize:"1.2rem"}}>{typeIcon[v.type]||"🎫"}</span>
+              <Ico name={typeIcon[v.type]||"bb-ticket"} size={19} style={{"--bb-ico-line":clr,"--bb-ico-fill":bg}}/>
             </div>
             <div style={{padding:"14px 16px"}}>
               <div style={{fontWeight:600,fontSize:".9rem",color:C.dark,marginBottom:8,lineHeight:1.3}}>
@@ -4172,7 +4180,7 @@ function Tours({b,lang}){
               {v.open&&<div style={{display:"inline-flex",alignItems:"center",gap:4,
                 background:"#f0fdf4",border:"1px solid #bbf7d0",borderRadius:6,
                 padding:"2px 9px",fontSize:".68rem",fontWeight:700,color:"#16a34a",marginBottom:8}}>
-                ⏳ {lang==="IT"?"Ticket Aperto":lang==="ES"?"Ticket Abierto":lang==="FR"?"Billet Ouvert":lang==="DE"?"Offenes Ticket":lang==="NL"?"Open Ticket":"Open Ticket"}
+                <Ico name="bb-pending" size={12} style={{"--bb-ico-line":"#16a34a","--bb-ico-fill":"#DCFCE7"}}/> {lang==="IT"?"Ticket Aperto":lang==="ES"?"Ticket Abierto":lang==="FR"?"Billet Ouvert":lang==="DE"?"Offenes Ticket":lang==="NL"?"Open Ticket":"Open Ticket"}
               </div>}
               {(dep||arr)&&<div style={{fontSize:".75rem",color:C.mid,marginTop:4,lineHeight:1.55}}>
                 {dep&&<div>{lang==="IT"?"Partenza":lang==="ES"?"Salida":lang==="FR"?"Départ":lang==="DE"?"Abfahrt":lang==="NL"?"Vertrek":"Departure"}: {dep}</div>}
@@ -4183,7 +4191,7 @@ function Tours({b,lang}){
                   fontSize:".8rem",fontWeight:600,color:clr,textDecoration:"none",
                   border:`1px solid ${clr}33`,borderRadius:7,padding:"5px 12px",
                   background:bg,transition:"opacity .15s"}}>
-                <i className="fas fa-external-link-alt" style={{fontSize:".75em"}}/>
+                <Ico name="bb-external" size={12} style={{"--bb-ico-line":clr,"--bb-ico-fill":bg}}/>
                 {lang==="IT"?"Apri →":lang==="ES"?"Abrir →":lang==="FR"?"Ouvrir →":lang==="DE"?"Öffnen →":lang==="NL"?"Openen →":"Open →"}
               </a>}
             </div>
