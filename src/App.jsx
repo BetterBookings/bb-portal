@@ -4024,6 +4024,23 @@ function fmtTourDate(s,lang){
 /* Tours component */
 function Tours({b,lang}){
   const t=T[lang]||T.EN;
+  const [cxState,setCxState]=useState({});   // annullamento noleggio: {ref: "cancelling"|"cancelled"|"error"}
+  async function cancelCar(ref){
+    const msg=lang==="IT"?"Vuoi annullare questo noleggio auto? Il pagamento verrà rilasciato o rimborsato."
+      :lang==="ES"?"¿Quieres anular este alquiler de coche? El pago será liberado o reembolsado."
+      :lang==="FR"?"Voulez-vous annuler cette location de voiture ? Le paiement sera libéré ou remboursé."
+      :lang==="DE"?"Möchten Sie diesen Mietwagen stornieren? Die Zahlung wird freigegeben oder erstattet."
+      :lang==="NL"?"Wil je deze autohuur annuleren? De betaling wordt vrijgegeven of terugbetaald."
+      :"Do you want to cancel this car rental? The payment will be released or refunded.";
+    if(!window.confirm(msg)) return;
+    setCxState(s=>({...s,[ref]:"cancelling"}));
+    try{
+      const r=await fetch(`${API_CARRENTAL}/cancel`,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({tino_ref:ref,slug:getSlug()})});
+      if(!r.ok) throw new Error(`HTTP ${r.status}`);
+      setCxState(s=>({...s,[ref]:"cancelled"}));
+    }catch(e){ console.error(e); setCxState(s=>({...s,[ref]:"error"})); }
+  }
   const btype = String(b.bookingtype||"1");
   const allDocsReady = String(b.Touralldocumentstatus||b.touralldocumentstatus||"")==="3";
   if(btype==="5"&&!allDocsReady) return null;
@@ -4088,8 +4105,8 @@ function Tours({b,lang}){
         const cin=(cins[i]||"").trim(),cout=(couts[i]||"").trim();
         const open=ticketOpen[i]===true||String(ticketOpen[i]).toLowerCase()==="true";
         const ts=parseTourDate(cin)||0;
-        vouchers.push({type:tt,ok:true,name,cin,cout,url,open,ts});
-        allEvents.push({type:tt,ok:true,name,cin,cout,url,open,ts});
+        vouchers.push({type:tt,ok:true,name,cin,cout,url,open,ts,ref:refs[i]});
+        allEvents.push({type:tt,ok:true,name,cin,cout,url,open,ts,ref:refs[i]});
       });
     }
   }
@@ -4234,6 +4251,16 @@ function Tours({b,lang}){
                 <Ico name="bb-external" size={12} style={{"--bb-ico-line":clr,"--bb-ico-fill":bg}}/>
                 {lang==="IT"?"Apri →":lang==="ES"?"Abrir →":lang==="FR"?"Ouvrir →":lang==="DE"?"Öffnen →":lang==="NL"?"Openen →":"Open →"}
               </a>}
+              {v.type===6&&v.ref&&(cxState[v.ref]==="cancelled"
+                ? <div style={{marginTop:10,fontSize:".75rem",fontWeight:600,color:"#c0392b"}}>✓ {lang==="IT"?"Annullato":lang==="ES"?"Anulado":lang==="FR"?"Annulé":lang==="DE"?"Storniert":lang==="NL"?"Geannuleerd":"Cancelled"}</div>
+                : <button onClick={()=>cancelCar(v.ref)} disabled={cxState[v.ref]==="cancelling"}
+                    style={{marginTop:10,display:"block",background:"none",border:"none",color:"#c0392b",
+                      fontSize:".75rem",fontWeight:600,cursor:cxState[v.ref]==="cancelling"?"default":"pointer",
+                      padding:0,textDecoration:"underline"}}>
+                    {cxState[v.ref]==="cancelling"?(lang==="IT"?"Annullamento…":"Cancelling…")
+                      :cxState[v.ref]==="error"?(lang==="IT"?"Errore, riprova":lang==="ES"?"Error, reintenta":lang==="FR"?"Erreur, réessayer":lang==="DE"?"Fehler, erneut":lang==="NL"?"Fout, opnieuw":"Error, retry")
+                      :(lang==="IT"?"Annulla noleggio":lang==="ES"?"Anular alquiler":lang==="FR"?"Annuler la location":lang==="DE"?"Mietwagen stornieren":lang==="NL"?"Autohuur annuleren":"Cancel rental")}
+                  </button>)}
             </div>
           </div>;
         })}
