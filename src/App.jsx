@@ -3411,6 +3411,14 @@ const CF = {
   NL:{open:"Zoek en boek een auto",title:"Autohuur",pickup:"Ophaallocatie",dropoff:"Inleverlocatie",same:"Zelfde als ophalen",from:"Ophaaldatum en -tijd",to:"Inleverdatum en -tijd",age:"Leeftijd bestuurder",res:"Land van verblijf (ISO)",search:"Zoek auto's",searching:"Zoeken…",results:"Beschikbare auto's",none:"Geen auto's beschikbaar voor deze data / locatie.",total:"Totaal",deposit:"Borg",fuel:"Brandstofbeleid",mileage:"Kilometrage",unlimited:"Onbeperkt km",limited:"km inbegrepen",extraKm:"Extra km",excess:"Eigen risico (schade / diefstal)",cancel:"Annuleringsbeleid",included:"Wat is inbegrepen",extras:"Optionele extra's",onreq:"Op aanvraag — bevestigd door leverancier",driver:"Gegevens bestuurder",fn:"Voornaam",ln:"Achternaam",email:"E-mail",phone:"Telefoon",bdate:"Geboortedatum",bcountry:"Geboorteland (ISO)",rcity:"Woonplaats",rcountry:"Land van verblijf (ISO)",raddr:"Adres",cont:"Doorgaan",back:"Terug",toDriver:"Door naar bestuurder",toPay:"Door naar betaling",payTitle:"Betaling",payNote:"💳 Online betalen met kaart wordt geactiveerd. Je auto en gegevens zijn opgeslagen — zodra actief betaal je hier veilig en wordt de boeking direct bevestigd.",payBtn:"Betalen en boeking bevestigen",doneTitle:"Boeking bevestigd!",doneMsg:"Je ontvangt de bevestigingsgegevens per e-mail.",ref:"Boekingsreferentie",voucher:"Bekijk voucher",close:"Klaar",payErr:"Betaling kon niet worden voltooid. Probeer opnieuw.",bookErr:"Betaling ontvangen maar de boeking is nog in behandeling — ons team bevestigt deze binnenkort.",driverSel:"Hoofdbestuurder",choose:"— kies —",yrs:"jaar",freeCancel:"Gratis annuleren tot",cancelFee:"Annuleringskosten vanaf",nonref:"Niet-restitueerbaar",reqFields:"Selecteer de bestuurder en vul e-mail, telefoon en geboortedatum in."},
   DE:{open:"Auto suchen und buchen",title:"Mietwagen",pickup:"Abholort",dropoff:"Rückgabeort",same:"Wie Abholung",from:"Abholdatum und -zeit",to:"Rückgabedatum und -zeit",age:"Alter des Fahrers",res:"Wohnsitzland (ISO)",search:"Autos suchen",searching:"Suche…",results:"Verfügbare Autos",none:"Keine Autos für diese Daten / diesen Ort verfügbar.",total:"Gesamt",deposit:"Kaution",fuel:"Tankregelung",mileage:"Kilometer",unlimited:"Unbegrenzte km",limited:"km inklusive",extraKm:"Zusätzliche km",excess:"Selbstbeteiligung (Schaden / Diebstahl)",cancel:"Stornobedingungen",included:"Was ist inbegriffen",extras:"Optionale Extras",onreq:"Auf Anfrage — vom Anbieter bestätigt",driver:"Fahrerdaten",fn:"Vorname",ln:"Nachname",email:"E-Mail",phone:"Telefon",bdate:"Geburtsdatum",bcountry:"Geburtsland (ISO)",rcity:"Wohnort",rcountry:"Wohnsitzland (ISO)",raddr:"Adresse",cont:"Weiter",back:"Zurück",toDriver:"Weiter zu Fahrerdaten",toPay:"Weiter zur Zahlung",payTitle:"Zahlung",payNote:"💳 Die Online-Kartenzahlung wird aktiviert. Ihr Auto und Ihre Daten sind gespeichert — sobald aktiv, zahlen Sie hier sicher und die Buchung wird sofort bestätigt.",payBtn:"Bezahlen und Buchung bestätigen",doneTitle:"Buchung bestätigt!",doneMsg:"Sie erhalten die Bestätigungsdetails per E-Mail.",ref:"Buchungsreferenz",voucher:"Gutschein ansehen",close:"Fertig",payErr:"Zahlung konnte nicht abgeschlossen werden. Bitte erneut versuchen.",bookErr:"Zahlung erfolgt, aber die Buchung ist noch ausstehend — unser Team bestätigt sie in Kürze.",driverSel:"Hauptfahrer",choose:"— wählen —",yrs:"Jahre",freeCancel:"Kostenlose Stornierung bis",cancelFee:"Stornogebühr ab",nonref:"Nicht erstattbar",reqFields:"Bitte Fahrer auswählen und E-Mail, Telefon und Geburtsdatum eingeben."},
 };
+const CFX = {
+  EN:{dateErr:"Drop-off must be after pick-up, and dates can't be in the past.",all:"All",auto:"Automatic",manual:"Manual",expired:"This quote is no longer available — please search again.",seats:"seats",bags:"bags",backResults:"Back to results"},
+  IT:{dateErr:"La riconsegna dev'essere dopo il ritiro e le date non possono essere nel passato.",all:"Tutti",auto:"Automatico",manual:"Manuale",expired:"Questa quotazione non è più disponibile — cerca di nuovo.",seats:"posti",bags:"bagagli",backResults:"Torna ai risultati"},
+  ES:{dateErr:"La devolución debe ser posterior a la recogida y las fechas no pueden ser pasadas.",all:"Todos",auto:"Automático",manual:"Manual",expired:"Esta cotización ya no está disponible — busca de nuevo.",seats:"plazas",bags:"maletas",backResults:"Volver a resultados"},
+  FR:{dateErr:"La restitution doit être après la prise en charge et les dates ne peuvent pas être passées.",all:"Tous",auto:"Automatique",manual:"Manuelle",expired:"Cette offre n'est plus disponible — veuillez rechercher à nouveau.",seats:"places",bags:"bagages",backResults:"Retour aux résultats"},
+  NL:{dateErr:"Inleveren moet na ophalen zijn en data mogen niet in het verleden liggen.",all:"Alle",auto:"Automaat",manual:"Handgeschakeld",expired:"Deze offerte is niet meer beschikbaar — zoek opnieuw.",seats:"stoelen",bags:"koffers",backResults:"Terug naar resultaten"},
+  DE:{dateErr:"Rückgabe muss nach Abholung liegen, Daten dürfen nicht in der Vergangenheit sein.",all:"Alle",auto:"Automatik",manual:"Schaltgetriebe",expired:"Dieses Angebot ist nicht mehr verfügbar — bitte erneut suchen.",seats:"Sitze",bags:"Gepäck",backResults:"Zurück zu den Ergebnissen"},
+};
 
 // Lista paesi (ISO 3166-1 alpha-2) per i combo — set comune ai mercati BB.
 const COUNTRIES = [
@@ -3466,6 +3474,7 @@ function loadStripeJs(){
 
 function CarRentalFlow({b,lang,onClose}){
   const cf = CF[lang]||CF.EN;
+  const cfx = CFX[lang]||CFX.EN;
   const money=(m)=> m&&m.amount!=null ? `${Number(m.amount).toFixed(2)} ${m.currency||""}` : "—";
   const carOverride = new URLSearchParams(window.location.search).get("car")||"";
 
@@ -3481,6 +3490,9 @@ function CarRentalFlow({b,lang,onClose}){
   const [cars,setCars]=useState([]);
   const [sel,setSel]=useState(null); const [detail,setDetail]=useState(null);
   const [extras,setExtras]=useState({});   // { [code]: {name, price} } extra selezionati
+  const [searchErr,setSearchErr]=useState("");   // validazione date
+  const [detailErr,setDetailErr]=useState(false); // quotazione scaduta/non disponibile
+  const [filterTx,setFilterTx]=useState("");     // filtro cambio: ""|automatic|manual
 
   // Conducente = SOLO viaggiatori ADULTI dalla sezione "Tutti i Viaggiatori".
   const _ad=(b.adults||0)+(b.addroom?(b.adults2||0):0);
@@ -3517,6 +3529,10 @@ function CarRentalFlow({b,lang,onClose}){
 
   async function runSearch(){
     if(!pickupId||!pDate||!dDate){ return; }
+    // validazione date: riconsegna dopo ritiro, niente passato (margine 1 min)
+    const now=Date.now(); const tp=new Date(pDate).getTime(), td=new Date(dDate).getTime();
+    if(!(td>tp) || tp < now-60000){ setSearchErr(cfx.dateErr); return; }
+    setSearchErr(""); setFilterTx("");
     setBusy(true);
     try{
       const r=await fetch(`${API_CARRENTAL}/search`,{method:"POST",headers:{"Content-Type":"application/json"},
@@ -3526,9 +3542,12 @@ function CarRentalFlow({b,lang,onClose}){
     }catch{ setCars([]); } finally{ setBusy(false); setStep("results"); }
   }
   async function openDetail(car){
-    setSel(car); setDetail(null); setStep("detail"); setBusy(true);
-    try{ const r=await fetch(`${API_CARRENTAL}/quote/${encodeURIComponent(car.id)}?lang=${lang}`); setDetail(r.ok?await r.json():null); }
-    catch{ setDetail(null); } finally{ setBusy(false); }
+    setSel(car); setDetail(null); setDetailErr(false); setStep("detail"); setBusy(true);
+    try{
+      const r=await fetch(`${API_CARRENTAL}/quote/${encodeURIComponent(car.id)}?lang=${lang}`);
+      if(!r.ok){ setDetailErr(true); }
+      else setDetail(await r.json());
+    }catch{ setDetailErr(true); } finally{ setBusy(false); }
   }
   function gotoPay(){
     const d=driver;
@@ -3630,6 +3649,7 @@ function CarRentalFlow({b,lang,onClose}){
             </select>
           </div>
         </div>
+        {searchErr&&<div style={{padding:"0 18px",color:"#c0392b",fontSize:12,fontWeight:600}}>{searchErr}</div>}
         <div style={foot}><button onClick={runSearch} disabled={!pickupId||busy} style={{...primary,opacity:(!pickupId||busy)?.6:1}}>{busy?cf.searching:cf.search}</button></div>
       </>}
 
@@ -3637,13 +3657,26 @@ function CarRentalFlow({b,lang,onClose}){
         <div style={body}>
           {busy&&<div style={{color:"#5b6470",fontSize:14}}>{cf.searching}</div>}
           {!busy&&cars.length===0&&<div style={{color:"#5b6470",fontSize:14}}>{cf.none}</div>}
+          {!busy&&cars.some(c=>c.transmission)&&<div style={{display:"flex",gap:6,marginBottom:10}}>
+            {[["",cfx.all],["automatic",cfx.auto],["manual",cfx.manual]].map(([v,l])=>
+              <button key={v} onClick={()=>setFilterTx(v)} style={{border:"1px solid "+(filterTx===v?"#0a6cff":"#d7dce2"),
+                background:filterTx===v?"#eef5ff":"#fff",color:filterTx===v?"#0a6cff":"#5b6470",borderRadius:20,
+                padding:"5px 12px",fontSize:12,fontWeight:600,cursor:"pointer"}}>{l}</button>)}
+          </div>}
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
-            {cars.map((car,i)=><div key={i} onClick={()=>openDetail(car)} style={{display:"flex",alignItems:"center",gap:10,
-              border:"1px solid #eef0f3",borderRadius:10,padding:"9px 11px",cursor:"pointer"}}>
+            {(filterTx?cars.filter(c=>String(c.transmission||"").toLowerCase()===filterTx):cars).map((car,i)=>
+              <div key={i} onClick={()=>openDetail(car)} style={{display:"flex",alignItems:"center",gap:10,
+                border:"1px solid #eef0f3",borderRadius:10,padding:"9px 11px",cursor:"pointer"}}>
               {car.image&&<img src={car.image} alt="" style={{width:58,height:38,objectFit:"contain"}}/>}
               <div style={{flex:1,minWidth:0}}>
                 <div style={{fontSize:14,fontWeight:600,color:"#1f2730"}}>{car.name}</div>
                 <div style={{fontSize:12,color:"#8a93a0"}}>{car.supplier}{car.onRequest?" · "+cf.onreq:""}</div>
+                <div style={{display:"flex",gap:9,marginTop:3,fontSize:11,color:"#8a93a0",flexWrap:"wrap"}}>
+                  {car.transmission&&<span>⚙ {String(car.transmission).toLowerCase()==="automatic"?cfx.auto:cfx.manual}</span>}
+                  {car.seats&&<span>👤 {car.seats} {cfx.seats}</span>}
+                  {car.baggage&&<span>🧳 {car.baggage}</span>}
+                  {String(car.aircon).toLowerCase()==="true"&&<span>❄ A/C</span>}
+                </div>
               </div>
               <div style={{fontSize:16,fontWeight:700,color:"#1f2730",whiteSpace:"nowrap"}}>{Number(car.price).toFixed(0)} {car.currency}</div>
             </div>)}
@@ -3655,7 +3688,10 @@ function CarRentalFlow({b,lang,onClose}){
       {step==="detail"&&<>
         <div style={body}>
           {busy&&<div style={{color:"#5b6470",fontSize:14}}>{cf.searching}</div>}
-          {sel&&<div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
+          {detailErr&&<div style={{background:"#fff7e6",border:"1px solid #ffd591",color:"#874d00",borderRadius:10,
+            padding:"12px 14px",fontSize:13,marginBottom:12}}>⚠️ {cfx.expired}
+            <div style={{marginTop:10}}><button onClick={()=>setStep("search")} style={{...primary,padding:"8px 16px"}}>{cfx.backResults}</button></div></div>}
+          {sel&&!detailErr&&<div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
             {sel.image&&<img src={sel.image} alt="" style={{width:84,height:54,objectFit:"contain"}}/>}
             <div style={{flex:1}}>
               <div style={{fontSize:17,fontWeight:700,color:"#1f2730"}}>{sel.name}</div>
