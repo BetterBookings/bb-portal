@@ -3910,7 +3910,7 @@ export default function App(){
 /* Parse TourListCSV: TYPE,STATUS,NAME,IMG,LOCATION,CHECKIN,CHECKOUT,TICKETOPEN,URL */
 function parseTourCSV(raw){
   if(!raw||typeof raw!=="string") return null;
-  const typeMap={ACCOMODATION:1,ACCOMMODATION:1,TRANSFER:3,EXPERIENCE:2,FLIGHT:5};
+  const typeMap={ACCOMODATION:1,ACCOMMODATION:1,TRANSFER:3,EXPERIENCE:2,FLIGHT:5,CARRENTAL:6,"CAR RENTAL":6};
   return raw.split("\n").map(s=>s.trim()).filter(Boolean).map(line=>{
     const flm = line.toUpperCase().startsWith("FLIGHT(") || line.toUpperCase().startsWith("FLIGHT (") ? line.match(/^FLIGHT[^:]*:[ \t]*(.+)$/i) : null;
     if(flm) return{type:5,ok:true,name:"Flight",img:"",loc:"",cin:"",cout:"",open:false,url:flm[1].trim()};
@@ -3991,7 +3991,7 @@ function Tours({b,lang}){
       if(s.type===1){
         hotels.push(s);
         allEvents.push({...s,ts:parseTourDate(s.cin)});
-      } else if([2,3,5].includes(s.type)){
+      } else if([2,3,5,6].includes(s.type)){
         vouchers.push(s);
         allEvents.push({...s,ts:parseTourDate(s.cin)});
       }
@@ -4033,7 +4033,7 @@ function Tours({b,lang}){
       b.Linktours.split("\n").forEach((line,i)=>{
         if(String(statuses[i]||"")!=="1") return;
         const tt=parseInt(types[i]||"0",10);
-        if(![2,3,5].includes(tt)) return;
+        if(![2,3,5,6].includes(tt)) return;
         const m=line.match(/^[A-Z]+[ \t]*\((.+?)\)[ \t]*:[ \t]*(.+)$/);
         const name=m?m[1]:line;
         const url=(m&&m[2]&&m[2].trim()!=="TIMETABLE")?m[2].trim():"";
@@ -4059,15 +4059,15 @@ function Tours({b,lang}){
   });
   const days=Object.values(dayMap);
 
-  const typeIcon={1:"🏨",2:"🎫",3:"🚆",5:"✈️"};
-  const typeCls={1:"hotel",2:"experience",3:"transfer",5:"flight"};
+  const typeIcon={1:"🏨",2:"🎫",3:"🚆",5:"✈️",6:"🚗"};
+  const typeCls={1:"hotel",2:"experience",3:"transfer",5:"flight",6:"carrental"};
   const typeLabel={
-    EN:{1:"Accommodation",2:"Experience",3:"Transfer",5:"Flight"},
-    IT:{1:"Alloggio",2:"Esperienza",3:"Trasferimento",5:"Volo"},
-    ES:{1:"Alojamiento",2:"Experiencia",3:"Traslado",5:"Vuelo"},
-    FR:{1:"Hébergement",2:"Expérience",3:"Transfert",5:"Vol"},
-    DE:{1:"Unterkunft",2:"Erlebnis",3:"Transfer",5:"Flug"},
-    NL:{1:"Verblijf",2:"Ervaring",3:"Transfer",5:"Vlucht"},
+    EN:{1:"Accommodation",2:"Experience",3:"Transfer",5:"Flight",6:"Car Rental"},
+    IT:{1:"Alloggio",2:"Esperienza",3:"Trasferimento",5:"Volo",6:"Noleggio Auto"},
+    ES:{1:"Alojamiento",2:"Experiencia",3:"Traslado",5:"Vuelo",6:"Alquiler de Coche"},
+    FR:{1:"Hébergement",2:"Expérience",3:"Transfert",5:"Vol",6:"Location de Voiture"},
+    DE:{1:"Unterkunft",2:"Erlebnis",3:"Transfer",5:"Flug",6:"Mietwagen"},
+    NL:{1:"Verblijf",2:"Ervaring",3:"Transfer",5:"Vlucht",6:"Autohuur"},
   };
   const TL=typeLabel[lang]||typeLabel.EN;
 
