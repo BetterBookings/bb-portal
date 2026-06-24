@@ -7,6 +7,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { IconSprite, Ico } from "./icons.jsx";
 
 /* ─── PALETTE ────────────────────────────────────────── */
@@ -3609,7 +3610,7 @@ function CarRentalFlow({b,lang,onClose}){
     padding:isMobile?0:"4vh 12px",overflowY:isMobile?"hidden":"auto"};
   const sheet={background:"#fff",color:"#1f2730",borderRadius:isMobile?0:16,maxWidth:isMobile?"100%":560,width:"100%",
     boxShadow:"0 20px 60px rgba(0,0,0,.3)",display:"flex",flexDirection:"column",
-    height:isMobile?"100vh":"auto",maxHeight:isMobile?"100vh":"92vh"};
+    height:isMobile?"100%":"auto",maxHeight:isMobile?"100%":"92vh"};
   const head={display:"flex",alignItems:"center",gap:10,padding:"14px 18px",borderBottom:"1px solid #eef0f3",flexShrink:0};
   const body={padding:"16px 18px",overflowY:"auto",flex:1,minHeight:0,WebkitOverflowScrolling:"touch"};
   const foot={display:"flex",gap:10,padding:"12px 18px",borderTop:"1px solid #eef0f3",flexShrink:0};
@@ -3618,7 +3619,7 @@ function CarRentalFlow({b,lang,onClose}){
   const steps=["search","results","detail","driver","payment"];
   const row=(k,v)=> <div style={{display:"flex",justifyContent:"space-between",gap:12,fontSize:13,padding:"5px 0",borderBottom:"1px solid #f4f6f8"}}><span style={{color:"#5b6470"}}>{k}</span><span style={{fontWeight:600,color:"#1f2730",textAlign:"right"}}>{v}</span></div>;
 
-  return <div style={overlay} onClick={onClose}>
+  return createPortal(<div style={overlay} onClick={onClose}>
     <div style={sheet} onClick={e=>e.stopPropagation()}>
       <div style={head}>
         <Ico name="bb-car" size={22}/>
@@ -3814,7 +3815,7 @@ function CarRentalFlow({b,lang,onClose}){
         <div style={foot}><button onClick={onClose} style={primary}>{cf.close}</button></div>
       </>}
     </div>
-  </div>;
+  </div>, document.body);
 }
 
 function Shop({b,lang,services}){
