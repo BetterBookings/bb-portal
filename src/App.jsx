@@ -3485,10 +3485,11 @@ function CarRentalFlow({b,lang,onClose}){
   const [pickupId,setPickupId]=useState(""); const [pickupLabel,setPickupLabel]=useState("");
   const [sameDrop,setSameDrop]=useState(true);
   const [dropId,setDropId]=useState(""); const [dropLabel,setDropLabel]=useState("");
-  // ritiro = arrivo del volo (ARRIVAL 1), riconsegna = partenza del ritorno (DEPARTURE 2);
-  // fallback su check-in/out hotel se non è un pacchetto con volo
-  const [pDate,setPDate]=useState(dtLocal(b.Arrival1||b.checkIn,10)||"");
-  const [dDate,setDDate]=useState(dtLocal(b.departure2||b.checkOut,10)||"");
+  // ritiro = arrivo del volo (ARRIVAL 1), riconsegna = partenza del ritorno (DEPARTURE 2),
+  // con l'ORARIO reale del volo. Solo in assenza di volo si usa check-in/out hotel con
+  // orario di default 10:00 (le date hotel non hanno un orario significativo).
+  const [pDate,setPDate]=useState((b.Arrival1?dtLocal(b.Arrival1):dtLocal(b.checkIn,10))||"");
+  const [dDate,setDDate]=useState((b.departure2?dtLocal(b.departure2):dtLocal(b.checkOut,10))||"");
   const [residence,setResidence]=useState(defCC);
 
   const [step,setStep]=useState("search");
