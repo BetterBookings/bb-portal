@@ -3380,7 +3380,7 @@ function LiveCars({lang,onRequest,fallback}){
           {ss==="sent"
             ? <span style={{fontSize:12,fontWeight:600,color:"#13794a",whiteSpace:"nowrap"}}>{tr.sent}</span>
             : <button onClick={()=>reqCar(i,car)} disabled={ss==="sending"}
-                style={{background:"#0a6cff",color:"#fff",border:"none",padding:"7px 12px",
+                style={{background:"#F15A29",color:"#fff",border:"none",padding:"7px 12px",
                   borderRadius:8,fontWeight:600,fontSize:13,cursor:ss==="sending"?"default":"pointer",opacity:ss==="sending"?.7:1,whiteSpace:"nowrap"}}>
                 {tr.book}
               </button>}
@@ -3478,6 +3478,9 @@ function CarRentalFlow({b,lang,onClose}){
   const cfx = CFX[lang]||CFX.EN;
   const money=(m)=> m&&m.amount!=null ? `${Number(m.amount).toFixed(2)} ${m.currency||""}` : "—";
   const carOverride = new URLSearchParams(window.location.search).get("car")||"";
+  // residenza: paese ospite se noto, altrimenti presunzione dalla lingua della prenotazione
+  const langCC = ({IT:"IT",ES:"ES",FR:"FR",NL:"NL",DE:"DE",EN:"GB"})[lang] || "";
+  const defCC = b.customerCountry || langCC || "IT";
 
   const [pickupId,setPickupId]=useState(""); const [pickupLabel,setPickupLabel]=useState("");
   const [sameDrop,setSameDrop]=useState(true);
@@ -3486,7 +3489,7 @@ function CarRentalFlow({b,lang,onClose}){
   // fallback su check-in/out hotel se non è un pacchetto con volo
   const [pDate,setPDate]=useState(dtLocal(b.Arrival1||b.checkIn,10)||"");
   const [dDate,setDDate]=useState(dtLocal(b.departure2||b.checkOut,10)||"");
-  const [residence,setResidence]=useState(b.customerCountry||"IT");
+  const [residence,setResidence]=useState(defCC);
 
   const [step,setStep]=useState("search");
   const [busy,setBusy]=useState(false);
@@ -3507,8 +3510,8 @@ function CarRentalFlow({b,lang,onClose}){
 
   const [driverIdx,setDriverIdx]=useState(-1);
   const [age,setAge]=useState("30");
-  const [driver,setDriver]=useState({name:"",surname:"",birth_country:b.customerCountry||"IT",residence_city:"",
-    residence_country:b.customerCountry||"IT",residence_address:b.bookerAddress||"",
+  const [driver,setDriver]=useState({name:"",surname:"",birth_country:defCC,residence_city:"",
+    residence_country:defCC,residence_address:b.bookerAddress||"",
     email:(b.guestEmail&&b.guestEmail[0])||"",phone:(b.guestTelephone&&b.guestTelephone[0])||"",birth_date:""});
 
   function selectDriver(idx){
@@ -3625,7 +3628,7 @@ function CarRentalFlow({b,lang,onClose}){
   const head={display:"flex",alignItems:"center",gap:10,padding:"14px 18px",borderBottom:"1px solid #eef0f3",flexShrink:0};
   const body={padding:"16px 18px",overflowY:"auto",flex:1,minHeight:0,WebkitOverflowScrolling:"touch"};
   const foot={display:"flex",gap:10,padding:"12px 18px",borderTop:"1px solid #eef0f3",flexShrink:0};
-  const primary={flex:1,background:"#0a6cff",color:"#fff",border:"none",padding:"11px",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"};
+  const primary={flex:1,background:"#F15A29",color:"#fff",border:"none",padding:"11px",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"};
   const ghost={background:"#eef1f5",color:"#1f2730",border:"none",padding:"11px 16px",borderRadius:10,fontWeight:600,fontSize:14,cursor:"pointer"};
   const steps=["search","results","detail","driver","payment"];
   const row=(k,v)=> <div style={{display:"flex",justifyContent:"space-between",gap:12,fontSize:13,padding:"5px 0",borderBottom:"1px solid #f4f6f8"}}><span style={{color:"#5b6470"}}>{k}</span><span style={{fontWeight:600,color:"#1f2730",textAlign:"right"}}>{v}</span></div>;
@@ -3676,8 +3679,8 @@ function CarRentalFlow({b,lang,onClose}){
           {!busy&&cars.length===0&&<div style={{color:"#5b6470",fontSize:14}}>{cf.none}</div>}
           {!busy&&cars.some(c=>c.transmission)&&<div style={{display:"flex",gap:6,marginBottom:10}}>
             {[["",cfx.all],["automatic",cfx.auto],["manual",cfx.manual]].map(([v,l])=>
-              <button key={v} onClick={()=>setFilterTx(v)} style={{border:"1px solid "+(filterTx===v?"#0a6cff":"#d7dce2"),
-                background:filterTx===v?"#eef5ff":"#fff",color:filterTx===v?"#0a6cff":"#5b6470",borderRadius:20,
+              <button key={v} onClick={()=>setFilterTx(v)} style={{border:"1px solid "+(filterTx===v?"#F15A29":"#d7dce2"),
+                background:filterTx===v?"#FFF2F0":"#fff",color:filterTx===v?"#F15A29":"#5b6470",borderRadius:20,
                 padding:"5px 12px",fontSize:12,fontWeight:600,cursor:"pointer"}}>{l}</button>)}
           </div>}
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
@@ -3714,7 +3717,7 @@ function CarRentalFlow({b,lang,onClose}){
               <div style={{fontSize:17,fontWeight:700,color:"#1f2730"}}>{sel.name}</div>
               <div style={{fontSize:12,color:"#8a93a0"}}>{sel.supplier}{sel.onRequest?" · "+cf.onreq:""}</div>
             </div>
-            <div style={{fontSize:20,fontWeight:800,color:"#0a6cff"}}>{Number(sel.price).toFixed(0)} {sel.currency}</div>
+            <div style={{fontSize:20,fontWeight:800,color:"#F15A29"}}>{Number(sel.price).toFixed(0)} {sel.currency}</div>
           </div>}
           {detail&&<div>
             {row(cf.total, money(detail.rate.total))}
@@ -3755,7 +3758,7 @@ function CarRentalFlow({b,lang,onClose}){
               const base=detail.rate.total&&detail.rate.total.amount?Number(detail.rate.total.amount):0;
               const cur=(detail.rate.total&&detail.rate.total.currency)||"";
               return <div style={{marginTop:10,paddingTop:8,borderTop:"2px solid #eef0f3",display:"flex",
-                justifyContent:"space-between",fontWeight:800,fontSize:15,color:"#0a6cff"}}>
+                justifyContent:"space-between",fontWeight:800,fontSize:15,color:"#F15A29"}}>
                 <span>{cf.total}</span><span>{(base+et).toFixed(2)} {cur}</span></div>;
             })()}
           </div>}
@@ -3820,7 +3823,7 @@ function CarRentalFlow({b,lang,onClose}){
             {confirmed&&confirmed.booking&&confirmed.booking.id&&<div style={{marginTop:14,fontSize:14,color:"#1f2730"}}>{cf.ref}: <b>{confirmed.booking.id}</b></div>}
             {confirmed&&confirmed.booking&&confirmed.booking.voucher_url&&<div style={{marginTop:14}}>
               <a href={confirmed.booking.voucher_url} target="_blank" rel="noopener noreferrer"
-                style={{display:"inline-block",background:"#0a6cff",color:"#fff",textDecoration:"none",padding:"10px 18px",borderRadius:10,fontWeight:700,fontSize:14}}>{cf.voucher}</a></div>}
+                style={{display:"inline-block",background:"#F15A29",color:"#fff",textDecoration:"none",padding:"10px 18px",borderRadius:10,fontWeight:700,fontSize:14}}>{cf.voucher}</a></div>}
           </div>
         </div>
         <div style={foot}><button onClick={onClose} style={primary}>{cf.close}</button></div>
@@ -3879,20 +3882,20 @@ function Shop({b,lang,services}){
             const sentBox=<div style={{textAlign:"center",color:"#13794a",fontWeight:600,padding:"10px 16px",
               background:"#e8f6ef",borderRadius:10,fontSize:14}}>{t.shopSent}</div>;
             const reqBtn=<button onClick={()=>submit(card)} disabled={st==="sending"}
-                style={{background:st==="error"?"#c0392b":"#0a6cff",color:"#fff",border:"none",
+                style={{background:st==="error"?"#c0392b":"#F15A29",color:"#fff",border:"none",
                   padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14,
                   cursor:st==="sending"?"default":"pointer",opacity:st==="sending"?.7:1}}>
                 {st==="sending"?t.shopSending:st==="error"?t.shopErr:t.shopRequest}
               </button>;
             if(card.type==="affiliate")
               return <a href={pick(card.url)||"#"} target="_blank" rel="noopener noreferrer"
-                style={{display:"inline-block",textAlign:"center",background:"#0a6cff",color:"#fff",
+                style={{display:"inline-block",textAlign:"center",background:"#F15A29",color:"#fff",
                   textDecoration:"none",padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14,
                   display:"inline-flex",alignItems:"center",justifyContent:"center",gap:6}}>
                 {t.shopOpen} <Ico name="bb-external" size={14} light/>
               </a>;
             if(card.live)
-              return <button onClick={()=>setFlowOpen(true)} style={{background:"#0a6cff",color:"#fff",border:"none",
+              return <button onClick={()=>setFlowOpen(true)} style={{background:"#F15A29",color:"#fff",border:"none",
                   padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14,cursor:"pointer",
                   display:"inline-flex",alignItems:"center",justifyContent:"center",gap:6}}>
                   <Ico name="bb-search" size={14} light/> {(CF[lang]||CF.EN).open}
