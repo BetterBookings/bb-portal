@@ -3413,12 +3413,12 @@ const CF = {
   DE:{open:"Auto suchen und buchen",title:"Mietwagen",pickup:"Abholort",dropoff:"Rückgabeort",same:"Wie Abholung",from:"Abholdatum und -zeit",to:"Rückgabedatum und -zeit",age:"Alter des Fahrers",res:"Wohnsitzland (ISO)",search:"Autos suchen",searching:"Suche…",results:"Verfügbare Autos",none:"Keine Autos für diese Daten / diesen Ort verfügbar.",total:"Gesamt",deposit:"Kaution",fuel:"Tankregelung",mileage:"Kilometer",unlimited:"Unbegrenzte km",limited:"km inklusive",extraKm:"Zusätzliche km",excess:"Selbstbeteiligung (Schaden / Diebstahl)",cancel:"Stornobedingungen",included:"Was ist inbegriffen",extras:"Optionale Extras",onreq:"Auf Anfrage — vom Anbieter bestätigt",driver:"Fahrerdaten",fn:"Vorname",ln:"Nachname",email:"E-Mail",phone:"Telefon",bdate:"Geburtsdatum",bcountry:"Geburtsland (ISO)",rcity:"Wohnort",rcountry:"Wohnsitzland (ISO)",raddr:"Adresse",cont:"Weiter",back:"Zurück",toDriver:"Weiter zu Fahrerdaten",toPay:"Weiter zur Zahlung",payTitle:"Zahlung",payNote:"💳 Die Online-Kartenzahlung wird aktiviert. Ihr Auto und Ihre Daten sind gespeichert — sobald aktiv, zahlen Sie hier sicher und die Buchung wird sofort bestätigt.",payBtn:"Bezahlen und Buchung bestätigen",doneTitle:"Buchung bestätigt!",doneMsg:"Sie erhalten die Bestätigungsdetails per E-Mail.",ref:"Buchungsreferenz",voucher:"Gutschein ansehen",close:"Fertig",payErr:"Zahlung konnte nicht abgeschlossen werden. Bitte erneut versuchen.",bookErr:"Zahlung erfolgt, aber die Buchung ist noch ausstehend — unser Team bestätigt sie in Kürze.",driverSel:"Hauptfahrer",choose:"— wählen —",yrs:"Jahre",freeCancel:"Kostenlose Stornierung bis",cancelFee:"Stornogebühr ab",nonref:"Nicht erstattbar",reqFields:"Bitte Fahrer auswählen und E-Mail, Telefon und Geburtsdatum eingeben."},
 };
 const CFX = {
-  EN:{dateErr:"Drop-off must be after pick-up, and dates can't be in the past.",all:"All",auto:"Automatic",manual:"Manual",expired:"This quote is no longer available — please search again.",seats:"seats",bags:"bags",backResults:"Back to results"},
-  IT:{dateErr:"La riconsegna dev'essere dopo il ritiro e le date non possono essere nel passato.",all:"Tutti",auto:"Automatico",manual:"Manuale",expired:"Questa quotazione non è più disponibile — cerca di nuovo.",seats:"posti",bags:"bagagli",backResults:"Torna ai risultati"},
-  ES:{dateErr:"La devolución debe ser posterior a la recogida y las fechas no pueden ser pasadas.",all:"Todos",auto:"Automático",manual:"Manual",expired:"Esta cotización ya no está disponible — busca de nuevo.",seats:"plazas",bags:"maletas",backResults:"Volver a resultados"},
-  FR:{dateErr:"La restitution doit être après la prise en charge et les dates ne peuvent pas être passées.",all:"Tous",auto:"Automatique",manual:"Manuelle",expired:"Cette offre n'est plus disponible — veuillez rechercher à nouveau.",seats:"places",bags:"bagages",backResults:"Retour aux résultats"},
-  NL:{dateErr:"Inleveren moet na ophalen zijn en data mogen niet in het verleden liggen.",all:"Alle",auto:"Automaat",manual:"Handgeschakeld",expired:"Deze offerte is niet meer beschikbaar — zoek opnieuw.",seats:"stoelen",bags:"koffers",backResults:"Terug naar resultaten"},
-  DE:{dateErr:"Rückgabe muss nach Abholung liegen, Daten dürfen nicht in der Vergangenheit sein.",all:"Alle",auto:"Automatik",manual:"Schaltgetriebe",expired:"Dieses Angebot ist nicht mehr verfügbar — bitte erneut suchen.",seats:"Sitze",bags:"Gepäck",backResults:"Zurück zu den Ergebnissen"},
+  EN:{dateErr:"Drop-off must be after pick-up, and dates can't be in the past.",all:"All",auto:"Automatic",manual:"Manual",expired:"This quote is no longer available — please search again.",seats:"seats",bags:"bags",backResults:"Back to results",zeroExc:"Zero excess"},
+  IT:{dateErr:"La riconsegna dev'essere dopo il ritiro e le date non possono essere nel passato.",all:"Tutti",auto:"Automatico",manual:"Manuale",expired:"Questa quotazione non è più disponibile — cerca di nuovo.",seats:"posti",bags:"bagagli",backResults:"Torna ai risultati",zeroExc:"Franchigia azzerata"},
+  ES:{dateErr:"La devolución debe ser posterior a la recogida y las fechas no pueden ser pasadas.",all:"Todos",auto:"Automático",manual:"Manual",expired:"Esta cotización ya no está disponible — busca de nuevo.",seats:"plazas",bags:"maletas",backResults:"Volver a resultados",zeroExc:"Franquicia cero"},
+  FR:{dateErr:"La restitution doit être après la prise en charge et les dates ne peuvent pas être passées.",all:"Tous",auto:"Automatique",manual:"Manuelle",expired:"Cette offre n'est plus disponible — veuillez rechercher à nouveau.",seats:"places",bags:"bagages",backResults:"Retour aux résultats",zeroExc:"Sans franchise"},
+  NL:{dateErr:"Inleveren moet na ophalen zijn en data mogen niet in het verleden liggen.",all:"Alle",auto:"Automaat",manual:"Handgeschakeld",expired:"Deze offerte is niet meer beschikbaar — zoek opnieuw.",seats:"stoelen",bags:"koffers",backResults:"Terug naar resultaten",zeroExc:"Geen eigen risico"},
+  DE:{dateErr:"Rückgabe muss nach Abholung liegen, Daten dürfen nicht in der Vergangenheit sein.",all:"Alle",auto:"Automatik",manual:"Schaltgetriebe",expired:"Dieses Angebot ist nicht mehr verfügbar — bitte erneut suchen.",seats:"Sitze",bags:"Gepäck",backResults:"Zurück zu den Ergebnissen",zeroExc:"Ohne Selbstbeteiligung"},
 };
 
 // Lista paesi (ISO 3166-1 alpha-2) per i combo — set comune ai mercati BB.
@@ -3499,6 +3499,7 @@ function CarRentalFlow({b,lang,onClose}){
   const [searchErr,setSearchErr]=useState("");   // validazione date
   const [detailErr,setDetailErr]=useState(false); // quotazione scaduta/non disponibile
   const [filterTx,setFilterTx]=useState("");     // filtro cambio: ""|automatic|manual
+  const [filterZeroExc,setFilterZeroExc]=useState(false); // filtro franchigia azzerata
 
   // Conducente = SOLO viaggiatori ADULTI dalla sezione "Tutti i Viaggiatori".
   const _ad=(b.adults||0)+(b.addroom?(b.adults2||0):0);
@@ -3547,7 +3548,7 @@ function CarRentalFlow({b,lang,onClose}){
     // validazione date: riconsegna dopo ritiro, niente passato (margine 1 min)
     const now=Date.now(); const tp=new Date(pDate).getTime(), td=new Date(dDate).getTime();
     if(!(td>tp) || tp < now-60000){ setSearchErr(cfx.dateErr); return; }
-    setSearchErr(""); setFilterTx("");
+    setSearchErr(""); setFilterTx(""); setFilterZeroExc(false);
     setBusy(true);
     try{
       const r=await fetch(`${API_CARRENTAL}/search`,{method:"POST",headers:{"Content-Type":"application/json"},
@@ -3677,25 +3678,34 @@ function CarRentalFlow({b,lang,onClose}){
         <div style={body}>
           {busy&&<div style={{color:"#5b6470",fontSize:14}}>{cf.searching}</div>}
           {!busy&&cars.length===0&&<div style={{color:"#5b6470",fontSize:14}}>{cf.none}</div>}
-          {!busy&&cars.some(c=>c.transmission)&&<div style={{display:"flex",gap:6,marginBottom:10}}>
-            {[["",cfx.all],["automatic",cfx.auto],["manual",cfx.manual]].map(([v,l])=>
+          {!busy&&cars.length>0&&(cars.some(c=>c.transmission)||cars.some(c=>c.zeroExcess))&&
+            <div style={{display:"flex",gap:6,marginBottom:10,flexWrap:"wrap"}}>
+            {cars.some(c=>c.transmission)&&[["",cfx.all],["automatic",cfx.auto],["manual",cfx.manual]].map(([v,l])=>
               <button key={v} onClick={()=>setFilterTx(v)} style={{border:"1px solid "+(filterTx===v?"#F15A29":"#d7dce2"),
                 background:filterTx===v?"#FFF2F0":"#fff",color:filterTx===v?"#F15A29":"#5b6470",borderRadius:20,
                 padding:"5px 12px",fontSize:12,fontWeight:600,cursor:"pointer"}}>{l}</button>)}
+            {cars.some(c=>c.zeroExcess)&&
+              <button onClick={()=>setFilterZeroExc(v=>!v)} style={{border:"1px solid "+(filterZeroExc?"#F15A29":"#d7dce2"),
+                background:filterZeroExc?"#FFF2F0":"#fff",color:filterZeroExc?"#F15A29":"#5b6470",borderRadius:20,
+                padding:"5px 12px",fontSize:12,fontWeight:600,cursor:"pointer"}}>🛡 {cfx.zeroExc}</button>}
           </div>}
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
-            {(filterTx?cars.filter(c=>String(c.transmission||"").toLowerCase()===filterTx):cars).map((car,i)=>
+            {cars.filter(c=>(!filterTx||String(c.transmission||"").toLowerCase()===filterTx)&&(!filterZeroExc||c.zeroExcess)).map((car,i)=>
               <div key={i} onClick={()=>openDetail(car)} style={{display:"flex",alignItems:"center",gap:10,
                 border:"1px solid #eef0f3",borderRadius:10,padding:"9px 11px",cursor:"pointer"}}>
               {car.image&&<img src={car.image} alt="" style={{width:58,height:38,objectFit:"contain"}}/>}
               <div style={{flex:1,minWidth:0}}>
                 <div style={{fontSize:14,fontWeight:600,color:"#1f2730"}}>{car.name}</div>
-                <div style={{fontSize:12,color:"#8a93a0"}}>{car.supplier}{car.onRequest?" · "+cf.onreq:""}</div>
+                <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:"#8a93a0"}}>
+                  {car.supplierLogo&&<img src={car.supplierLogo} alt="" style={{height:14,maxWidth:54,objectFit:"contain"}}/>}
+                  <span>{car.supplier}{car.onRequest?" · "+cf.onreq:""}</span>
+                </div>
                 <div style={{display:"flex",gap:9,marginTop:3,fontSize:11,color:"#8a93a0",flexWrap:"wrap"}}>
                   {car.transmission&&<span>⚙ {String(car.transmission).toLowerCase()==="automatic"?cfx.auto:cfx.manual}</span>}
                   {car.seats&&<span>👤 {car.seats} {cfx.seats}</span>}
                   {car.baggage&&<span>🧳 {car.baggage}</span>}
                   {String(car.aircon).toLowerCase()==="true"&&<span>❄ A/C</span>}
+                  {car.zeroExcess&&<span style={{color:"#13794a",fontWeight:600}}>🛡 {cfx.zeroExc}</span>}
                 </div>
               </div>
               <div style={{fontSize:16,fontWeight:700,color:"#1f2730",whiteSpace:"nowrap"}}>{Number(car.price).toFixed(0)} {car.currency}</div>
@@ -3715,7 +3725,11 @@ function CarRentalFlow({b,lang,onClose}){
             {sel.image&&<img src={sel.image} alt="" style={{width:84,height:54,objectFit:"contain"}}/>}
             <div style={{flex:1}}>
               <div style={{fontSize:17,fontWeight:700,color:"#1f2730"}}>{sel.name}</div>
-              <div style={{fontSize:12,color:"#8a93a0"}}>{sel.supplier}{sel.onRequest?" · "+cf.onreq:""}</div>
+              <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:"#8a93a0"}}>
+                {sel.supplierLogo&&<img src={sel.supplierLogo} alt="" style={{height:15,maxWidth:60,objectFit:"contain"}}/>}
+                <span>{sel.supplier}{sel.onRequest?" · "+cf.onreq:""}</span>
+              </div>
+              {sel.zeroExcess&&<div style={{fontSize:11,color:"#13794a",fontWeight:600,marginTop:2}}>🛡 {cfx.zeroExc}</div>}
             </div>
             <div style={{fontSize:20,fontWeight:800,color:"#F15A29"}}>{Number(sel.price).toFixed(0)} {sel.currency}</div>
           </div>}
