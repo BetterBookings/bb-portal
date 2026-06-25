@@ -3501,6 +3501,7 @@ function CarRentalFlow({b,lang,onClose}){
   const [detailErr,setDetailErr]=useState(false); // quotazione scaduta/non disponibile
   const [filterTx,setFilterTx]=useState("");     // filtro cambio: ""|automatic|manual
   const [filterZeroExc,setFilterZeroExc]=useState(false); // filtro franchigia azzerata
+  const [filterDebit,setFilterDebit]=useState(false);     // filtro carta di debito accettata
 
   // Conducente = SOLO viaggiatori ADULTI dalla sezione "Tutti i Viaggiatori".
   const _ad=(b.adults||0)+(b.addroom?(b.adults2||0):0);
@@ -3549,7 +3550,7 @@ function CarRentalFlow({b,lang,onClose}){
     // validazione date: riconsegna dopo ritiro, niente passato (margine 1 min)
     const now=Date.now(); const tp=new Date(pDate).getTime(), td=new Date(dDate).getTime();
     if(!(td>tp) || tp < now-60000){ setSearchErr(cfx.dateErr); return; }
-    setSearchErr(""); setFilterTx(""); setFilterZeroExc(false);
+    setSearchErr(""); setFilterTx(""); setFilterZeroExc(false); setFilterDebit(false);
     setBusy(true);
     try{
       const r=await fetch(`${API_CARRENTAL}/search`,{method:"POST",headers:{"Content-Type":"application/json"},
@@ -3688,7 +3689,7 @@ function CarRentalFlow({b,lang,onClose}){
         <div style={body}>
           {busy&&<div style={{color:"#5b6470",fontSize:14}}>{cf.searching}</div>}
           {!busy&&cars.length===0&&<div style={{color:"#5b6470",fontSize:14}}>{cf.none}</div>}
-          {!busy&&cars.length>0&&(cars.some(c=>c.transmission)||cars.some(c=>c.zeroExcess))&&
+          {!busy&&cars.length>0&&(cars.some(c=>c.transmission)||cars.some(c=>c.zeroExcess)||cars.some(c=>c.debitCard))&&
             <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",alignItems:"center"}}>
             {cars.some(c=>c.transmission)&&
               <select value={filterTx} onChange={e=>setFilterTx(e.target.value)} style={chip(!!filterTx)}>
@@ -3698,9 +3699,11 @@ function CarRentalFlow({b,lang,onClose}){
               </select>}
             {cars.some(c=>c.zeroExcess)&&
               <button onClick={()=>setFilterZeroExc(v=>!v)} style={chip(filterZeroExc)}>🛡 {cfx.zeroExc}</button>}
+            {cars.some(c=>c.debitCard)&&
+              <button onClick={()=>setFilterDebit(v=>!v)} style={chip(filterDebit)}>💳 {cfx.debitCard}</button>}
           </div>}
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
-            {cars.filter(c=>(!filterTx||String(c.transmission||"").toLowerCase()===filterTx)&&(!filterZeroExc||c.zeroExcess)).map((car,i)=>
+            {cars.filter(c=>(!filterTx||String(c.transmission||"").toLowerCase()===filterTx)&&(!filterZeroExc||c.zeroExcess)&&(!filterDebit||c.debitCard)).map((car,i)=>
               <div key={i} onClick={()=>openDetail(car)} style={{display:"flex",alignItems:"center",gap:10,
                 border:"1px solid #eef0f3",borderRadius:10,padding:"9px 11px",cursor:"pointer"}}>
               {car.image&&<img src={car.image} alt="" style={{width:58,height:38,objectFit:"contain"}}/>}
