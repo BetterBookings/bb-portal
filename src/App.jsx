@@ -3482,8 +3482,10 @@ function CarRentalFlow({b,lang,onClose}){
   const [pickupId,setPickupId]=useState(""); const [pickupLabel,setPickupLabel]=useState("");
   const [sameDrop,setSameDrop]=useState(true);
   const [dropId,setDropId]=useState(""); const [dropLabel,setDropLabel]=useState("");
-  const [pDate,setPDate]=useState(dtLocal(b.checkIn,10)||"");
-  const [dDate,setDDate]=useState(dtLocal(b.checkOut,10)||"");
+  // ritiro = arrivo del volo (ARRIVAL 1), riconsegna = partenza del ritorno (DEPARTURE 2);
+  // fallback su check-in/out hotel se non è un pacchetto con volo
+  const [pDate,setPDate]=useState(dtLocal(b.Arrival1||b.checkIn,10)||"");
+  const [dDate,setDDate]=useState(dtLocal(b.departure2||b.checkOut,10)||"");
   const [residence,setResidence]=useState(b.customerCountry||"IT");
 
   const [step,setStep]=useState("search");
@@ -3520,12 +3522,21 @@ function CarRentalFlow({b,lang,onClose}){
   useEffect(()=>{ if(adults.length) selectDriver(0); },[]);
 
   useEffect(()=>{
-    const cand = carOverride || (b.flight ? (b.destination||"") : "");
-    if(cand){
-      fetch(`${API_CARRENTAL}/airports?q=${encodeURIComponent(cand)}`).then(r=>r.json()).then(d=>{
-        const a=(d.airports||[])[0]; if(a){ setPickupId(a.id); setPickupLabel(a.name); }
-      }).catch(()=>{});
-    }
+    const raw = carOverride || b.ArrivalAirport || b.destination || b.city || "";
+    if(!raw) return;
+    // i campi aeroporto sono "IATA Nome" (es. "SKG Thessaloniki"): la ricerca vuole
+    // il solo codice IATA o il solo nome → provo prima il codice, poi i fallback.
+    const iata = String(raw).trim().split(/\s+/)[0];
+    const tries = [...new Set([iata, raw, b.city].filter(Boolean))];
+    (async()=>{
+      for(const q of tries){
+        try{
+          const d=await fetch(`${API_CARRENTAL}/airports?q=${encodeURIComponent(q)}`).then(r=>r.json());
+          const a=(d.airports||[])[0];
+          if(a){ setPickupId(a.id); setPickupLabel(a.name); return; }
+        }catch{}
+      }
+    })();
   },[]);
 
   async function runSearch(){
