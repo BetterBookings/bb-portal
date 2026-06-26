@@ -124,6 +124,7 @@ const API_BASE    = "https://review.better-bookings.com/api/ext/offer";
 const API_SERVICES = "https://review.better-bookings.com/api/ext/services";
 const API_SVCREQ   = "https://review.better-bookings.com/api/ext/service-request";
 const API_CARRENTAL = "https://review.better-bookings.com/api/ext/carrental";
+const API_BAGGAGE = "https://review.better-bookings.com/api/ext/baggage";
 const LANG_MAP    = { 1:"EN", 2:"IT", 3:"ES", 4:"EN", 5:"NL", 6:"FR", 7:"DE" };
 const STATUS_CODE = {
   "1":"conf",   // CONFIRMED
@@ -3859,11 +3860,163 @@ function CarRentalFlow({b,lang,onClose}){
   </div>, document.body);
 }
 
+// ═══════════════════ BAGAGLIO EXTRA (semi-automatico) ═══════════════════
+const BF = {
+  EN:{open:"Add baggage",title:"Extra baggage",none:"None",total:"Total",toPay:"Continue to payment",pay:"Pay & request baggage",payTitle:"Payment",doneTitle:"Request received!",doneMsg:"We're adding your baggage to your flight. You'll receive a confirmation email shortly.",close:"Done",pick:"Choose baggage for each passenger",noflight:"Extra baggage is available only for bookings with a flight.",payErr:"Payment could not be completed. Please try again.",bookErr:"Payment authorized but the request is still pending — our team will confirm shortly.",hold:"You'll be charged only once the baggage is confirmed.",airline:"Airline"},
+  IT:{open:"Aggiungi bagaglio",title:"Bagaglio extra",none:"Nessuno",total:"Totale",toPay:"Continua al pagamento",pay:"Paga e richiedi il bagaglio",payTitle:"Pagamento",doneTitle:"Richiesta ricevuta!",doneMsg:"Stiamo aggiungendo il bagaglio al tuo volo. Riceverai a breve un'email di conferma.",close:"Fatto",pick:"Scegli il bagaglio per ogni passeggero",noflight:"Il bagaglio extra è disponibile solo per prenotazioni con volo.",payErr:"Pagamento non riuscito. Riprova.",bookErr:"Pagamento autorizzato ma la richiesta è in attesa — il team confermerà a breve.",hold:"L'addebito avverrà solo a bagaglio confermato.",airline:"Compagnia"},
+  ES:{open:"Añadir equipaje",title:"Equipaje extra",none:"Ninguno",total:"Total",toPay:"Continuar al pago",pay:"Pagar y solicitar equipaje",payTitle:"Pago",doneTitle:"¡Solicitud recibida!",doneMsg:"Estamos añadiendo tu equipaje al vuelo. Recibirás un email de confirmación en breve.",close:"Hecho",pick:"Elige el equipaje para cada pasajero",noflight:"El equipaje extra está disponible solo para reservas con vuelo.",payErr:"No se pudo completar el pago. Inténtalo de nuevo.",bookErr:"Pago autorizado pero la solicitud sigue pendiente — nuestro equipo confirmará en breve.",hold:"Solo se te cobrará cuando el equipaje esté confirmado.",airline:"Aerolínea"},
+  FR:{open:"Ajouter un bagage",title:"Bagage supplémentaire",none:"Aucun",total:"Total",toPay:"Continuer vers le paiement",pay:"Payer et demander le bagage",payTitle:"Paiement",doneTitle:"Demande reçue !",doneMsg:"Nous ajoutons votre bagage à votre vol. Vous recevrez un email de confirmation sous peu.",close:"Terminé",pick:"Choisissez le bagage pour chaque passager",noflight:"Le bagage supplémentaire est disponible uniquement pour les réservations avec vol.",payErr:"Le paiement n'a pas pu aboutir. Veuillez réessayer.",bookErr:"Paiement autorisé mais la demande est en attente — notre équipe confirmera sous peu.",hold:"Vous ne serez débité qu'une fois le bagage confirmé.",airline:"Compagnie"},
+  NL:{open:"Bagage toevoegen",title:"Extra bagage",none:"Geen",total:"Totaal",toPay:"Door naar betaling",pay:"Betalen en bagage aanvragen",payTitle:"Betaling",doneTitle:"Aanvraag ontvangen!",doneMsg:"We voegen je bagage toe aan je vlucht. Je ontvangt binnenkort een bevestigingsmail.",close:"Klaar",pick:"Kies bagage voor elke passagier",noflight:"Extra bagage is alleen beschikbaar voor boekingen met een vlucht.",payErr:"Betaling kon niet worden voltooid. Probeer opnieuw.",bookErr:"Betaling geautoriseerd maar de aanvraag is in behandeling — ons team bevestigt binnenkort.",hold:"Je wordt pas belast zodra de bagage is bevestigd.",airline:"Maatschappij"},
+  DE:{open:"Gepäck hinzufügen",title:"Zusätzliches Gepäck",none:"Keins",total:"Gesamt",toPay:"Weiter zur Zahlung",pay:"Bezahlen & Gepäck anfragen",payTitle:"Zahlung",doneTitle:"Anfrage erhalten!",doneMsg:"Wir fügen Ihr Gepäck zu Ihrem Flug hinzu. Sie erhalten in Kürze eine Bestätigungs-E-Mail.",close:"Fertig",pick:"Wählen Sie das Gepäck für jeden Passagier",noflight:"Zusätzliches Gepäck ist nur für Buchungen mit Flug verfügbar.",payErr:"Zahlung konnte nicht abgeschlossen werden. Bitte erneut versuchen.",bookErr:"Zahlung autorisiert, aber die Anfrage ist noch offen — unser Team bestätigt in Kürze.",hold:"Die Belastung erfolgt erst, wenn das Gepäck bestätigt ist.",airline:"Fluggesellschaft"},
+};
+
+function BaggageFlow({b,lang,onClose}){
+  const bf = BF[lang]||BF.EN;
+  const isMobile = typeof window!=="undefined" && window.matchMedia && window.matchMedia("(max-width:600px)").matches;
+  useEffect(()=>{
+    const prev=document.body.style.overflow; document.body.style.overflow="hidden";
+    const op=document.querySelector(".bb-chat-opener"); const opd=op?op.style.display:"";
+    if(op) op.style.display="none";
+    return ()=>{document.body.style.overflow=prev; if(op) op.style.display=opd;};
+  },[]);
+  const [opts,setOpts]=useState(null);
+  const [loading,setLoading]=useState(true);
+  const [sel,setSel]=useState({});       // {paxIndex: typeCode}
+  const [step,setStep]=useState("select");
+  useEffect(()=>{
+    let dead=false;
+    fetch(`${API_BAGGAGE}/${getSlug()}?lang=${lang}`).then(r=>r.json()).then(d=>{
+      if(!dead){ setOpts(d); setLoading(false); }
+    }).catch(()=>{ if(!dead){ setOpts({configured:false,flight:false,types:[],passengers:[]}); setLoading(false); } });
+    return ()=>{dead=true;};
+  },[]);
+  const types = (opts&&opts.types)||[];
+  const pax = (opts&&opts.passengers)||[];
+  const priceOf=(code)=> ((types.find(t=>t.code===code))||{}).price||0;
+  const selections = Object.entries(sel).filter(([i,t])=>t).map(([i,t])=>({passenger:Number(i),type:t}));
+  const total = selections.reduce((s,x)=>s+priceOf(x.type),0);
+
+  const [pi,setPi]=useState(null);
+  const [payErr,setPayErr]=useState("");
+  const [paying,setPaying]=useState(false);
+  const stripeRef=useRef(null); const elementsRef=useRef(null);
+  useEffect(()=>{
+    if(step!=="payment"||pi) return;
+    let dead=false;
+    (async()=>{
+      setPayErr("");
+      try{
+        const r=await fetch(`${API_BAGGAGE}/payment-intent`,{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({slug:getSlug(),selections,lang})});
+        if(!r.ok) throw new Error("init");
+        const d=await r.json(); if(dead) return; setPi(d);
+        const SF=await loadStripeJs(); if(dead||!SF) return;
+        const stripe=SF(d.publishable_key); stripeRef.current=stripe;
+        const elements=stripe.elements({clientSecret:d.client_secret}); elementsRef.current=elements;
+        const el=elements.create("payment");
+        setTimeout(()=>{ if(!dead&&document.getElementById("bb-bag-pay-el")) el.mount("#bb-bag-pay-el"); },30);
+      }catch(e){ if(!dead) setPayErr(bf.payErr); }
+    })();
+    return ()=>{dead=true;};
+  },[step]);
+  async function payAndBook(){
+    if(!stripeRef.current||!elementsRef.current||!pi) return;
+    setPaying(true); setPayErr("");
+    try{
+      const {error,paymentIntent}=await stripeRef.current.confirmPayment({elements:elementsRef.current,redirect:"if_required"});
+      if(error){ setPayErr(error.message||bf.payErr); setPaying(false); return; }
+      if(!paymentIntent||(paymentIntent.status!=="requires_capture"&&paymentIntent.status!=="succeeded")){ setPayErr(bf.payErr); setPaying(false); return; }
+      const r=await fetch(`${API_BAGGAGE}/book`,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({slug:getSlug(),payment_intent_id:pi.payment_intent_id,selections,lang})});
+      if(!r.ok) throw new Error("book");
+      setStep("done");
+    }catch(e){ setPayErr(bf.bookErr); }
+    finally{ setPaying(false); }
+  }
+
+  const overlay={position:"fixed",inset:0,background:"rgba(15,20,30,.55)",zIndex:9999,display:"flex",justifyContent:"center",
+    alignItems:isMobile?"stretch":"flex-start",padding:isMobile?0:"4vh 12px",overflowY:isMobile?"hidden":"auto"};
+  const sheet={background:"#fff",color:"#1f2730",borderRadius:isMobile?0:16,maxWidth:isMobile?"100%":520,width:"100%",
+    boxShadow:"0 20px 60px rgba(0,0,0,.3)",display:"flex",flexDirection:"column",height:isMobile?"100%":"auto",maxHeight:isMobile?"100%":"92vh"};
+  const head={display:"flex",alignItems:"center",gap:10,padding:"14px 18px",borderBottom:"1px solid #eef0f3",flexShrink:0};
+  const body={padding:"16px 18px",overflowY:"auto",flex:1,minHeight:0,WebkitOverflowScrolling:"touch"};
+  const foot={display:"flex",gap:10,padding:"12px 18px",borderTop:"1px solid #eef0f3",flexShrink:0};
+  const primary={flex:1,background:"#F15A29",color:"#fff",border:"none",padding:"11px",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"};
+  const ghost={background:"#eef1f5",color:"#1f2730",border:"none",padding:"11px 16px",borderRadius:10,fontWeight:600,fontSize:14,cursor:"pointer"};
+  const money=(v)=>`${Number(v).toFixed(2)} €`;
+
+  return createPortal(<div style={overlay} onClick={onClose}>
+    <div style={sheet} onClick={e=>e.stopPropagation()}>
+      <div style={head}>
+        <span style={{fontSize:22}}>🧳</span>
+        <div style={{flex:1,fontSize:16,fontWeight:700}}>{bf.title}</div>
+        <button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#8a93a0",lineHeight:1}}>×</button>
+      </div>
+
+      {step==="select"&&<>
+        <div style={body}>
+          {loading&&<div style={{color:"#5b6470",fontSize:14}}>…</div>}
+          {!loading&&(!opts||!opts.flight||!types.length)&&<div style={{color:"#5b6470",fontSize:14}}>{bf.noflight}</div>}
+          {!loading&&opts&&opts.flight&&types.length>0&&<>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
+              {opts.airlineLogo&&<img src={opts.airlineLogo} alt="" style={{height:18,maxWidth:70,objectFit:"contain"}}/>}
+              <span style={{fontSize:13,color:"#5b6470"}}>{bf.airline}: <strong style={{color:"#1f2730"}}>{opts.airline}</strong></span>
+            </div>
+            <p style={{fontSize:13,color:"#5b6470",margin:"0 0 12px"}}>{bf.pick}</p>
+            {pax.map((p,i)=>
+              <div key={i} style={{marginBottom:12}}>
+                <label style={cfLbl}>{p.name}</label>
+                <select value={sel[i]||""} onChange={e=>setSel(s=>({...s,[i]:e.target.value}))} style={cfInp}>
+                  <option value="">{bf.none}</option>
+                  {types.map(t=><option key={t.code} value={t.code}>{t.label} · {money(t.price)}</option>)}
+                </select>
+              </div>)}
+            <div style={{marginTop:14,paddingTop:10,borderTop:"2px solid #eef0f3",display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:"#F15A29"}}>
+              <span>{bf.total}</span><span>{money(total)}</span>
+            </div>
+            <p style={{fontSize:11,color:"#8a93a0",marginTop:8}}>{bf.hold}</p>
+          </>}
+        </div>
+        <div style={foot}><button onClick={()=>setStep("payment")} disabled={total<=0} style={{...primary,opacity:total>0?1:.5}}>{bf.toPay}</button></div>
+      </>}
+
+      {step==="payment"&&<>
+        <div style={body}>
+          <div style={{fontWeight:700,fontSize:15,marginBottom:6}}>{bf.payTitle}</div>
+          <div style={{display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:"#F15A29",marginBottom:12}}>
+            <span>{bf.total}</span><span>{money(pi?pi.amount:total)}</span>
+          </div>
+          <div id="bb-bag-pay-el"/>
+          {payErr&&<div style={{color:"#c0392b",fontSize:13,marginTop:10}}>{payErr}</div>}
+        </div>
+        <div style={foot}>
+          <button onClick={()=>setStep("select")} style={ghost}>{(CF[lang]||CF.EN).back}</button>
+          <button onClick={payAndBook} disabled={paying||!pi} style={{...primary,opacity:(paying||!pi)?.6:1}}>{paying?"…":bf.pay}</button>
+        </div>
+      </>}
+
+      {step==="done"&&<>
+        <div style={body}><div style={{textAlign:"center",padding:"20px 6px"}}>
+          <div style={{fontSize:40}}>✅</div>
+          <div style={{fontSize:18,fontWeight:700,margin:"8px 0 6px"}}>{bf.doneTitle}</div>
+          <p style={{fontSize:13,color:"#5b6470"}}>{bf.doneMsg}</p>
+        </div></div>
+        <div style={foot}><button onClick={onClose} style={primary}>{bf.close}</button></div>
+      </>}
+    </div>
+  </div>, document.body);
+}
+
 function Shop({b,lang,services}){
   const t = T[lang]||T.EN;
   const [status,setStatus] = useState({});   // { [serviceId]: "sending"|"sent"|"error" }
-  const [flowOpen,setFlowOpen] = useState(false);
+  const [flow,setFlow] = useState(null);     // null | "carrental" | "baggage"
   const isPreview = new URLSearchParams(window.location.search).get("preview")==="services";
+  // deep-link: ?service=baggage|carrental apre direttamente il funnel (es. dalla pagina volo)
+  useEffect(()=>{
+    const s=new URLSearchParams(window.location.search).get("service");
+    if(s==="baggage"||s==="carrental") setFlow(s);
+  },[]);
   const pick = (o)=> (o&&(o[lang]||o.EN))||"";
 
   async function submit(card,note){
@@ -3922,17 +4075,18 @@ function Shop({b,lang,services}){
                 {t.shopOpen} <Ico name="bb-external" size={14} light/>
               </a>;
             if(card.live)
-              return <button onClick={()=>setFlowOpen(true)} style={{background:"#F15A29",color:"#fff",border:"none",
+              return <button onClick={()=>setFlow(card.live)} style={{background:"#F15A29",color:"#fff",border:"none",
                   padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14,cursor:"pointer",
                   display:"inline-flex",alignItems:"center",justifyContent:"center",gap:6}}>
-                  <Ico name="bb-search" size={14} light/> {(CF[lang]||CF.EN).open}
+                  <Ico name="bb-search" size={14} light/> {card.live==="baggage"?(BF[lang]||BF.EN).open:(CF[lang]||CF.EN).open}
                 </button>;
             return st==="sent"?sentBox:reqBtn;
           })()}
         </div>;
       })}
     </div>
-    {flowOpen&&<CarRentalFlow b={b} lang={lang} onClose={()=>setFlowOpen(false)}/>}
+    {flow==="carrental"&&<CarRentalFlow b={b} lang={lang} onClose={()=>setFlow(null)}/>}
+    {flow==="baggage"&&<BaggageFlow b={b} lang={lang} onClose={()=>setFlow(null)}/>}
   </div>;
 }
 
