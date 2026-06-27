@@ -3891,15 +3891,24 @@ function BaggageFlow({b,lang,onClose}){
     return ()=>{dead=true;};
   },[]);
   const legs = (opts&&opts.legs)||[];
-  const pax = (opts&&opts.passengers)||[];
   const included = (opts&&opts.included)||{};
   const iata=(s)=>String(s||"").trim().split(/\s+/)[0];
+  // passeggeri da TravellerDetails (TUTTI, neonati esclusi) — stessa fonte del noleggio
+  const _ad=(b.adults||0)+(b.addroom?(b.adults2||0):0);
+  const _ch=(b.child||0)+(b.addroom?(b.child2||0):0);
+  const _ba=(b.baby||0)+(b.addroom?(b.baby2||0):0);
+  const passengers = parseTravellers(b.TravellerDetails, b.checkIn, {adults:_ad,child:_ch,baby:_ba}).filter(t=>t.ageType!=="infant");
+  const pname=(p)=>`${p.firstName||""} ${p.lastName||""}`.trim();
   const legPrice=(legKey,code)=>{ const lg=legs.find(l=>l.key===legKey); return (((lg&&lg.types)||[]).find(t=>t.code===code)||{}).price||0; };
-  const setSelLeg=(pi,lk,v)=> setSel(s=>({...s,[pi]:{...(s[pi]||{}),[lk]:v}}));
+  // sel: { paxIdx: { legKey: { typeCode: qty } } } — quantità per tipo (più bagagli)
+  const qof=(pi,lk,code)=> (((sel[pi]||{})[lk]||{})[code])||0;
+  const setQ=(pi,lk,code,delta)=> setSel(s=>{ const cur=(((s[pi]||{})[lk]||{})[code])||0; const nv=Math.max(0,Math.min(9,cur+delta));
+    return {...s,[pi]:{...(s[pi]||{}),[lk]:{...((s[pi]||{})[lk]||{}),[code]:nv}}}; });
   const selections=[];
-  Object.entries(sel).forEach(([pi,byLeg])=>Object.entries(byLeg||{}).forEach(([lk,tp])=>{ if(tp) selections.push({passenger:Number(pi),leg:lk,type:tp}); }));
-  const total = selections.reduce((s,x)=>s+legPrice(x.leg,x.type),0);
+  passengers.forEach((p,pi)=> legs.forEach(lg=> (lg.types||[]).forEach(t=>{ const q=qof(pi,lg.key,t.code); if(q>0) selections.push({passenger:pname(p),leg:lg.key,type:t.code,qty:q}); })));
+  const total = selections.reduce((s,x)=>s+legPrice(x.leg,x.type)*x.qty,0);
   const incLine = [included.cabin&&`${included.cabin}× ${bf.cabin}`, included.checked&&`${included.checked}× ${bf.checked}`, included.personal&&`${included.personal}× ${bf.personal}`].filter(Boolean).join(", ");
+  const stepBtn={width:26,height:26,borderRadius:7,border:"1px solid #d7dce2",background:"#fff",color:"#1f2730",fontSize:16,fontWeight:700,cursor:"pointer",lineHeight:1};
 
   const [pi,setPi]=useState(null);
   const [payErr,setPayErr]=useState("");
@@ -3965,19 +3974,24 @@ function BaggageFlow({b,lang,onClose}){
           {!loading&&opts&&opts.flight&&legs.length>0&&<>
             {incLine&&<div style={{background:"#eef6ff",borderRadius:10,padding:"8px 12px",fontSize:12,color:"#1f4e79",marginBottom:12}}>ℹ️ {bf.included}: {incLine}</div>}
             <p style={{fontSize:13,color:"#5b6470",margin:"0 0 12px"}}>{bf.pick}</p>
-            {pax.map((p,pi)=>
-              <div key={pi} style={{marginBottom:14,paddingBottom:10,borderBottom:"1px solid #f0f2f5"}}>
-                <div style={{fontWeight:700,fontSize:14,marginBottom:8,color:"#1f2730"}}>{p.name}</div>
+            {passengers.map((p,pi)=>
+              <div key={pi} style={{marginBottom:14,paddingBottom:10,borderBottom:"1px solid #eef0f3"}}>
+                <div style={{fontWeight:700,fontSize:14,marginBottom:8,color:"#1f2730"}}>{pname(p)}</div>
                 {legs.map(lg=>
-                  <div key={lg.key} style={{marginBottom:8}}>
-                    <label style={{...cfLbl,display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
-                      {lg.airlineLogo&&<img src={lg.airlineLogo} alt="" style={{height:13,maxWidth:48,objectFit:"contain"}}/>}
-                      <span>{lg.key==="out"?bf.outbound:bf.ret}{lg.from&&lg.to?` · ${iata(lg.from)}→${iata(lg.to)}`:""}{lg.airline?` · ${lg.airline}`:""}</span>
-                    </label>
-                    <select value={(sel[pi]&&sel[pi][lg.key])||""} onChange={e=>setSelLeg(pi,lg.key,e.target.value)} style={cfInp}>
-                      <option value="">{bf.none}</option>
-                      {(lg.types||[]).map(t=><option key={t.code} value={t.code}>{t.label} · {money(t.price)}</option>)}
-                    </select>
+                  <div key={lg.key} style={{marginBottom:10,background:"#f8f9fb",borderRadius:10,padding:"8px 10px"}}>
+                    <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap",fontSize:12,fontWeight:600,color:"#5b6470",marginBottom:6}}>
+                      {(lg.airlineLogos||[]).slice(0,2).map((lo,k)=><img key={k} src={lo} alt="" style={{height:13,maxWidth:44,objectFit:"contain"}}/>)}
+                      <span>{lg.key==="out"?bf.outbound:bf.ret}{lg.from&&lg.to?` · ${iata(lg.from)}→${iata(lg.to)}`:""}{(lg.airlines||[]).length?` · ${lg.airlines.join(" + ")}`:""}</span>
+                    </div>
+                    {(lg.types||[]).map(t=>{ const q=qof(pi,lg.key,t.code); return (
+                      <div key={t.code} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"3px 0"}}>
+                        <span style={{fontSize:13,color:"#1f2730"}}>{t.label} · <strong>{money(t.price)}</strong></span>
+                        <div style={{display:"flex",alignItems:"center",gap:8}}>
+                          <button onClick={()=>setQ(pi,lg.key,t.code,-1)} disabled={q<=0} style={{...stepBtn,opacity:q<=0?.4:1}}>−</button>
+                          <span style={{minWidth:14,textAlign:"center",fontWeight:700,fontSize:14}}>{q}</span>
+                          <button onClick={()=>setQ(pi,lg.key,t.code,1)} style={stepBtn}>+</button>
+                        </div>
+                      </div>); })}
                   </div>)}
               </div>)}
             <div style={{marginTop:6,paddingTop:10,borderTop:"2px solid #eef0f3",display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:"#F15A29"}}>
