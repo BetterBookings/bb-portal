@@ -859,6 +859,15 @@ const getSlug = () => {
   return seg && seg.length > 10 ? seg : null;
 };
 
+// Legge un parametro dall'URL in modo robusto: tollera URL malformati tipo
+// "?slug=XXX?preview=services" (? al posto di &) cercando anche nell'href grezzo.
+const getQ = (name) => {
+  const p = new URLSearchParams(window.location.search);
+  if(p.get(name)!=null) return p.get(name);
+  const m = (window.location.href||"").match(new RegExp("[?&]"+name+"=([^&?#]+)"));
+  return m ? decodeURIComponent(m[1]) : null;
+};
+
 /* ─── UI ATOMS ───────────────────────────────────────── */
 const BB_LOGO = "https://better-bookings.com/onewebmedia/Group%20292.png";
 
@@ -4064,10 +4073,10 @@ function Shop({b,lang,services}){
   const t = T[lang]||T.EN;
   const [status,setStatus] = useState({});   // { [serviceId]: "sending"|"sent"|"error" }
   const [flow,setFlow] = useState(null);     // null | "carrental" | "baggage"
-  const isPreview = new URLSearchParams(window.location.search).get("preview")==="services";
+  const isPreview = getQ("preview")==="services";
   // deep-link: ?service=baggage|carrental apre direttamente il funnel (es. dalla pagina volo)
   useEffect(()=>{
-    const s=new URLSearchParams(window.location.search).get("service");
+    const s=getQ("service");
     if(s==="baggage"||s==="carrental") setFlow(s);
   },[]);
   const pick = (o)=> (o&&(o[lang]||o.EN))||"";
@@ -4175,7 +4184,7 @@ export default function App(){
         setState("ready");
         // Servizi addizionali — gate lato server: lista vuota se SERVICES_ENABLED
         // è spento e non c'è ?preview=services nell'URL (invisibile ai clienti).
-        const prev=new URLSearchParams(window.location.search).get("preview")||"";
+        const prev=getQ("preview")||"";
         fetch(`${API_SERVICES}/${slug}${prev?`?preview=${encodeURIComponent(prev)}`:""}`)
           .then(r=>r.ok?r.json():{services:[]})
           .then(d=>setServices(Array.isArray(d?.services)?d.services:[]))
