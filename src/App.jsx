@@ -3862,12 +3862,12 @@ function CarRentalFlow({b,lang,onClose}){
 
 // ═══════════════════ BAGAGLIO EXTRA (semi-automatico) ═══════════════════
 const BF = {
-  EN:{open:"Add baggage",title:"Extra baggage",none:"None",total:"Total",toPay:"Continue to payment",pay:"Pay & request baggage",payTitle:"Payment",doneTitle:"Request received!",doneMsg:"We're adding your baggage to your flight. You'll receive a confirmation email shortly.",close:"Done",pick:"Choose baggage per passenger and flight",noflight:"Extra baggage is available only for bookings with a flight.",payErr:"Payment could not be completed. Please try again.",bookErr:"Payment authorized but the request is still pending — our team will confirm shortly.",hold:"You'll be charged only once the baggage is confirmed.",airline:"Airline",outbound:"Outbound",ret:"Return",included:"Already included",cabin:"cabin bag",checked:"checked bag",personal:"personal item"},
-  IT:{open:"Aggiungi bagaglio",title:"Bagaglio extra",none:"Nessuno",total:"Totale",toPay:"Continua al pagamento",pay:"Paga e richiedi il bagaglio",payTitle:"Pagamento",doneTitle:"Richiesta ricevuta!",doneMsg:"Stiamo aggiungendo il bagaglio al tuo volo. Riceverai a breve un'email di conferma.",close:"Fatto",pick:"Scegli il bagaglio per ogni passeggero e volo",noflight:"Il bagaglio extra è disponibile solo per prenotazioni con volo.",payErr:"Pagamento non riuscito. Riprova.",bookErr:"Pagamento autorizzato ma la richiesta è in attesa — il team confermerà a breve.",hold:"L'addebito avverrà solo a bagaglio confermato.",airline:"Compagnia",outbound:"Andata",ret:"Ritorno",included:"Già inclusi",cabin:"bagaglio a mano",checked:"bagaglio in stiva",personal:"oggetto personale"},
-  ES:{open:"Añadir equipaje",title:"Equipaje extra",none:"Ninguno",total:"Total",toPay:"Continuar al pago",pay:"Pagar y solicitar equipaje",payTitle:"Pago",doneTitle:"¡Solicitud recibida!",doneMsg:"Estamos añadiendo tu equipaje al vuelo. Recibirás un email de confirmación en breve.",close:"Hecho",pick:"Elige el equipaje por pasajero y vuelo",noflight:"El equipaje extra está disponible solo para reservas con vuelo.",payErr:"No se pudo completar el pago. Inténtalo de nuevo.",bookErr:"Pago autorizado pero la solicitud sigue pendiente — nuestro equipo confirmará en breve.",hold:"Solo se te cobrará cuando el equipaje esté confirmado.",airline:"Aerolínea",outbound:"Ida",ret:"Vuelta",included:"Ya incluidos",cabin:"equipaje de mano",checked:"equipaje facturado",personal:"objeto personal"},
-  FR:{open:"Ajouter un bagage",title:"Bagage supplémentaire",none:"Aucun",total:"Total",toPay:"Continuer vers le paiement",pay:"Payer et demander le bagage",payTitle:"Paiement",doneTitle:"Demande reçue !",doneMsg:"Nous ajoutons votre bagage à votre vol. Vous recevrez un email de confirmation sous peu.",close:"Terminé",pick:"Choisissez le bagage par passager et par vol",noflight:"Le bagage supplémentaire est disponible uniquement pour les réservations avec vol.",payErr:"Le paiement n'a pas pu aboutir. Veuillez réessayer.",bookErr:"Paiement autorisé mais la demande est en attente — notre équipe confirmera sous peu.",hold:"Vous ne serez débité qu'une fois le bagage confirmé.",airline:"Compagnie",outbound:"Aller",ret:"Retour",included:"Déjà inclus",cabin:"bagage cabine",checked:"bagage en soute",personal:"objet personnel"},
-  NL:{open:"Bagage toevoegen",title:"Extra bagage",none:"Geen",total:"Totaal",toPay:"Door naar betaling",pay:"Betalen en bagage aanvragen",payTitle:"Betaling",doneTitle:"Aanvraag ontvangen!",doneMsg:"We voegen je bagage toe aan je vlucht. Je ontvangt binnenkort een bevestigingsmail.",close:"Klaar",pick:"Kies bagage per passagier en vlucht",noflight:"Extra bagage is alleen beschikbaar voor boekingen met een vlucht.",payErr:"Betaling kon niet worden voltooid. Probeer opnieuw.",bookErr:"Betaling geautoriseerd maar de aanvraag is in behandeling — ons team bevestigt binnenkort.",hold:"Je wordt pas belast zodra de bagage is bevestigd.",airline:"Maatschappij",outbound:"Heen",ret:"Terug",included:"Al inbegrepen",cabin:"handbagage",checked:"ruimbagage",personal:"persoonlijk item"},
-  DE:{open:"Gepäck hinzufügen",title:"Zusätzliches Gepäck",none:"Keins",total:"Gesamt",toPay:"Weiter zur Zahlung",pay:"Bezahlen & Gepäck anfragen",payTitle:"Zahlung",doneTitle:"Anfrage erhalten!",doneMsg:"Wir fügen Ihr Gepäck zu Ihrem Flug hinzu. Sie erhalten in Kürze eine Bestätigungs-E-Mail.",close:"Fertig",pick:"Wählen Sie das Gepäck pro Passagier und Flug",noflight:"Zusätzliches Gepäck ist nur für Buchungen mit Flug verfügbar.",payErr:"Zahlung konnte nicht abgeschlossen werden. Bitte erneut versuchen.",bookErr:"Zahlung autorisiert, aber die Anfrage ist noch offen — unser Team bestätigt in Kürze.",hold:"Die Belastung erfolgt erst, wenn das Gepäck bestätigt ist.",airline:"Fluggesellschaft",outbound:"Hinflug",ret:"Rückflug",included:"Bereits enthalten",cabin:"Handgepäck",checked:"Aufgabegepäck",personal:"persönlicher Gegenstand"},
+  EN:{open:"Add baggage",title:"Extra baggage",none:"None",total:"Total",toPay:"Continue to payment",pay:"Pay & request baggage",payTitle:"Payment",doneTitle:"Request received!",doneMsg:"We're adding your baggage to your flight. You'll receive a confirmation email shortly.",close:"Done",pick:"Choose baggage per passenger and flight",noflight:"Extra baggage is available only for bookings with a flight.",payErr:"Payment could not be completed. Please try again.",bookErr:"Payment authorized but the request is still pending — our team will confirm shortly.",hold:"You'll be charged only once the baggage is confirmed.",airline:"Airline",outbound:"Outbound",ret:"Return",included:"Already included",cabin:"cabin bag",checked:"checked bag",personal:"personal item",retDiff:"Different baggage for the return",wholeTrip:"Outbound & return"},
+  IT:{open:"Aggiungi bagaglio",title:"Bagaglio extra",none:"Nessuno",total:"Totale",toPay:"Continua al pagamento",pay:"Paga e richiedi il bagaglio",payTitle:"Pagamento",doneTitle:"Richiesta ricevuta!",doneMsg:"Stiamo aggiungendo il bagaglio al tuo volo. Riceverai a breve un'email di conferma.",close:"Fatto",pick:"Scegli il bagaglio per ogni passeggero e volo",noflight:"Il bagaglio extra è disponibile solo per prenotazioni con volo.",payErr:"Pagamento non riuscito. Riprova.",bookErr:"Pagamento autorizzato ma la richiesta è in attesa — il team confermerà a breve.",hold:"L'addebito avverrà solo a bagaglio confermato.",airline:"Compagnia",outbound:"Andata",ret:"Ritorno",included:"Già inclusi",cabin:"bagaglio a mano",checked:"bagaglio in stiva",personal:"oggetto personale",retDiff:"Bagagli diversi al ritorno",wholeTrip:"Andata e ritorno"},
+  ES:{open:"Añadir equipaje",title:"Equipaje extra",none:"Ninguno",total:"Total",toPay:"Continuar al pago",pay:"Pagar y solicitar equipaje",payTitle:"Pago",doneTitle:"¡Solicitud recibida!",doneMsg:"Estamos añadiendo tu equipaje al vuelo. Recibirás un email de confirmación en breve.",close:"Hecho",pick:"Elige el equipaje por pasajero y vuelo",noflight:"El equipaje extra está disponible solo para reservas con vuelo.",payErr:"No se pudo completar el pago. Inténtalo de nuevo.",bookErr:"Pago autorizado pero la solicitud sigue pendiente — nuestro equipo confirmará en breve.",hold:"Solo se te cobrará cuando el equipaje esté confirmado.",airline:"Aerolínea",outbound:"Ida",ret:"Vuelta",included:"Ya incluidos",cabin:"equipaje de mano",checked:"equipaje facturado",personal:"objeto personal",retDiff:"Equipaje diferente a la vuelta",wholeTrip:"Ida y vuelta"},
+  FR:{open:"Ajouter un bagage",title:"Bagage supplémentaire",none:"Aucun",total:"Total",toPay:"Continuer vers le paiement",pay:"Payer et demander le bagage",payTitle:"Paiement",doneTitle:"Demande reçue !",doneMsg:"Nous ajoutons votre bagage à votre vol. Vous recevrez un email de confirmation sous peu.",close:"Terminé",pick:"Choisissez le bagage par passager et par vol",noflight:"Le bagage supplémentaire est disponible uniquement pour les réservations avec vol.",payErr:"Le paiement n'a pas pu aboutir. Veuillez réessayer.",bookErr:"Paiement autorisé mais la demande est en attente — notre équipe confirmera sous peu.",hold:"Vous ne serez débité qu'une fois le bagage confirmé.",airline:"Compagnie",outbound:"Aller",ret:"Retour",included:"Déjà inclus",cabin:"bagage cabine",checked:"bagage en soute",personal:"objet personnel",retDiff:"Bagages différents au retour",wholeTrip:"Aller-retour"},
+  NL:{open:"Bagage toevoegen",title:"Extra bagage",none:"Geen",total:"Totaal",toPay:"Door naar betaling",pay:"Betalen en bagage aanvragen",payTitle:"Betaling",doneTitle:"Aanvraag ontvangen!",doneMsg:"We voegen je bagage toe aan je vlucht. Je ontvangt binnenkort een bevestigingsmail.",close:"Klaar",pick:"Kies bagage per passagier en vlucht",noflight:"Extra bagage is alleen beschikbaar voor boekingen met een vlucht.",payErr:"Betaling kon niet worden voltooid. Probeer opnieuw.",bookErr:"Betaling geautoriseerd maar de aanvraag is in behandeling — ons team bevestigt binnenkort.",hold:"Je wordt pas belast zodra de bagage is bevestigd.",airline:"Maatschappij",outbound:"Heen",ret:"Terug",included:"Al inbegrepen",cabin:"handbagage",checked:"ruimbagage",personal:"persoonlijk item",retDiff:"Andere bagage voor terugreis",wholeTrip:"Heen & terug"},
+  DE:{open:"Gepäck hinzufügen",title:"Zusätzliches Gepäck",none:"Keins",total:"Gesamt",toPay:"Weiter zur Zahlung",pay:"Bezahlen & Gepäck anfragen",payTitle:"Zahlung",doneTitle:"Anfrage erhalten!",doneMsg:"Wir fügen Ihr Gepäck zu Ihrem Flug hinzu. Sie erhalten in Kürze eine Bestätigungs-E-Mail.",close:"Fertig",pick:"Wählen Sie das Gepäck pro Passagier und Flug",noflight:"Zusätzliches Gepäck ist nur für Buchungen mit Flug verfügbar.",payErr:"Zahlung konnte nicht abgeschlossen werden. Bitte erneut versuchen.",bookErr:"Zahlung autorisiert, aber die Anfrage ist noch offen — unser Team bestätigt in Kürze.",hold:"Die Belastung erfolgt erst, wenn das Gepäck bestätigt ist.",airline:"Fluggesellschaft",outbound:"Hinflug",ret:"Rückflug",included:"Bereits enthalten",cabin:"Handgepäck",checked:"Aufgabegepäck",personal:"persönlicher Gegenstand",retDiff:"Anderes Gepäck für Rückflug",wholeTrip:"Hin- & Rückflug"},
 };
 
 function BaggageFlow({b,lang,onClose}){
@@ -3881,7 +3881,8 @@ function BaggageFlow({b,lang,onClose}){
   },[]);
   const [opts,setOpts]=useState(null);
   const [loading,setLoading]=useState(true);
-  const [sel,setSel]=useState({});       // {paxIndex: typeCode}
+  const [sel,setSel]=useState({});       // {paxIdx:{legKey:{typeCode:qty}}} (legKey: "trip"|"out"|"ret")
+  const [retDiff,setRetDiff]=useState({}); // {paxIdx: bool} → ritorno con bagagli diversi
   const [step,setStep]=useState("select");
   useEffect(()=>{
     let dead=false;
@@ -3900,15 +3901,42 @@ function BaggageFlow({b,lang,onClose}){
   const passengers = parseTravellers(b.TravellerDetails, b.checkIn, {adults:_ad,child:_ch,baby:_ba}).filter(t=>t.ageType!=="infant");
   const pname=(p)=>`${p.firstName||""} ${p.lastName||""}`.trim();
   const legPrice=(legKey,code)=>{ const lg=legs.find(l=>l.key===legKey); return (((lg&&lg.types)||[]).find(t=>t.code===code)||{}).price||0; };
-  // sel: { paxIdx: { legKey: { typeCode: qty } } } — quantità per tipo (più bagagli)
+  const hasReturn = legs.some(l=>l.key==="ret");
+  // "trip" = andata e ritorno insieme: tipi = unione delle tratte, prezzo = somma delle tratte che lo offrono
+  const TYPE_ORD=["cabin","checked_10","checked_15","checked_20","checked_23"];
+  const tripTypes = (()=>{
+    const codes=[...new Set(legs.flatMap(l=>(l.types||[]).map(t=>t.code)))].sort((a,b)=>TYPE_ORD.indexOf(a)-TYPE_ORD.indexOf(b));
+    return codes.map(code=>({code, label:(legs.flatMap(l=>l.types||[]).find(t=>t.code===code)||{}).label, price:legs.reduce((s,l)=>s+legPrice(l.key,code),0)}));
+  })();
+  const tripLegsFor=(code)=> legs.filter(l=>(l.types||[]).some(t=>t.code===code)).map(l=>l.key);
+  // sel: { paxIdx: { legKey: { typeCode: qty } } } — legKey: "trip" | "out" | "ret"
   const qof=(pi,lk,code)=> (((sel[pi]||{})[lk]||{})[code])||0;
   const setQ=(pi,lk,code,delta)=> setSel(s=>{ const cur=(((s[pi]||{})[lk]||{})[code])||0; const nv=Math.max(0,Math.min(9,cur+delta));
     return {...s,[pi]:{...(s[pi]||{}),[lk]:{...((s[pi]||{})[lk]||{}),[code]:nv}}}; });
   const selections=[];
-  passengers.forEach((p,pi)=> legs.forEach(lg=> (lg.types||[]).forEach(t=>{ const q=qof(pi,lg.key,t.code); if(q>0) selections.push({passenger:pname(p),leg:lg.key,type:t.code,qty:q}); })));
+  passengers.forEach((p,pi)=>{
+    if(retDiff[pi]&&hasReturn){
+      legs.forEach(lg=> (lg.types||[]).forEach(t=>{ const q=qof(pi,lg.key,t.code); if(q>0) selections.push({passenger:pname(p),leg:lg.key,type:t.code,qty:q}); }));
+    } else {
+      tripTypes.forEach(t=>{ const q=qof(pi,"trip",t.code); if(q>0) tripLegsFor(t.code).forEach(lk=> selections.push({passenger:pname(p),leg:lk,type:t.code,qty:q})); });
+    }
+  });
   const total = selections.reduce((s,x)=>s+legPrice(x.leg,x.type)*x.qty,0);
   const incLine = [included.cabin&&`${included.cabin}× ${bf.cabin}`, included.checked&&`${included.checked}× ${bf.checked}`, included.personal&&`${included.personal}× ${bf.personal}`].filter(Boolean).join(", ");
   const stepBtn={width:26,height:26,borderRadius:7,border:"1px solid #d7dce2",background:"#fff",color:"#1f2730",fontSize:16,fontWeight:700,cursor:"pointer",lineHeight:1};
+  const typeRows=(pi,lk,types)=> (types||[]).map(t=>{ const q=qof(pi,lk,t.code); return (
+    <div key={t.code} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"3px 0"}}>
+      <span style={{fontSize:13,color:"#1f2730"}}>{t.label} · <strong>{Number(t.price).toFixed(2)} €</strong></span>
+      <div style={{display:"flex",alignItems:"center",gap:8}}>
+        <button onClick={()=>setQ(pi,lk,t.code,-1)} disabled={q<=0} style={{...stepBtn,opacity:q<=0?.4:1}}>−</button>
+        <span style={{minWidth:14,textAlign:"center",fontWeight:700,fontSize:14}}>{q}</span>
+        <button onClick={()=>setQ(pi,lk,t.code,1)} style={stepBtn}>+</button>
+      </div>
+    </div>); });
+  const legHeader=(lg)=> <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap",fontSize:12,fontWeight:600,color:"#5b6470",marginBottom:6}}>
+    {(lg.airlineLogos||[]).slice(0,2).map((lo,k)=><img key={k} src={lo} alt="" style={{height:13,maxWidth:44,objectFit:"contain"}}/>)}
+    <span>{lg.key==="out"?bf.outbound:bf.ret}{lg.from&&lg.to?` · ${iata(lg.from)}→${iata(lg.to)}`:""}{(lg.airlines||[]).length?` · ${lg.airlines.join(" + ")}`:""}</span>
+  </div>;
 
   const [pi,setPi]=useState(null);
   const [payErr,setPayErr]=useState("");
@@ -3976,23 +4004,23 @@ function BaggageFlow({b,lang,onClose}){
             <p style={{fontSize:13,color:"#5b6470",margin:"0 0 12px"}}>{bf.pick}</p>
             {passengers.map((p,pi)=>
               <div key={pi} style={{marginBottom:14,paddingBottom:10,borderBottom:"1px solid #eef0f3"}}>
-                <div style={{fontWeight:700,fontSize:14,marginBottom:8,color:"#1f2730"}}>{pname(p)}</div>
-                {legs.map(lg=>
-                  <div key={lg.key} style={{marginBottom:10,background:"#f8f9fb",borderRadius:10,padding:"8px 10px"}}>
-                    <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap",fontSize:12,fontWeight:600,color:"#5b6470",marginBottom:6}}>
-                      {(lg.airlineLogos||[]).slice(0,2).map((lo,k)=><img key={k} src={lo} alt="" style={{height:13,maxWidth:44,objectFit:"contain"}}/>)}
-                      <span>{lg.key==="out"?bf.outbound:bf.ret}{lg.from&&lg.to?` · ${iata(lg.from)}→${iata(lg.to)}`:""}{(lg.airlines||[]).length?` · ${lg.airlines.join(" + ")}`:""}</span>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,marginBottom:8,flexWrap:"wrap"}}>
+                  <div style={{fontWeight:700,fontSize:14,color:"#1f2730"}}>{pname(p)}</div>
+                  {hasReturn&&<label style={{display:"flex",alignItems:"center",gap:5,fontSize:11,color:"#5b6470",cursor:"pointer"}}>
+                    <input type="checkbox" checked={!!retDiff[pi]} onChange={e=>setRetDiff(s=>({...s,[pi]:e.target.checked}))}/> {bf.retDiff}
+                  </label>}
+                </div>
+                {(!hasReturn||!retDiff[pi])
+                  ? <div style={{background:"#f8f9fb",borderRadius:10,padding:"8px 10px"}}>
+                      {hasReturn&&<div style={{fontSize:12,fontWeight:600,color:"#5b6470",marginBottom:6}}>✈ {bf.wholeTrip}</div>}
+                      {!hasReturn&&legHeader(legs[0]||{})}
+                      {typeRows(pi,"trip",tripTypes)}
                     </div>
-                    {(lg.types||[]).map(t=>{ const q=qof(pi,lg.key,t.code); return (
-                      <div key={t.code} style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,padding:"3px 0"}}>
-                        <span style={{fontSize:13,color:"#1f2730"}}>{t.label} · <strong>{money(t.price)}</strong></span>
-                        <div style={{display:"flex",alignItems:"center",gap:8}}>
-                          <button onClick={()=>setQ(pi,lg.key,t.code,-1)} disabled={q<=0} style={{...stepBtn,opacity:q<=0?.4:1}}>−</button>
-                          <span style={{minWidth:14,textAlign:"center",fontWeight:700,fontSize:14}}>{q}</span>
-                          <button onClick={()=>setQ(pi,lg.key,t.code,1)} style={stepBtn}>+</button>
-                        </div>
-                      </div>); })}
-                  </div>)}
+                  : legs.map(lg=>
+                      <div key={lg.key} style={{marginBottom:10,background:"#f8f9fb",borderRadius:10,padding:"8px 10px"}}>
+                        {legHeader(lg)}
+                        {typeRows(pi,lg.key,lg.types)}
+                      </div>)}
               </div>)}
             <div style={{marginTop:6,paddingTop:10,borderTop:"2px solid #eef0f3",display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:"#F15A29"}}>
               <span>{bf.total}</span><span>{money(total)}</span>
