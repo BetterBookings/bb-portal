@@ -848,13 +848,14 @@ const travIconConf = (gender, ageType) => TRAV_ICON[`${gender}-${ageType}`]||TRA
 
 
 const getSlug = () => {
+  const clean = (s)=> s ? String(s).split(/[?#]/)[0].trim() : s;  // mai query/hash nello slug
   const path = window.location.pathname;
   // supports /manage/booking/SLUG or /booking/SLUG or /b/SLUG
   const m = path.match(/\/(manage\/booking|booking|portal|b)\/([^/?#]+)/);
-  if(m) return m[2];
+  if(m) return clean(m[2]);
   const p = new URLSearchParams(window.location.search);
-  if(p.get("slug")) return p.get("slug");
-  const seg = path.split("/").filter(Boolean).pop();
+  if(p.get("slug")) return clean(p.get("slug"));
+  const seg = clean(path.split("/").filter(Boolean).pop());
   return seg && seg.length > 10 ? seg : null;
 };
 
@@ -3949,17 +3950,16 @@ function BaggageFlow({b,lang,onClose}){
     (async()=>{
       setPayErr("");
       try{
-        const _slug=slugRef.current;
         const r=await fetch(`${API_BAGGAGE}/payment-intent`,{method:"POST",headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({slug:_slug,selections,lang})});
-        if(!r.ok){ const tt=await r.text().catch(()=>""); throw new Error("slug=["+_slug+"] sel="+selections.length+" HTTP "+r.status+" "+String(tt).slice(0,100)); }
+          body:JSON.stringify({slug:slugRef.current,selections,lang})});
+        if(!r.ok) throw new Error("init");
         const d=await r.json(); if(dead) return; setPi(d);
-        const SF=await loadStripeJs(); if(dead) return; if(!SF) throw new Error("Stripe.js non caricato");
+        const SF=await loadStripeJs(); if(dead||!SF) return;
         const stripe=SF(d.publishable_key); stripeRef.current=stripe;
         const elements=stripe.elements({clientSecret:d.client_secret}); elementsRef.current=elements;
         const el=elements.create("payment");
         setTimeout(()=>{ if(!dead&&document.getElementById("bb-bag-pay-el")) el.mount("#bb-bag-pay-el"); },30);
-      }catch(e){ if(!dead) setPayErr(bf.payErr+(e&&e.message?` — ${e.message}`:"")); }
+      }catch(e){ if(!dead) setPayErr(bf.payErr); }
     })();
     return ()=>{dead=true;};
   },[step]);
