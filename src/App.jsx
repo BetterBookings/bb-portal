@@ -3950,14 +3950,14 @@ function BaggageFlow({b,lang,onClose}){
       try{
         const r=await fetch(`${API_BAGGAGE}/payment-intent`,{method:"POST",headers:{"Content-Type":"application/json"},
           body:JSON.stringify({slug:getSlug(),selections,lang})});
-        if(!r.ok) throw new Error("init");
+        if(!r.ok){ const tt=await r.text().catch(()=>""); throw new Error("HTTP "+r.status+" "+String(tt).slice(0,140)); }
         const d=await r.json(); if(dead) return; setPi(d);
-        const SF=await loadStripeJs(); if(dead||!SF) return;
+        const SF=await loadStripeJs(); if(dead) return; if(!SF) throw new Error("Stripe.js non caricato");
         const stripe=SF(d.publishable_key); stripeRef.current=stripe;
         const elements=stripe.elements({clientSecret:d.client_secret}); elementsRef.current=elements;
         const el=elements.create("payment");
         setTimeout(()=>{ if(!dead&&document.getElementById("bb-bag-pay-el")) el.mount("#bb-bag-pay-el"); },30);
-      }catch(e){ if(!dead) setPayErr(bf.payErr); }
+      }catch(e){ if(!dead) setPayErr(bf.payErr+(e&&e.message?` — ${e.message}`:"")); }
     })();
     return ()=>{dead=true;};
   },[step]);
