@@ -3884,9 +3884,10 @@ function BaggageFlow({b,lang,onClose}){
   const [sel,setSel]=useState({});       // {paxIdx:{legKey:{typeCode:qty}}} (legKey: "trip"|"out"|"ret")
   const [retDiff,setRetDiff]=useState({}); // {paxIdx: bool} → ritorno con bagagli diversi
   const [step,setStep]=useState("select");
+  const slugRef = useRef(getSlug());  // catturato all'apertura: stabile anche se l'URL cambia dopo
   useEffect(()=>{
     let dead=false;
-    fetch(`${API_BAGGAGE}/${getSlug()}?lang=${lang}`).then(r=>r.json()).then(d=>{
+    fetch(`${API_BAGGAGE}/${slugRef.current}?lang=${lang}`).then(r=>r.json()).then(d=>{
       if(!dead){ setOpts(d); setLoading(false); }
     }).catch(()=>{ if(!dead){ setOpts({configured:false,flight:false,types:[],passengers:[]}); setLoading(false); } });
     return ()=>{dead=true;};
@@ -3948,7 +3949,7 @@ function BaggageFlow({b,lang,onClose}){
     (async()=>{
       setPayErr("");
       try{
-        const _slug=getSlug();
+        const _slug=slugRef.current;
         const r=await fetch(`${API_BAGGAGE}/payment-intent`,{method:"POST",headers:{"Content-Type":"application/json"},
           body:JSON.stringify({slug:_slug,selections,lang})});
         if(!r.ok){ const tt=await r.text().catch(()=>""); throw new Error("slug=["+_slug+"] sel="+selections.length+" HTTP "+r.status+" "+String(tt).slice(0,100)); }
@@ -3970,7 +3971,7 @@ function BaggageFlow({b,lang,onClose}){
       if(error){ setPayErr(error.message||bf.payErr); setPaying(false); return; }
       if(!paymentIntent||(paymentIntent.status!=="requires_capture"&&paymentIntent.status!=="succeeded")){ setPayErr(bf.payErr); setPaying(false); return; }
       const r=await fetch(`${API_BAGGAGE}/book`,{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({slug:getSlug(),payment_intent_id:pi.payment_intent_id,selections,lang})});
+        body:JSON.stringify({slug:slugRef.current,payment_intent_id:pi.payment_intent_id,selections,lang})});
       if(!r.ok) throw new Error("book");
       setStep("done");
     }catch(e){ setPayErr(bf.bookErr); }
