@@ -3948,9 +3948,10 @@ function BaggageFlow({b,lang,onClose}){
     (async()=>{
       setPayErr("");
       try{
+        const _slug=getSlug();
         const r=await fetch(`${API_BAGGAGE}/payment-intent`,{method:"POST",headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({slug:getSlug(),selections,lang})});
-        if(!r.ok){ const tt=await r.text().catch(()=>""); throw new Error("HTTP "+r.status+" "+String(tt).slice(0,140)); }
+          body:JSON.stringify({slug:_slug,selections,lang})});
+        if(!r.ok){ const tt=await r.text().catch(()=>""); throw new Error("slug=["+_slug+"] sel="+selections.length+" HTTP "+r.status+" "+String(tt).slice(0,100)); }
         const d=await r.json(); if(dead) return; setPi(d);
         const SF=await loadStripeJs(); if(dead) return; if(!SF) throw new Error("Stripe.js non caricato");
         const stripe=SF(d.publishable_key); stripeRef.current=stripe;
