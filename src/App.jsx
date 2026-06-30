@@ -52,14 +52,17 @@ a{text-decoration:none}
   transition:all .2s;white-space:nowrap}
 .tab.on{color:${C.orange};border-bottom-color:${C.orange};font-weight:600}
 .tab:hover:not(.on){color:${C.charcoal}}
-.tab-more{position:absolute;top:0;right:0;bottom:0;width:54px;pointer-events:none;
-  display:flex;align-items:center;justify-content:flex-end;padding-right:8px;
-  background:linear-gradient(to right,rgba(255,255,255,0),${C.white} 65%);
+.tab-more{position:absolute;top:0;right:0;bottom:0;width:70px;pointer-events:none;
+  display:flex;align-items:center;justify-content:flex-end;padding-right:6px;
+  background:linear-gradient(to right,rgba(255,255,255,0),${C.white} 55%);
   opacity:0;transition:opacity .25s}
 .tab-more.show{opacity:1}
-.tab-more-chev{color:${C.orange};font-size:1.6rem;font-weight:700;line-height:1;
-  animation:tabNudge 1.1s ease-in-out infinite}
-@keyframes tabNudge{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+.tab-more-chev{width:28px;height:28px;border-radius:50%;background:${C.orange};
+  color:#fff;font-size:1.15rem;font-weight:700;line-height:1;padding-bottom:2px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 7px rgba(232,80,26,.5);
+  animation:tabNudge 1s ease-in-out infinite}
+@keyframes tabNudge{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
 .card{background:${C.white};border-radius:16px;border:1px solid ${C.border};overflow:hidden}
 .irow{display:flex;justify-content:space-between;align-items:flex-start;
   padding:.6rem 0;border-bottom:1px solid #F5F5F5;gap:8px}
