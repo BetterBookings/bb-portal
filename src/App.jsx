@@ -4207,6 +4207,14 @@ export default function App(){
       .catch(e=>{ console.error(e); setState("error"); setErrMsg(e.message); });
   },[]);
 
+  // Deep-link ?service=baggage|carrental (es. dal dettaglio volo): appena i servizi
+  // sono caricati e quel servizio è disponibile, passa alla tab "Aggiungi Servizi"
+  // così <Shop> si monta e il suo effetto apre direttamente il funnel.
+  useEffect(()=>{
+    const s=getQ("service");
+    if((s==="baggage"||s==="carrental") && services.some(c=>c.id===s||c.live===s)) setTab("shop");
+  },[services]);
+
   if(state==="login")   return <><style>{CSS}</style><LoginPage lang={lang} setLang={setLang}/></>;
   if(state==="loading") return <><style>{CSS}</style><Loading lang={lang}/></>;
   if(state==="error")   return <><style>{CSS}</style><Err lang={lang} msg={errMsg}/></>;
