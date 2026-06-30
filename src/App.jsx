@@ -3518,7 +3518,13 @@ function CarRentalFlow({b,lang,onClose}){
   const _ad=(b.adults||0)+(b.addroom?(b.adults2||0):0);
   const _ch=(b.child||0)+(b.addroom?(b.child2||0):0);
   const _ba=(b.baby||0)+(b.addroom?(b.baby2||0):0);
-  const adults = parseTravellers(b.TravellerDetails, b.checkIn, {adults:_ad,child:_ch,baby:_ba}).filter(t=>t.ageType==="adult");
+  const _allTrav = parseTravellers(b.TravellerDetails, b.checkIn, {adults:_ad,child:_ch,baby:_ba});
+  const adults = _allTrav.filter(t=>t.ageType==="adult");
+  // Pax = persone reali (tutte occupano un posto in auto). La lista viaggiatori
+  // parsata è la fonte autoritativa: spesso i contatori numerici (Adults/Child/
+  // Infant) sono vuoti mentre i nomi stanno nel testo "Travellers Details".
+  // Prendo il massimo tra lista parsata e somma contatori → filtro posti corretto.
+  const paxCount = Math.max(_allTrav.length, _ad+_ch+_ba);
   const dobToStr=(dob)=> dob?`${dob.y}-${String(dob.m).padStart(2,"0")}-${String(dob.d).padStart(2,"0")}`:"";
   const dobToAge=(dob)=>{ if(!dob) return null; const bd=new Date(dob.y,dob.m-1,dob.d); const a=Math.floor((Date.now()-bd)/(365.25*864e5)); return (a>0&&a<120)?a:null; };
 
@@ -3567,7 +3573,7 @@ function CarRentalFlow({b,lang,onClose}){
       const r=await fetch(`${API_CARRENTAL}/search`,{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({pickup_id:pickupId,dropoff_id:sameDrop?pickupId:dropId,
           pickup_date:pDate+":00",dropoff_date:dDate+":00",age,residence,lang,category:"CAR",
-          pax:_ad+_ch+_ba})});
+          pax:paxCount})});
       const d=await r.json(); setCars(Array.isArray(d.cars)?d.cars:[]);
     }catch{ setCars([]); } finally{ setBusy(false); setStep("results"); }
   }
