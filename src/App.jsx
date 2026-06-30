@@ -3566,7 +3566,8 @@ function CarRentalFlow({b,lang,onClose}){
     try{
       const r=await fetch(`${API_CARRENTAL}/search`,{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({pickup_id:pickupId,dropoff_id:sameDrop?pickupId:dropId,
-          pickup_date:pDate+":00",dropoff_date:dDate+":00",age,residence,lang,category:"CAR"})});
+          pickup_date:pDate+":00",dropoff_date:dDate+":00",age,residence,lang,category:"CAR",
+          pax:_ad+_ch+_ba})});
       const d=await r.json(); setCars(Array.isArray(d.cars)?d.cars:[]);
     }catch{ setCars([]); } finally{ setBusy(false); setStep("results"); }
   }
