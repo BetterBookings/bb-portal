@@ -3914,9 +3914,13 @@ function BaggageFlow({b,lang,onClose}){
   const legPrice=(legKey,code)=>{ const lg=legs.find(l=>l.key===legKey); return (((lg&&lg.types)||[]).find(t=>t.code===code)||{}).price||0; };
   const hasReturn = legs.some(l=>l.key==="ret");
   // "trip" = andata e ritorno insieme: tipi = unione delle tratte, prezzo = somma delle tratte che lo offrono
-  const TYPE_ORD=["cabin","checked_10","checked_15","checked_20","checked_23"];
+  const TYPE_ORD=["cabin","checked_20","checked_23","checked_32"];
   const tripTypes = (()=>{
-    const codes=[...new Set(legs.flatMap(l=>(l.types||[]).map(t=>t.code)))].sort((a,b)=>TYPE_ORD.indexOf(a)-TYPE_ORD.indexOf(b));
+    // "Andata e ritorno": solo i tipi validi su TUTTE le tratte (un bagaglio dev'essere
+    // valido su tutto il viaggio); prezzo = somma delle tratte. I tipi validi su una
+    // sola direzione restano disponibili con "Bagagli diversi al ritorno".
+    if(!legs.length) return [];
+    const codes=TYPE_ORD.filter(code=> legs.every(l=>(l.types||[]).some(t=>t.code===code)));
     return codes.map(code=>({code, label:(legs.flatMap(l=>l.types||[]).find(t=>t.code===code)||{}).label, price:legs.reduce((s,l)=>s+legPrice(l.key,code),0)}));
   })();
   const tripLegsFor=(code)=> legs.filter(l=>(l.types||[]).some(t=>t.code===code)).map(l=>l.key);
