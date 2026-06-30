@@ -3573,20 +3573,37 @@ function CarRentalFlow({b,lang,onClose}){
   // preseleziona il primo adulto come conducente
   useEffect(()=>{ if(adults.length) selectDriver(0); },[]);
 
+  // codice IATA da un campo aeroporto "IATA Nome" (es. "SKG Thessaloniki" → "SKG")
+  const iataOf=(s)=> String(s||"").trim().split(/\s+/)[0].toUpperCase();
   useEffect(()=>{
-    const raw = carOverride || b.ArrivalAirport || b.destination || b.city || "";
-    if(!raw) return;
-    // i campi aeroporto sono "IATA Nome" (es. "SKG Thessaloniki"): la ricerca vuole
-    // il solo codice IATA o il solo nome → provo prima il codice, poi i fallback.
-    const iata = String(raw).trim().split(/\s+/)[0];
-    const tries = [...new Set([iata, raw, b.city].filter(Boolean))];
-    (async()=>{
+    // i campi aeroporto sono "IATA Nome": la ricerca vuole il solo codice IATA o il
+    // solo nome → provo prima il codice, poi i fallback.
+    const resolveAirport = async (raw, cityFallback)=>{
+      if(!raw) return null;
+      const tries = [...new Set([iataOf(raw), raw, cityFallback].filter(Boolean))];
       for(const q of tries){
         try{
           const d=await fetch(`${API_CARRENTAL}/airports?q=${encodeURIComponent(q)}`).then(r=>r.json());
           const a=(d.airports||[])[0];
-          if(a){ setPickupId(a.id); setPickupLabel(a.name); return; }
+          if(a) return a;
         }catch{}
+      }
+      return null;
+    };
+    (async()=>{
+      // ritiro = aeroporto di arrivo del volo (ARRIVAL 1) o override/destinazione
+      const pickRaw = carOverride || b.ArrivalAirport || b.destination || b.city || "";
+      const pa = await resolveAirport(pickRaw, b.city);
+      if(pa){ setPickupId(pa.id); setPickupLabel(pa.name); }
+      // Volo MULTITRATTA: riparte da un aeroporto diverso (FROM 2 = b.DepartureAirport2)
+      // da quello di arrivo → riconsegna in un luogo diverso. Disattivo "stesso luogo" e
+      // pre-imposto l'aeroporto di ripartenza. (Salto in anteprima &car=, città forzata.)
+      if(!carOverride){
+        const depRaw = b.DepartureAirport2 || "";
+        if(depRaw && iataOf(depRaw) && iataOf(depRaw)!==iataOf(pickRaw)){
+          const da = await resolveAirport(depRaw, null);
+          if(da){ setSameDrop(false); setDropId(da.id); setDropLabel(da.name); }
+        }
       }
     })();
   },[]);
