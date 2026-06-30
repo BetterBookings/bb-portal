@@ -52,6 +52,14 @@ a{text-decoration:none}
   transition:all .2s;white-space:nowrap}
 .tab.on{color:${C.orange};border-bottom-color:${C.orange};font-weight:600}
 .tab:hover:not(.on){color:${C.charcoal}}
+.tab-more{position:absolute;top:0;right:0;bottom:0;width:54px;pointer-events:none;
+  display:flex;align-items:center;justify-content:flex-end;padding-right:8px;
+  background:linear-gradient(to right,rgba(255,255,255,0),${C.white} 65%);
+  opacity:0;transition:opacity .25s}
+.tab-more.show{opacity:1}
+.tab-more-chev{color:${C.orange};font-size:1.6rem;font-weight:700;line-height:1;
+  animation:tabNudge 1.1s ease-in-out infinite}
+@keyframes tabNudge{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
 .card{background:${C.white};border-radius:16px;border:1px solid ${C.border};overflow:hidden}
 .irow{display:flex;justify-content:space-between;align-items:flex-start;
   padding:.6rem 0;border-bottom:1px solid #F5F5F5;gap:8px}
@@ -1414,19 +1422,40 @@ function TabNav({active,setActive,b,lang,services}){
   const tabs=[
     {id:"overview",icon:<Ico name="bb-hotel" size={15}/>,l:t.overview},
     ...((b.flight||b.Airline1||(b.train&&String(b.trainstatus||b.trainStatus||b.TrainStatus||"")!=="3"))&&String(b.FlightStatus||"")!=="3"?[{id:"flights",icon:<Ico name="bb-flight" size={15}/>,l:t.flights}]:[]),
+    // "Add Services" subito dopo Voli&Treno (o dopo Panoramica se non c'è volo/treno),
+    // e comunque PRIMA dei Pagamenti.
+    ...((services&&services.length)?[{id:"shop",icon:<Ico name="bb-plus" size={15}/>,l:t.shop}]:[]),
     ...(String(b.salestype||b.SalesType||"")!=="2"?[{id:"payments",icon:<Ico name="bb-card" size={15}/>,l:t.payments}]:[]),
     ...(hasTours?[{id:"tours",icon:<Ico name="bb-voucher" size={15}/>,l:t.tours}]:[]),
-    ...((services&&services.length)?[{id:"shop",icon:<Ico name="bb-plus" size={15}/>,l:t.shop}]:[]),
     {id:"support",icon:<Ico name="bb-chat" size={15}/>,l:t.support||"Support"},
   ];
+  const scrollRef = useRef(null);
+  const [moreRight,setMoreRight] = useState(false);
+  const checkScroll = ()=>{
+    const el = scrollRef.current;
+    if(!el) return;
+    setMoreRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  };
+  useEffect(()=>{
+    checkScroll();
+    window.addEventListener("resize",checkScroll);
+    return ()=>window.removeEventListener("resize",checkScroll);
+  },[tabs.length]);
   return <div className="tab-bar">
-    <div style={{display:"flex",overflowX:"auto",maxWidth:1100,margin:"0 auto",
-      padding:"0 1.25rem",scrollbarWidth:"none"}}>
-      {tabs.map(tb=>(
-        <button key={tb.id} className={`tab${active===tb.id?" on":""}`} onClick={()=>setActive(tb.id)}>
-          {tb.icon} {tb.l}
-        </button>
-      ))}
+    <div className="tab-scroll-wrap" style={{position:"relative",maxWidth:1100,margin:"0 auto"}}>
+      <div ref={scrollRef} onScroll={checkScroll} style={{display:"flex",overflowX:"auto",
+        padding:"0 1.25rem",scrollbarWidth:"none"}}>
+        {tabs.map(tb=>(
+          <button key={tb.id} className={`tab${active===tb.id?" on":""}`} onClick={()=>setActive(tb.id)}>
+            {tb.icon} {tb.l}
+          </button>
+        ))}
+      </div>
+      {/* Indicatore "c'è altro a destra": sfumatura + freccia che pulsa.
+          Compare solo quando il menu è scrollabile e non sei in fondo. */}
+      <div className={`tab-more${moreRight?" show":""}`} aria-hidden="true">
+        <span className="tab-more-chev">›</span>
+      </div>
     </div>
   </div>;
 }
