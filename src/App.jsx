@@ -4138,35 +4138,45 @@ function BaggageFlow({b,lang,onClose}){
 // ═══════════════════ TRANSFER AEROPORTO (World Transfer) ═══════════════════
 const TF = {
   EN:{open:"Book transfer",title:"Airport transfer",loading:"Loading your trip…",
-    arrival:"Airport → Accommodation",departure:"Accommodation → Airport",
-    from:"Pick-up",to:"Drop-off",airport:"Airport",change:"change",
-    dest:"Address / hotel",destHint:"Search and confirm the exact address — you can change it if it's wrong.",
-    confirmed:"Location confirmed",searchPlace:"Type a hotel or address…",
-    when:"Date & time",pax:"Passengers",searchBtn:"Search transfers",
-    needAirport:"Please enter the airport (3-letter code).",needPlace:"Please search and select the address.",
-    dateErr:"Please choose a valid date and time.",none:"No transfers available for this route.",
+    tripType:"What do you need?",tripRound:"Round trip",tripOut:"One way · Airport → Stay",tripRet:"One way · Stay → Airport",
+    legOut:"Outbound",legRet:"Return",from:"Pick-up",to:"Drop-off",airport:"Airport",change:"change",
+    dest:"Address / accommodation",searchPlace:"Type a hotel or address…",
+    bFlight:"from your flight",bBooking:"from your booking",bConfirmed:"confirmed",bEnter:"please enter",
+    confirmLeg:"I confirm these details are correct",
+    when:"Pick-up date & time",retHint:"Your flight departs at {t} — we suggest pick-up 3h earlier. Adjust if needed.",
+    pax:"Passengers",searchBtn:"Search transfers",
+    needAirport:"Please enter the airport (3-letter code) for each leg.",needPlace:"Please search and confirm the address.",
+    dateErr:"Please choose a valid date and time.",confirmErr:"Please tick the confirmation on each leg.",
+    none:"No transfers available for this route.",
     seats:"seats",freeCancel:"Free cancellation until",select:"Select",back:"Back",
+    perLegOut:"Outbound",perLegRet:"Return",
     paxTitle:"Passenger details",ttl:"Title",first:"First name",last:"Last name",email:"Email",
-    areaCode:"Area code",phone:"Phone",flight:"Flight number",flightHint:"Pre-filled from your flight — please check it.",
+    areaCode:"Area code",phone:"Phone",flightOut:"Flight number · outbound",flightRet:"Flight number · return",
+    flightHint:"Pre-filled from your flight — please check it.",flightOpt:"optional if you have no flight",
     toPay:"Continue to payment",payTitle:"Payment",pay:"Pay & book",
-    hold:"You'll be charged now; free cancellation applies as shown.",total:"Total",
+    hold:"You'll be charged now; free cancellation applies as shown.",total:"Total",totalRound:"Total round trip",
     doneTitle:"Transfer booked!",doneMsg:"Your transfer is confirmed. Driver details and meeting point will appear in your reserved area before pick-up.",close:"Done",
     payErr:"Payment could not be completed. Please try again.",bookErr:"Payment done but booking is finalising — our team will confirm shortly.",
     previewOff:"Preview mode — payment is disabled for now. The flow is fully functional; real payments start at go-live.",
     route:"Route",vehicle:"Vehicle"},
   IT:{open:"Prenota transfer",title:"Transfer aeroporto",loading:"Carico il tuo viaggio…",
-    arrival:"Aeroporto → Struttura",departure:"Struttura → Aeroporto",
-    from:"Ritiro",to:"Destinazione",airport:"Aeroporto",change:"modifica",
-    dest:"Indirizzo / hotel",destHint:"Cerca e conferma l'indirizzo esatto — puoi correggerlo se è sbagliato.",
-    confirmed:"Posizione confermata",searchPlace:"Scrivi un hotel o un indirizzo…",
-    when:"Data e ora",pax:"Passeggeri",searchBtn:"Cerca transfer",
-    needAirport:"Inserisci l'aeroporto (codice di 3 lettere).",needPlace:"Cerca e seleziona l'indirizzo.",
-    dateErr:"Scegli una data e un'ora valide.",none:"Nessun transfer disponibile per questa tratta.",
+    tripType:"Cosa ti serve?",tripRound:"Andata e ritorno",tripOut:"Solo andata · Aeroporto → Struttura",tripRet:"Solo ritorno · Struttura → Aeroporto",
+    legOut:"Andata",legRet:"Ritorno",from:"Ritiro",to:"Destinazione",airport:"Aeroporto",change:"modifica",
+    dest:"Indirizzo / struttura",searchPlace:"Scrivi un hotel o un indirizzo…",
+    bFlight:"dal tuo volo",bBooking:"dalla prenotazione",bConfirmed:"confermata",bEnter:"da inserire",
+    confirmLeg:"Confermo che questi dati sono corretti",
+    when:"Data e ora del ritiro",retHint:"Il tuo volo parte alle {t} — ti consigliamo il ritiro 3h prima. Modificalo se serve.",
+    pax:"Passeggeri",searchBtn:"Cerca transfer",
+    needAirport:"Inserisci l'aeroporto (codice di 3 lettere) per ogni tratta.",needPlace:"Cerca e conferma l'indirizzo.",
+    dateErr:"Scegli una data e un'ora valide.",confirmErr:"Spunta la conferma su ogni tratta.",
+    none:"Nessun transfer disponibile per questa tratta.",
     seats:"posti",freeCancel:"Cancellazione gratuita fino al",select:"Scegli",back:"Indietro",
+    perLegOut:"Andata",perLegRet:"Ritorno",
     paxTitle:"Dati del passeggero",ttl:"Titolo",first:"Nome",last:"Cognome",email:"Email",
-    areaCode:"Prefisso",phone:"Telefono",flight:"Numero volo",flightHint:"Precompilato dal tuo volo — verificalo.",
+    areaCode:"Prefisso",phone:"Telefono",flightOut:"Numero volo · andata",flightRet:"Numero volo · ritorno",
+    flightHint:"Precompilato dal tuo volo — verificalo.",flightOpt:"opzionale se non hai un volo",
     toPay:"Continua al pagamento",payTitle:"Pagamento",pay:"Paga e prenota",
-    hold:"L'addebito avviene ora; vale la cancellazione gratuita indicata.",total:"Totale",
+    hold:"L'addebito avviene ora; vale la cancellazione gratuita indicata.",total:"Totale",totalRound:"Totale andata e ritorno",
     doneTitle:"Transfer prenotato!",doneMsg:"Il tuo transfer è confermato. I dettagli dell'autista e il punto d'incontro appariranno nella tua area riservata prima del ritiro.",close:"Fatto",
     payErr:"Pagamento non riuscito. Riprova.",bookErr:"Pagamento effettuato ma la prenotazione è in finalizzazione — il team confermerà a breve.",
     previewOff:"Modalità anteprima — il pagamento è disattivato per ora. Il flusso è completo; i pagamenti reali si attivano al go-live.",
@@ -4185,20 +4195,28 @@ function TransferFlow({b,lang,onClose}){
   const slugRef = useRef(getSlug());
   const [ctx,setCtx]=useState(null);
   const [loading,setLoading]=useState(true);
-  const [dir,setDir]=useState("arrival");
-  const [airport,setAirport]=useState({iata:"",label:""});
-  const [airportEdit,setAirportEdit]=useState(false);
-  const [place,setPlace]=useState({label:"",address:"",lat:null,lon:null});
+  const [step,setStep]=useState("route");
+  const [tripType,setTripType]=useState("outbound");   // roundtrip | outbound | return
+  // struttura (alloggio) CONDIVISA fra le tratte + due aeroporti (arrivo/partenza)
+  const [place,setPlace]=useState({label:"",address:"",lat:null,lon:null,fromNinox:false});
+  const [placeEdit,setPlaceEdit]=useState(false);
   const [placeQuery,setPlaceQuery]=useState("");
   const [placeResults,setPlaceResults]=useState([]);
   const [placeOpen,setPlaceOpen]=useState(false);
-  const [when,setWhen]=useState("");
+  const [airOut,setAirOut]=useState({iata:"",label:"",fromNinox:false});
+  const [airRet,setAirRet]=useState({iata:"",label:"",fromNinox:false});
+  const [editOut,setEditOut]=useState(false);
+  const [editRet,setEditRet]=useState(false);
+  const [whenOut,setWhenOut]=useState("");
+  const [whenRet,setWhenRet]=useState("");
+  const [flightTimeRet,setFlightTimeRet]=useState("");   // orario volo partenza (per suggerimento + flightTimeOfArrival)
+  const [flightOut,setFlightOut]=useState(""); const [flightRet,setFlightRet]=useState("");
+  const [autoOut,setAutoOut]=useState(false); const [autoRet,setAutoRet]=useState(false);
+  const [conf,setConf]=useState({outbound:false,return:false});
   const [pax,setPax]=useState(1);
   const [searching,setSearching]=useState(false);
-  const [transfers,setTransfers]=useState([]);
+  const [options,setOptions]=useState([]);
   const [searchErr,setSearchErr]=useState("");
-  const [pickupDT,setPickupDT]=useState("");
-  const [step,setStep]=useState("route");
   const [sel,setSel]=useState(null);
 
   const _ad=(b.adults||0)+(b.addroom?(b.adults2||0):0);
@@ -4208,32 +4226,37 @@ function TransferFlow({b,lang,onClose}){
   const lead=adults[0]||{};
   const [passenger,setPassenger]=useState({title:"MR",firstName:lead.firstName||"",lastName:lead.lastName||"",
     email:(b.guestEmail&&b.guestEmail[0])||"",areaCode:"",phone:(b.guestTelephone&&b.guestTelephone[0])||""});
-  const [flightNo,setFlightNo]=useState("");
-  const [flightMsg,setFlightMsg]=useState("");
 
   const money=(v)=> v!=null?`${Number(v).toFixed(2)} €`:"—";
   const fmtDT=(iso)=>{ const s=String(iso||""); return s.length>=16?`${s.slice(8,10)}/${s.slice(5,7)}/${s.slice(0,4)} ${s.slice(11,16)}`:s.slice(0,10); };
+  const fmtHM=(s)=> String(s||"").slice(11,16);
   const fmtFree=(min,pickIso)=>{ if(!min||!pickIso) return ""; const d=new Date(String(pickIso).slice(0,19)); d.setMinutes(d.getMinutes()-min); const z=n=>String(n).padStart(2,"0"); return `${z(d.getDate())}/${z(d.getMonth()+1)} ${z(d.getHours())}:${z(d.getMinutes())}`; };
+  const minusHours=(s,h)=>{ if(!s) return ""; const d=new Date(s); if(isNaN(d.getTime())) return s; d.setHours(d.getHours()-h); const z=n=>String(n).padStart(2,"0"); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}T${z(d.getHours())}:${z(d.getMinutes())}`; };
 
-  function applyDir(d,c){
-    c=c||ctx||{}; setDir(d);
-    const air = d==="departure" ? (c.departureAirport||c.arrivalAirport||{}) : (c.arrivalAirport||{});
-    setAirport({iata:(air.iata||""),label:(air.label||air.iata||"")}); setAirportEdit(false);
-    const h=c.hotel||{};
-    setPlace({label:h.label||"",address:h.address||"",lat:(h.hasCoords?h.lat:null),lon:(h.hasCoords?h.lon:null)});
-    setPlaceQuery(h.label||h.address||""); setPlaceResults([]); setPlaceOpen(false);
-    setWhen(dtLocal(d==="departure"?c.departureTime:c.arrivalTime,10)||"");
-    setTransfers([]); setSearchErr("");
-  }
+  const legList = tripType==="roundtrip"?["outbound","return"]:tripType==="return"?["return"]:["outbound"];
 
   useEffect(()=>{
     let dead=false;
     fetch(`${API_TRANSFER}/${slugRef.current}?lang=${lang}`).then(r=>r.json()).then(d=>{
-      if(dead) return; const c=d.context||{}; setCtx(c); applyDir("arrival",c); setPax(c.pax||1); setLoading(false);
+      if(dead) return; const c=d.context||{}; setCtx(c);
+      const arr=c.arrivalAirport||{}, dep=c.departureAirport||{}, h=c.hotel||{};
+      setAirOut({iata:arr.iata||"",label:arr.label||arr.iata||"",fromNinox:!!arr.iata});
+      setAirRet({iata:dep.iata||"",label:dep.label||dep.iata||"",fromNinox:!!dep.iata});
+      setPlace({label:h.label||"",address:h.address||"",lat:(h.hasCoords?h.lat:null),lon:(h.hasCoords?h.lon:null),fromNinox:!!h.hasCoords});
+      setPlaceQuery(h.label||h.address||""); setPlaceEdit(!h.hasCoords);
+      setWhenOut(dtLocal(c.arrivalTime,10)||"");
+      const depL=dtLocal(c.departureTime,10)||""; setFlightTimeRet(depL); setWhenRet(minusHours(depL,3));
+      setPax(c.pax||1);
+      setTripType((arr.iata&&dep.iata)?"roundtrip":(arr.iata?"outbound":(dep.iata?"return":"outbound")));
+      setLoading(false);
     }).catch(()=>{ if(!dead) setLoading(false); });
     fetch(`${API_TRANSFER}/flight-lookup`,{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({slug:slugRef.current,direction:"outbound"})}).then(r=>r.json()).then(d=>{
-      if(!dead&&d&&d.flightNumber){ setFlightNo(d.flightNumber); setFlightMsg(tf.flightHint); }
+      if(!dead&&d&&d.flightNumber){ setFlightOut(d.flightNumber); setAutoOut(true); }
+    }).catch(()=>{});
+    fetch(`${API_TRANSFER}/flight-lookup`,{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({slug:slugRef.current,direction:"return"})}).then(r=>r.json()).then(d=>{
+      if(!dead&&d&&d.flightNumber){ setFlightRet(d.flightNumber); setAutoRet(true); }
     }).catch(()=>{});
     return ()=>{dead=true;};
   },[]);
@@ -4249,26 +4272,41 @@ function TransferFlow({b,lang,onClose}){
     return ()=>clearTimeout(t);
   },[placeQuery,placeOpen]);
 
-  function pickPlace(r){ setPlace({label:r.label,address:r.address||r.label,lat:r.lat,lon:r.lon}); setPlaceQuery(r.label); setPlaceOpen(false); setPlaceResults([]); }
-  const airportLoc=()=> airport.iata?{iata:airport.iata}:{};
-  const placeLoc=()=> (place.lat!=null&&place.lon!=null)?{address:place.address||place.label,lat:place.lat,lon:place.lon}:{};
-  const pickupSide=()=> dir==="departure"?placeLoc():airportLoc();
-  const dropoffSide=()=> dir==="departure"?airportLoc():placeLoc();
-  const airportLabel=()=> airport.label||airport.iata;
-  const pickupLabel=()=> dir==="departure"?place.label:airportLabel();
-  const dropoffLabel=()=> dir==="departure"?airportLabel():place.label;
+  function pickPlace(r){ setPlace({label:r.label,address:r.address||r.label,lat:r.lat,lon:r.lon,fromNinox:false}); setPlaceQuery(r.label); setPlaceOpen(false); setPlaceResults([]); setPlaceEdit(false); setConf({outbound:false,return:false}); }
+
+  const airLbl=(a)=> a.label||a.iata||"—";
+  const airLoc=(a)=> (a.iata&&a.iata.length===3)?{iata:a.iata}:null;
+  const placeLoc=()=> (place.lat!=null&&place.lon!=null)?{address:place.address||place.label,lat:place.lat,lon:place.lon}:null;
+  const legAir=(dir)=> dir==="outbound"?airOut:airRet;
+  const legPick=(dir)=> dir==="outbound"?airLoc(airOut):placeLoc();
+  const legDrop=(dir)=> dir==="outbound"?placeLoc():airLoc(airRet);
+  const legWhen=(dir)=> dir==="outbound"?whenOut:whenRet;
+  const legFlight=(dir)=> dir==="outbound"?flightOut:flightRet;
+  const legFlightTime=(dir)=> dir==="outbound"?(whenOut?whenOut+":00":null):((flightTimeRet||whenRet)?((flightTimeRet||whenRet)+":00"):null);
+  const legPickLbl=(dir)=> dir==="outbound"?airLbl(airOut):(place.label||place.address||"—");
+  const legDropLbl=(dir)=> dir==="outbound"?(place.label||place.address||"—"):airLbl(airRet);
+  const legRouteLbl=(dir)=> `${legPickLbl(dir)} → ${legDropLbl(dir)}`;
+  const legValid=(dir)=> !!(legPick(dir)&&legDrop(dir)&&legWhen(dir)&&conf[dir]);
+
+  const buildLegs=(withFlight)=> legList.map(dir=>{
+    const o={pickup:legPick(dir),dropoff:legDrop(dir),pickupDateTime:legWhen(dir)+":00",direction:dir,
+      pickupLabel:legPickLbl(dir),dropoffLabel:legDropLbl(dir)};
+    if(withFlight){ o.flightNumber=legFlight(dir)||""; const ft=legFlightTime(dir); if(ft) o.flightTimeOfArrival=ft; }
+    return o;
+  });
 
   async function runSearch(){
     setSearchErr("");
-    if(!airport.iata||airport.iata.length!==3){ setSearchErr(tf.needAirport); return; }
-    if(place.lat==null||place.lon==null){ setSearchErr(tf.needPlace); return; }
-    if(!when){ setSearchErr(tf.dateErr); return; }
-    setSearching(true); setTransfers([]);
+    if(!legList.every(d=> airLoc(legAir(d)))){ setSearchErr(tf.needAirport); return; }
+    if(!placeLoc()){ setSearchErr(tf.needPlace); return; }
+    if(!legList.every(d=>legWhen(d))){ setSearchErr(tf.dateErr); return; }
+    if(!legList.every(d=>conf[d])){ setSearchErr(tf.confirmErr); return; }
+    setSearching(true); setOptions([]);
     try{
       const r=await fetch(`${API_TRANSFER}/search`,{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({pickup:pickupSide(),dropoff:dropoffSide(),pickupDateTime:when+":00",pax,lang})});
-      const d=await r.json(); const list=Array.isArray(d.transfers)?d.transfers:[];
-      setTransfers(list); setPickupDT(d.pickupDateTime||when+":00");
+        body:JSON.stringify({legs:buildLegs(false),pax,lang})});
+      const d=await r.json(); const list=Array.isArray(d.options)?d.options:[];
+      setOptions(list);
       if(!list.length){ setSearchErr(d.error?`${tf.none} [${d.error}]`:tf.none); }
       else setStep("select");
     }catch{ setSearchErr(tf.none); } finally{ setSearching(false); }
@@ -4276,17 +4314,15 @@ function TransferFlow({b,lang,onClose}){
 
   const [pi,setPi]=useState(null); const [payErr,setPayErr]=useState(""); const [paying,setPaying]=useState(false); const [previewOff,setPreviewOff]=useState(false);
   const stripeRef=useRef(null); const elementsRef=useRef(null);
-  const bookBody=()=>({slug:slugRef.current,pickup:pickupSide(),dropoff:dropoffSide(),
-    pickupDateTime:pickupDT||(when+":00"),pax,quoteIdentifier:sel&&sel.quoteIdentifier,
-    vehicleClass:sel&&sel.vehicleClass,vehicleType:sel&&sel.vehicleCategory,
-    pickupLabel:pickupLabel(),dropoffLabel:dropoffLabel(),lang});
+  const piBody=()=>({slug:slugRef.current,legs:buildLegs(true),pax,quoteKey:sel&&sel.key,
+    vehicleClass:sel&&sel.vehicleClass,vehicleType:sel&&sel.vehicleCategory,lang});
   useEffect(()=>{
     if(step!=="payment"||pi||previewOff) return;
     let dead=false;
     (async()=>{
       setPayErr("");
       try{
-        const r=await fetch(`${API_TRANSFER}/payment-intent`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(bookBody())});
+        const r=await fetch(`${API_TRANSFER}/payment-intent`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(piBody())});
         if(r.status===503){ if(!dead) setPreviewOff(true); return; }
         if(!r.ok) throw new Error("init");
         const d=await r.json(); if(dead) return; setPi(d);
@@ -4307,13 +4343,15 @@ function TransferFlow({b,lang,onClose}){
       if(error){ setPayErr(error.message||tf.payErr); setPaying(false); return; }
       if(!paymentIntent||(paymentIntent.status!=="requires_capture"&&paymentIntent.status!=="succeeded")){ setPayErr(tf.payErr); setPaying(false); return; }
       const r=await fetch(`${API_TRANSFER}/book`,{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({...bookBody(),payment_intent_id:pi.payment_intent_id,passenger,flightNumber:flightNo,bb_ref:b.bookingReference||""})});
+        body:JSON.stringify({...piBody(),payment_intent_id:pi.payment_intent_id,passenger,bb_ref:b.bookingReference||""})});
       if(!r.ok) throw new Error("book");
       setStep("done");
     }catch(e){ setPayErr(tf.bookErr); } finally{ setPaying(false); }
   }
 
-  const paxValid = passenger.firstName&&passenger.lastName&&passenger.email&&passenger.phone&&flightNo;
+  const paxValid = passenger.firstName&&passenger.lastName&&passenger.email&&passenger.phone;
+  const allConfirmed = legList.every(d=>legValid(d)) && pax>=1;
+  const vehName=(o)=> (o.vehicleCategory==="VAN"?"Van":o.vehicleCategory==="LIMO"?"Limousine":(o.vehicleCategory||"Transfer"))+(o.classLabel?` · ${o.classLabel}`:"");
 
   const overlay={position:"fixed",inset:0,background:"rgba(15,20,30,.55)",zIndex:9999,display:"flex",justifyContent:"center",alignItems:isMobile?"stretch":"flex-start",padding:isMobile?0:"4vh 12px",overflowY:isMobile?"hidden":"auto"};
   const sheet={background:"#fff",color:"#1f2730",borderRadius:isMobile?0:16,maxWidth:isMobile?"100%":540,width:"100%",boxShadow:"0 20px 60px rgba(0,0,0,.3)",display:"flex",flexDirection:"column",height:isMobile?"100%":"auto",maxHeight:isMobile?"100%":"92vh"};
@@ -4324,38 +4362,91 @@ function TransferFlow({b,lang,onClose}){
   const ghost={background:"#eef1f5",color:"#1f2730",border:"none",padding:"11px 16px",borderRadius:10,fontWeight:600,fontSize:14,cursor:"pointer"};
   const inp={width:"100%",padding:"10px 11px",border:"1px solid #d7dce2",borderRadius:9,fontSize:13,color:"#1f2730",fontFamily:"inherit",boxSizing:"border-box"};
   const lbl={fontSize:11,fontWeight:600,color:"#5b6470",margin:"0 0 4px",textTransform:"uppercase",letterSpacing:.3};
-  const card={border:"1px solid #eef0f3",borderRadius:12,padding:"12px 14px",marginBottom:12};
+  const linkBtn={background:"none",border:"none",color:"#F15A29",fontSize:12,fontWeight:600,cursor:"pointer",padding:0};
 
-  const airportBlock=(role)=>(
-    <div style={card}>
-      <p style={lbl}>{role} · {tf.airport}</p>
-      {airportEdit
-        ? <input autoFocus value={airport.iata} maxLength={3} placeholder="FCO"
-            onChange={e=>{const v=e.target.value.toUpperCase().replace(/[^A-Z]/g,"").slice(0,3);setAirport({iata:v,label:v});}}
-            onBlur={()=>setAirportEdit(false)} style={{...inp,textTransform:"uppercase",fontWeight:700}}/>
+  const Badge=({kind})=>{ const green=kind!=="enter";
+    const txt = kind==="flight"?tf.bFlight:kind==="booking"?tf.bBooking:kind==="confirmed"?tf.bConfirmed:tf.bEnter;
+    return <span style={{fontSize:10,fontWeight:700,color:green?"#1e874b":"#8a5a00",background:green?"#e8f6ef":"#fff5e0",borderRadius:6,padding:"2px 7px",whiteSpace:"nowrap"}}>{green?"✓ ":"⚠ "}{txt}</span>; };
+
+  const tripChip=(val,label)=>(
+    <div onClick={()=>setTripType(val)} style={{flex:1,padding:"9px 6px",borderRadius:9,border:"1px solid "+(tripType===val?"#F15A29":"#d7dce2"),background:tripType===val?"#FFF2F0":"#fff",color:tripType===val?"#F15A29":"#5b6470",fontWeight:600,fontSize:11.5,cursor:"pointer",textAlign:"center",lineHeight:1.25}}>{label}</div>);
+
+  // struttura (alloggio) condivisa — bloccata in cima, editabile con ricerca
+  const placeCard=()=>(
+    <div style={{border:"1px solid #eef0f3",borderRadius:12,padding:"12px 14px",marginBottom:12,position:"relative"}}>
+      <p style={lbl}>{tf.dest}</p>
+      {(placeEdit||place.lat==null)
+        ? <>
+            <input value={placeQuery} placeholder={tf.searchPlace}
+              onChange={e=>{setPlaceQuery(e.target.value);setPlaceOpen(true);setPlace(p=>({...p,lat:null,lon:null,fromNinox:false}));setConf({outbound:false,return:false});}}
+              onFocus={()=>setPlaceOpen(true)} style={inp}/>
+            {placeOpen&&placeResults.length>0&&
+              <div style={{position:"absolute",left:14,right:14,zIndex:5,background:"#fff",border:"1px solid #d7dce2",borderRadius:10,boxShadow:"0 8px 24px rgba(0,0,0,.12)",marginTop:4,maxHeight:200,overflowY:"auto"}}>
+                {placeResults.map((r,i)=>
+                  <div key={i} onClick={()=>pickPlace(r)} style={{padding:"9px 12px",cursor:"pointer",borderBottom:i<placeResults.length-1?"1px solid #f2f4f7":"none"}}>
+                    <div style={{fontSize:13,fontWeight:600,color:"#1f2730"}}>{r.label}</div>
+                    {r.sublabel&&<div style={{fontSize:11,color:"#8a93a0"}}>{r.sublabel}</div>}
+                  </div>)}
+              </div>}
+            {place.lat==null&&<div style={{marginTop:6}}><Badge kind="enter"/></div>}
+          </>
         : <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8}}>
-            <span style={{fontSize:14,fontWeight:700,color:"#1f2730"}}>✈ {airportLabel()||"—"}</span>
-            <button onClick={()=>setAirportEdit(true)} style={{background:"none",border:"none",color:"#F15A29",fontSize:12,fontWeight:600,cursor:"pointer"}}>{tf.change}</button>
+            <span style={{fontSize:14,fontWeight:700,color:"#1f2730",minWidth:0,overflow:"hidden",textOverflow:"ellipsis"}}>📍 {place.label||place.address}</span>
+            <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
+              <Badge kind={place.fromNinox?"booking":"confirmed"}/>
+              <button onClick={()=>{setPlaceEdit(true);setPlaceOpen(true);}} style={linkBtn}>{tf.change}</button>
+            </div>
           </div>}
     </div>);
 
-  const placeBlock=(role)=>(
-    <div style={{...card,position:"relative"}}>
-      <p style={lbl}>{role} · {tf.dest}</p>
-      <input value={placeQuery} placeholder={tf.searchPlace}
-        onChange={e=>{setPlaceQuery(e.target.value);setPlaceOpen(true);setPlace(p=>({...p,lat:null,lon:null}));}}
-        onFocus={()=>setPlaceOpen(true)} style={inp}/>
-      {placeOpen&&placeResults.length>0&&
-        <div style={{position:"absolute",left:14,right:14,zIndex:5,background:"#fff",border:"1px solid #d7dce2",borderRadius:10,boxShadow:"0 8px 24px rgba(0,0,0,.12)",marginTop:4,maxHeight:200,overflowY:"auto"}}>
-          {placeResults.map((r,i)=>
-            <div key={i} onClick={()=>pickPlace(r)} style={{padding:"9px 12px",cursor:"pointer",borderBottom:i<placeResults.length-1?"1px solid #f2f4f7":"none"}}>
-              <div style={{fontSize:13,fontWeight:600,color:"#1f2730"}}>{r.label}</div>
-              {r.sublabel&&<div style={{fontSize:11,color:"#8a93a0"}}>{r.sublabel}</div>}
-            </div>)}
-        </div>}
-      {place.lat!=null&&<div style={{fontSize:11,color:"#1e874b",marginTop:5}}>✓ {tf.confirmed}</div>}
-      <div style={{fontSize:11,color:"#8a93a0",marginTop:4}}>{tf.destHint}</div>
-    </div>);
+  const airportNode=(which)=>{
+    const isOut=which==="out"; const a=isOut?airOut:airRet; const edit=isOut?editOut:editRet;
+    const setEdit=isOut?setEditOut:setEditRet; const setA=isOut?setAirOut:setAirRet;
+    return edit
+      ? <input autoFocus value={a.iata} maxLength={3} placeholder="FCO"
+          onChange={e=>{const iata=e.target.value.toUpperCase().replace(/[^A-Z]/g,"").slice(0,3);setA({iata,label:iata,fromNinox:false});setConf(c=>({...c,[isOut?"outbound":"return"]:false}));}}
+          onBlur={()=>setEdit(false)} style={{...inp,textTransform:"uppercase",fontWeight:700,maxWidth:130}}/>
+      : <span style={{display:"inline-flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+          <span style={{fontWeight:700,fontSize:14}}>✈ {airLbl(a)}</span>
+          {a.fromNinox&&a.iata&&<Badge kind="flight"/>}
+          <button onClick={()=>setEdit(true)} style={linkBtn}>{tf.change}</button>
+        </span>;
+  };
+  const placeNode=()=> <span style={{display:"inline-flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+      <span style={{fontWeight:700,fontSize:14}}>📍 {place.label||place.address||"—"}</span>
+      {place.lat!=null?<Badge kind={place.fromNinox?"booking":"confirmed"}/>:<Badge kind="enter"/>}
+    </span>;
+  const miniRow=(role,node)=> <div><div style={lbl}>{role}</div><div>{node}</div></div>;
+
+  const legCard=(dir)=>{
+    const isOut=dir==="outbound";
+    return <div key={dir} style={{border:"1px solid #e6e9ee",borderRadius:12,padding:"12px 14px",marginBottom:12,background:"#fcfdfe"}}>
+      <div style={{fontSize:11,fontWeight:800,color:"#F15A29",textTransform:"uppercase",letterSpacing:.4,marginBottom:8}}>{isOut?tf.legOut:tf.legRet}</div>
+      {isOut?miniRow(tf.from,airportNode("out")):miniRow(tf.from,placeNode())}
+      <div style={{textAlign:"center",color:"#c3c9d2",fontSize:15,margin:"4px 0"}}>↓</div>
+      {isOut?miniRow(tf.to,placeNode()):miniRow(tf.to,airportNode("ret"))}
+      <div style={{marginTop:8}}>
+        <div style={lbl}>{tf.when}</div>
+        <input type="datetime-local" value={isOut?whenOut:whenRet}
+          onChange={e=>{const v=e.target.value; if(isOut) setWhenOut(v); else setWhenRet(v); setConf(c=>({...c,[dir]:false}));}} style={inp}/>
+        {!isOut&&flightTimeRet&&<div style={{fontSize:11,color:"#8a93a0",marginTop:4}}>{tf.retHint.replace("{t}",fmtHM(flightTimeRet))}</div>}
+      </div>
+      <label style={{display:"flex",alignItems:"center",gap:8,marginTop:10,cursor:"pointer",fontSize:12.5,fontWeight:600,color:conf[dir]?"#1e874b":"#1f2730"}}>
+        <input type="checkbox" checked={!!conf[dir]} onChange={e=>setConf(c=>({...c,[dir]:e.target.checked}))} style={{width:16,height:16,accentColor:"#F15A29"}}/>
+        <span>{tf.confirmLeg}</span>
+      </label>
+    </div>;
+  };
+
+  const flightField=(dir)=>{
+    const isOut=dir==="outbound"; const val=isOut?flightOut:flightRet; const setV=isOut?setFlightOut:setFlightRet;
+    const auto=isOut?autoOut:autoRet; const setAuto=isOut?setAutoOut:setAutoRet;
+    return <div key={dir} style={{marginBottom:8}}>
+      <p style={lbl}>✈ {isOut?tf.flightOut:tf.flightRet} <span style={{textTransform:"none",fontWeight:400,color:"#a0a8b2"}}>({tf.flightOpt})</span></p>
+      <input value={val} onChange={e=>{setV(e.target.value.toUpperCase());setAuto(false);}} placeholder="LH114" style={{...inp,textTransform:"uppercase"}}/>
+      {auto&&val&&<p style={{fontSize:11,color:"#874d00",background:"#fff7e6",border:"1px solid #ffe3ad",borderRadius:8,padding:"6px 9px",margin:"5px 0 0"}}>ℹ️ {tf.flightHint}</p>}
+    </div>;
+  };
 
   return createPortal(<div style={overlay} onClick={onClose}>
     <div style={sheet} onClick={e=>e.stopPropagation()}>
@@ -4370,37 +4461,44 @@ function TransferFlow({b,lang,onClose}){
 
       {!loading&&step==="route"&&<>
         <div style={body}>
-          <div style={{display:"flex",gap:8,marginBottom:14}}>
-            <div onClick={()=>applyDir("arrival")} style={{flex:1,padding:"9px",borderRadius:9,border:"1px solid "+(dir==="arrival"?"#F15A29":"#d7dce2"),background:dir==="arrival"?"#FFF2F0":"#fff",color:dir==="arrival"?"#F15A29":"#5b6470",fontWeight:600,fontSize:12,cursor:"pointer",textAlign:"center"}}>{tf.arrival}</div>
-            <div onClick={()=>applyDir("departure")} style={{flex:1,padding:"9px",borderRadius:9,border:"1px solid "+(dir==="departure"?"#F15A29":"#d7dce2"),background:dir==="departure"?"#FFF2F0":"#fff",color:dir==="departure"?"#F15A29":"#5b6470",fontWeight:600,fontSize:12,cursor:"pointer",textAlign:"center"}}>{tf.departure}</div>
+          <p style={{...lbl,marginBottom:6}}>{tf.tripType}</p>
+          <div style={{display:"flex",gap:6,marginBottom:14}}>
+            {tripChip("roundtrip",tf.tripRound)}
+            {tripChip("outbound",tf.tripOut)}
+            {tripChip("return",tf.tripRet)}
           </div>
-          {dir==="departure"?placeBlock(tf.from):airportBlock(tf.from)}
-          <div style={{textAlign:"center",color:"#c3c9d2",fontSize:16,margin:"-4px 0 8px"}}>↓</div>
-          {dir==="departure"?airportBlock(tf.to):placeBlock(tf.to)}
-          <div style={{display:"flex",gap:10,marginTop:2,marginBottom:4}}>
-            <div style={{flex:2}}><p style={lbl}>{tf.when}</p><input type="datetime-local" value={when} onChange={e=>setWhen(e.target.value)} style={inp}/></div>
-            <div style={{width:96}}><p style={lbl}>{tf.pax}</p><input type="number" min={1} max={16} value={pax} onChange={e=>setPax(Math.max(1,parseInt(e.target.value||"1",10)))} style={inp}/></div>
-          </div>
-          {searchErr&&<p style={{color:"#c0392b",fontSize:12,margin:"8px 0 0"}}>{searchErr}</p>}
+          {placeCard()}
+          {legList.map(d=>legCard(d))}
+          <div style={{width:120}}><p style={lbl}>{tf.pax}</p><input type="number" min={1} max={16} value={pax} onChange={e=>setPax(Math.max(1,parseInt(e.target.value||"1",10)))} style={inp}/></div>
+          {searchErr&&<p style={{color:"#c0392b",fontSize:12,margin:"10px 0 0"}}>{searchErr}</p>}
         </div>
-        <div style={foot}><button onClick={runSearch} disabled={searching} style={{...primary,opacity:searching?.6:1}}>{searching?"…":tf.searchBtn}</button></div>
+        <div style={foot}><button onClick={runSearch} disabled={searching||!allConfirmed} style={{...primary,opacity:(searching||!allConfirmed)?.55:1}}>{searching?"…":tf.searchBtn}</button></div>
       </>}
 
       {!loading&&step==="select"&&<>
         <div style={body}>
-          <div style={{fontSize:12,color:"#5b6470",marginBottom:10}}>{pickupLabel()} → {dropoffLabel()} · {fmtDT(pickupDT)}</div>
-          {transfers.map((tr,i)=>
-            <div key={i} onClick={()=>{setSel(tr);setStep("passenger");}} style={{border:"1px solid #eef0f3",borderRadius:12,padding:"12px 14px",marginBottom:10,cursor:"pointer",display:"flex",justifyContent:"space-between",gap:10,alignItems:"center"}}>
+          <div style={{fontSize:12,color:"#5b6470",marginBottom:10}}>
+            {legList.map((d,i)=><div key={i}>{legList.length>1?`${d==="outbound"?tf.perLegOut:tf.perLegRet}: `:""}{legRouteLbl(d)} · {fmtDT(legWhen(d)+":00")}</div>)}
+          </div>
+          {options.map((o,i)=>{
+            const rt=(o.legs||[]).length>1;
+            return <div key={i} onClick={()=>{setSel(o);setStep("passenger");}} style={{border:"1px solid #eef0f3",borderRadius:12,padding:"12px 14px",marginBottom:10,cursor:"pointer",display:"flex",justifyContent:"space-between",gap:10,alignItems:"flex-start"}}>
               <div style={{minWidth:0}}>
-                <div style={{fontWeight:700,fontSize:14,color:"#1f2730"}}>{tr.vehicleCategory==="VAN"?"Van":tr.vehicleCategory==="LIMO"?"Limousine":(tr.vehicleCategory||"Transfer")}{tr.classLabel?` · ${tr.classLabel}`:""}</div>
-                <div style={{fontSize:12,color:"#5b6470",marginTop:2}}>{tr.vehicleDescription?tr.vehicleDescription+" · ":""}{tr.seatsCapacity?`👤 ${tr.seatsCapacity} ${tf.seats}`:""}{tr.durationMin?` · ${tr.durationMin} min`:""}</div>
-                {tr.freeCancelUntilMin&&pickupDT?<div style={{fontSize:11,color:"#1e874b",marginTop:3}}>✓ {tf.freeCancel} {fmtFree(tr.freeCancelUntilMin,pickupDT)}</div>:null}
+                <div style={{fontWeight:700,fontSize:14,color:"#1f2730"}}>{vehName(o)}</div>
+                <div style={{fontSize:12,color:"#5b6470",marginTop:2}}>{o.seatsCapacity?`👤 ${o.seatsCapacity} ${tf.seats}`:""}{o.legs&&o.legs[0]&&o.legs[0].durationMin?` · ${o.legs[0].durationMin} min`:""}</div>
+                {rt
+                  ? <div style={{marginTop:5,fontSize:11.5,color:"#5b6470",lineHeight:1.5}}>
+                      {o.legs.map((lg,j)=><div key={j}>{lg.direction==="outbound"?tf.perLegOut:tf.perLegRet}: <strong style={{color:"#1f2730"}}>{money(lg.price)}</strong>{lg.freeCancelUntilMin&&lg.pickupDateTime?` · ✓ ${fmtFree(lg.freeCancelUntilMin,lg.pickupDateTime)}`:""}</div>)}
+                    </div>
+                  : (o.legs&&o.legs[0]&&o.legs[0].freeCancelUntilMin&&o.legs[0].pickupDateTime?<div style={{fontSize:11,color:"#1e874b",marginTop:3}}>✓ {tf.freeCancel} {fmtFree(o.legs[0].freeCancelUntilMin,o.legs[0].pickupDateTime)}</div>:null)}
               </div>
               <div style={{textAlign:"right",flexShrink:0}}>
-                <div style={{fontWeight:800,fontSize:16,color:"#F15A29"}}>{money(tr.price)}</div>
+                {rt&&<div style={{fontSize:10,color:"#8a93a0",marginBottom:1}}>{tf.totalRound}</div>}
+                <div style={{fontWeight:800,fontSize:16,color:"#F15A29"}}>{money(o.totalPrice)}</div>
                 <button style={{...primary,flex:"none",padding:"6px 14px",marginTop:4,fontSize:12}}>{tf.select}</button>
               </div>
-            </div>)}
+            </div>;
+          })}
         </div>
         <div style={foot}><button onClick={()=>setStep("route")} style={ghost}>‹ {tf.back}</button></div>
       </>}
@@ -4408,8 +4506,8 @@ function TransferFlow({b,lang,onClose}){
       {!loading&&step==="passenger"&&sel&&<>
         <div style={body}>
           <div style={{background:"#f8f9fb",borderRadius:10,padding:"10px 12px",marginBottom:14,fontSize:12,color:"#5b6470"}}>
-            <div><strong style={{color:"#1f2730"}}>{sel.vehicleDescription||sel.vehicleCategory}</strong> · {money(sel.price)}</div>
-            <div style={{marginTop:2}}>{pickupLabel()} → {dropoffLabel()} · {fmtDT(pickupDT)}</div>
+            <div><strong style={{color:"#1f2730"}}>{vehName(sel)}</strong> · {money(sel.totalPrice)}</div>
+            {(sel.legs||[]).map((lg,i)=><div key={i} style={{marginTop:2}}>{(sel.legs||[]).length>1?`${lg.direction==="outbound"?tf.perLegOut:tf.perLegRet}: `:""}{legRouteLbl(lg.direction)} · {fmtDT(lg.pickupDateTime)}</div>)}
           </div>
           <p style={{fontSize:14,fontWeight:700,margin:"0 0 10px"}}>{tf.paxTitle}</p>
           <div style={{display:"flex",gap:8,marginBottom:10}}>
@@ -4418,12 +4516,11 @@ function TransferFlow({b,lang,onClose}){
             <div style={{flex:1}}><p style={lbl}>{tf.last} *</p><input value={passenger.lastName} onChange={e=>setPassenger({...passenger,lastName:e.target.value})} style={inp}/></div>
           </div>
           <div style={{marginBottom:10}}><p style={lbl}>{tf.email} *</p><input value={passenger.email} onChange={e=>setPassenger({...passenger,email:e.target.value})} style={inp}/></div>
-          <div style={{display:"flex",gap:8,marginBottom:10}}>
+          <div style={{display:"flex",gap:8,marginBottom:12}}>
             <div style={{width:96}}><p style={lbl}>{tf.areaCode}</p><input value={passenger.areaCode} onChange={e=>setPassenger({...passenger,areaCode:e.target.value})} placeholder="+39" style={inp}/></div>
             <div style={{flex:1}}><p style={lbl}>{tf.phone} *</p><input value={passenger.phone} onChange={e=>setPassenger({...passenger,phone:e.target.value})} style={inp}/></div>
           </div>
-          <div style={{marginBottom:6}}><p style={lbl}>✈ {tf.flight} *</p><input value={flightNo} onChange={e=>{setFlightNo(e.target.value.toUpperCase());setFlightMsg("");}} placeholder="LH114" style={{...inp,textTransform:"uppercase"}}/></div>
-          {flightMsg&&<p style={{fontSize:11,color:"#874d00",background:"#fff7e6",border:"1px solid #ffe3ad",borderRadius:8,padding:"7px 9px",margin:"0 0 4px"}}>ℹ️ {flightMsg}</p>}
+          {legList.map(d=>flightField(d))}
         </div>
         <div style={foot}>
           <button onClick={()=>setStep("select")} style={ghost}>‹</button>
@@ -4433,7 +4530,7 @@ function TransferFlow({b,lang,onClose}){
 
       {!loading&&step==="payment"&&sel&&<>
         <div style={body}>
-          <div style={{display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:"#F15A29",marginBottom:12}}><span>{tf.total}</span><span>{money(pi?pi.amount:sel.price)}</span></div>
+          <div style={{display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:"#F15A29",marginBottom:12}}><span>{legList.length>1?tf.totalRound:tf.total}</span><span>{money(pi?pi.amount:sel.totalPrice)}</span></div>
           {previewOff
             ? <div style={{fontSize:13,color:"#874d00",background:"#fff7e6",border:"1px solid #ffe3ad",borderRadius:10,padding:"12px 14px",lineHeight:1.5}}>🔒 {tf.previewOff}</div>
             : <><div id="bb-tr-pay-el"/><p style={{fontSize:11,color:"#8a93a0",marginTop:10}}>{tf.hold}</p></>}
