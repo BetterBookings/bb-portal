@@ -136,6 +136,7 @@ const API_SERVICES = "https://review.better-bookings.com/api/ext/services";
 const API_SVCREQ   = "https://review.better-bookings.com/api/ext/service-request";
 const API_CARRENTAL = "https://review.better-bookings.com/api/ext/carrental";
 const API_BAGGAGE = "https://review.better-bookings.com/api/ext/baggage";
+const API_TRANSFER = "https://review.better-bookings.com/api/ext/transfer";
 const LANG_MAP    = { 1:"EN", 2:"IT", 3:"ES", 4:"EN", 5:"NL", 6:"FR", 7:"DE" };
 const STATUS_CODE = {
   "1":"conf",   // CONFIRMED
@@ -4134,6 +4135,276 @@ function BaggageFlow({b,lang,onClose}){
   </div>, document.body);
 }
 
+// ═══════════════════ TRANSFER AEROPORTO (World Transfer) ═══════════════════
+const TF = {
+  EN:{open:"Book transfer",title:"Airport transfer",loading:"Searching available transfers…",
+    none:"No transfers available for this route. Please contact us for a quote.",
+    dir:"Direction",arrival:"Airport → Hotel",departure:"Hotel → Airport",
+    pickTime:"Pick-up date & time",manualQ:"Different pick-up airport?",manualIata:"Pick-up airport (IATA code, e.g. FCO)",
+    search:"Search",seats:"seats",bags:"bags",freeCancel:"Free cancellation until",book:"Select",
+    paxTitle:"Passenger details",title:"Title",first:"First name",last:"Last name",email:"Email",
+    areaCode:"Area code",phone:"Phone",flight:"Flight number",flightHint:"We pre-filled it from your flight — please check it's correct.",
+    toPay:"Continue to payment",payTitle:"Payment",pay:"Pay & book transfer",
+    hold:"You'll be charged now; free cancellation applies as shown.",total:"Total",
+    doneTitle:"Transfer booked!",doneMsg:"Your transfer is confirmed. Driver details and meeting point will appear in your reserved area before pick-up.",close:"Done",
+    payErr:"Payment could not be completed. Please try again.",bookErr:"Payment done but booking is still finalising — our team will confirm shortly.",
+    previewOff:"Preview mode — payment is disabled for now. The booking flow is fully functional; real payments will be enabled at go-live.",
+    route:"Route",vehicle:"Vehicle",dateErr:"Please choose a valid future date and time.",required:"Please fill in all required fields."},
+  IT:{open:"Prenota transfer",title:"Transfer aeroporto",loading:"Cerchiamo i transfer disponibili…",
+    none:"Nessun transfer disponibile per questa tratta. Contattaci per un preventivo.",
+    dir:"Direzione",arrival:"Aeroporto → Hotel",departure:"Hotel → Aeroporto",
+    pickTime:"Data e ora di ritiro",manualQ:"Ritiro da un aeroporto diverso?",manualIata:"Aeroporto di ritiro (codice IATA, es. FCO)",
+    search:"Cerca",seats:"posti",bags:"bagagli",freeCancel:"Cancellazione gratuita fino al",book:"Scegli",
+    paxTitle:"Dati del passeggero",title:"Titolo",first:"Nome",last:"Cognome",email:"Email",
+    areaCode:"Prefisso",phone:"Telefono",flight:"Numero volo",flightHint:"L'abbiamo precompilato dal tuo volo — verifica che sia corretto.",
+    toPay:"Continua al pagamento",payTitle:"Pagamento",pay:"Paga e prenota il transfer",
+    hold:"L'addebito avviene ora; vale la cancellazione gratuita indicata.",total:"Totale",
+    doneTitle:"Transfer prenotato!",doneMsg:"Il tuo transfer è confermato. I dettagli dell'autista e il punto d'incontro appariranno nella tua area riservata prima del ritiro.",close:"Fatto",
+    payErr:"Pagamento non riuscito. Riprova.",bookErr:"Pagamento effettuato ma la prenotazione è in finalizzazione — il team confermerà a breve.",
+    previewOff:"Modalità anteprima — il pagamento è disattivato per ora. Il flusso di prenotazione è completo; i pagamenti reali si attivano al go-live.",
+    route:"Tratta",vehicle:"Veicolo",dateErr:"Scegli una data e un'ora future valide.",required:"Compila tutti i campi obbligatori."},
+};
+
+function TransferFlow({b,lang,onClose}){
+  const tf = TF[lang]||TF.EN;
+  const isMobile = typeof window!=="undefined" && window.matchMedia && window.matchMedia("(max-width:600px)").matches;
+  useEffect(()=>{
+    const prev=document.body.style.overflow; document.body.style.overflow="hidden";
+    const op=document.querySelector(".bb-chat-opener"); const opd=op?op.style.display:"";
+    if(op) op.style.display="none";
+    return ()=>{document.body.style.overflow=prev; if(op) op.style.display=opd;};
+  },[]);
+  const slugRef = useRef(getSlug());
+  const [opts,setOpts]=useState(null);
+  const [ctx,setCtx]=useState({});
+  const [loading,setLoading]=useState(true);
+  const [transfers,setTransfers]=useState([]);
+  const [dir,setDir]=useState("arrival");
+  const [depDT,setDepDT]=useState("");
+  const [manualIata,setManualIata]=useState("");
+  const [sel,setSel]=useState(null);
+  const [step,setStep]=useState("select");
+  const [searchErr,setSearchErr]=useState("");
+  const [pickupDT,setPickupDT]=useState("");   // ISO usato per la ricerca corrente (per book/pi)
+
+  // passeggero: precompila dal lead adulto
+  const _ad=(b.adults||0)+(b.addroom?(b.adults2||0):0);
+  const _ch=(b.child||0)+(b.addroom?(b.child2||0):0);
+  const _ba=(b.baby||0)+(b.addroom?(b.baby2||0):0);
+  const adults=parseTravellers(b.TravellerDetails,b.checkIn,{adults:_ad,child:_ch,baby:_ba}).filter(t=>t.ageType==="adult");
+  const lead=adults[0]||{};
+  const [pax,setPax]=useState({title:"MR",firstName:lead.firstName||"",lastName:lead.lastName||"",
+    email:(b.guestEmail&&b.guestEmail[0])||"",areaCode:"",phone:(b.guestTelephone&&b.guestTelephone[0])||""});
+  const [flightNo,setFlightNo]=useState("");
+  const [flightMsg,setFlightMsg]=useState("");
+
+  const money=(v)=> v!=null?`${Number(v).toFixed(2)} €`:"—";
+  const fmtDT=(iso)=>{ const s=String(iso||""); return s.length>=16?`${s.slice(8,10)}/${s.slice(5,7)}/${s.slice(0,4)} ${s.slice(11,16)}`:s.slice(0,10); };
+  const fmtFree=(min,pickIso)=>{ if(!min||!pickIso) return ""; const d=new Date(String(pickIso).slice(0,19)); d.setMinutes(d.getMinutes()-min); const z=n=>String(n).padStart(2,"0"); return `${z(d.getDate())}/${z(d.getMonth()+1)} ${z(d.getHours())}:${z(d.getMinutes())}`; };
+
+  function applyResult(d){
+    setTransfers(Array.isArray(d.transfers)?d.transfers:[]);
+    setPickupDT(d.pickupDateTime||"");
+  }
+  // caricamento iniziale (arrivo) + auto-lookup numero volo
+  useEffect(()=>{
+    let dead=false;
+    fetch(`${API_TRANSFER}/${slugRef.current}?direction=arrival&lang=${lang}`).then(r=>r.json()).then(d=>{
+      if(dead) return;
+      setOpts(d); setCtx(d.context||{}); applyResult(d); setLoading(false);
+      if(d.context && d.context.hasFlight===false) setManualIata(" "); // forza modalità manuale (mostra campo)
+      if(d.context && d.context.departureTime) setDepDT(dtLocal(d.context.departureTime,10));
+    }).catch(()=>{ if(!dead){ setOpts({available:false}); setLoading(false); } });
+    // numero volo via SerpAPI (best-effort)
+    fetch(`${API_TRANSFER}/flight-lookup`,{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({slug:slugRef.current,direction:"outbound"})}).then(r=>r.json()).then(d=>{
+      if(dead) return;
+      if(d && d.flightNumber){ setFlightNo(d.flightNumber); setFlightMsg(tf.flightHint); }
+    }).catch(()=>{});
+    return ()=>{dead=true;};
+  },[]);
+
+  async function runSearch(newDir){
+    const d2=newDir||dir; setSearchErr("");
+    let pickupDateTime=null, manual_pickup=null;
+    if(d2==="departure"){
+      if(!depDT){ setSearchErr(tf.dateErr); return; }
+      pickupDateTime=depDT+":00";
+    }
+    const mi=(manualIata||"").trim();
+    if(mi && mi.length===3){ manual_pickup={iata:mi.toUpperCase()}; }
+    setLoading(true);
+    try{
+      const r=await fetch(`${API_TRANSFER}/search`,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({slug:slugRef.current,direction:d2,pickupDateTime,manual_pickup,lang})});
+      const d=await r.json(); applyResult(d);
+    }catch{ setTransfers([]); } finally{ setLoading(false); }
+  }
+
+  // ── pagamento (stile BaggageFlow) ──
+  const [pi,setPi]=useState(null); const [payErr,setPayErr]=useState(""); const [paying,setPaying]=useState(false);
+  const [previewOff,setPreviewOff]=useState(false);
+  const stripeRef=useRef(null); const elementsRef=useRef(null);
+  const bookBody=()=>({slug:slugRef.current,direction:dir,pickupDateTime:pickupDT||null,
+    manual_pickup:(manualIata||"").trim().length===3?{iata:manualIata.trim().toUpperCase()}:null,
+    quoteIdentifier:sel&&sel.quoteIdentifier,lang});
+  useEffect(()=>{
+    if(step!=="payment"||pi||previewOff) return;
+    let dead=false;
+    (async()=>{
+      setPayErr("");
+      try{
+        const r=await fetch(`${API_TRANSFER}/payment-intent`,{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify(bookBody())});
+        if(r.status===503){ if(!dead) setPreviewOff(true); return; }
+        if(!r.ok) throw new Error("init");
+        const d=await r.json(); if(dead) return; setPi(d);
+        const SF=await loadStripeJs(); if(dead||!SF) return;
+        const stripe=SF(d.publishable_key); stripeRef.current=stripe;
+        const elements=stripe.elements({clientSecret:d.client_secret}); elementsRef.current=elements;
+        const el=elements.create("payment");
+        setTimeout(()=>{ if(!dead&&document.getElementById("bb-tr-pay-el")) el.mount("#bb-tr-pay-el"); },30);
+      }catch(e){ if(!dead) setPayErr(tf.payErr); }
+    })();
+    return ()=>{dead=true;};
+  },[step]);
+  async function payAndBook(){
+    if(!stripeRef.current||!elementsRef.current||!pi) return;
+    setPaying(true); setPayErr("");
+    try{
+      const {error,paymentIntent}=await stripeRef.current.confirmPayment({elements:elementsRef.current,redirect:"if_required"});
+      if(error){ setPayErr(error.message||tf.payErr); setPaying(false); return; }
+      if(!paymentIntent||(paymentIntent.status!=="requires_capture"&&paymentIntent.status!=="succeeded")){ setPayErr(tf.payErr); setPaying(false); return; }
+      const r=await fetch(`${API_TRANSFER}/book`,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({...bookBody(),payment_intent_id:pi.payment_intent_id,
+          passenger:pax,flightNumber:flightNo,bb_ref:b.bookingReference||""})});
+      if(!r.ok) throw new Error("book");
+      setStep("done");
+    }catch(e){ setPayErr(tf.bookErr); }
+    finally{ setPaying(false); }
+  }
+
+  const paxValid = pax.firstName&&pax.lastName&&pax.email&&pax.phone&&flightNo;
+
+  const overlay={position:"fixed",inset:0,background:"rgba(15,20,30,.55)",zIndex:9999,display:"flex",justifyContent:"center",
+    alignItems:isMobile?"stretch":"flex-start",padding:isMobile?0:"4vh 12px",overflowY:isMobile?"hidden":"auto"};
+  const sheet={background:"#fff",color:"#1f2730",borderRadius:isMobile?0:16,maxWidth:isMobile?"100%":540,width:"100%",
+    boxShadow:"0 20px 60px rgba(0,0,0,.3)",display:"flex",flexDirection:"column",height:isMobile?"100%":"auto",maxHeight:isMobile?"100%":"92vh"};
+  const head={display:"flex",alignItems:"center",gap:10,padding:"14px 18px",borderBottom:"1px solid #eef0f3",flexShrink:0};
+  const body={padding:"16px 18px",overflowY:"auto",flex:1,minHeight:0,WebkitOverflowScrolling:"touch"};
+  const foot={display:"flex",gap:10,padding:"12px 18px",borderTop:"1px solid #eef0f3",flexShrink:0};
+  const primary={flex:1,background:"#F15A29",color:"#fff",border:"none",padding:"11px",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"};
+  const ghost={background:"#eef1f5",color:"#1f2730",border:"none",padding:"11px 16px",borderRadius:10,fontWeight:600,fontSize:14,cursor:"pointer"};
+  const inp={width:"100%",padding:"9px 11px",border:"1px solid #d7dce2",borderRadius:9,fontSize:13,color:"#1f2730",fontFamily:"inherit",boxSizing:"border-box"};
+  const lbl={fontSize:11,fontWeight:600,color:"#5b6470",margin:"0 0 3px"};
+  const chip=(on)=>({flex:1,padding:"8px",borderRadius:9,border:"1px solid "+(on?"#F15A29":"#d7dce2"),background:on?"#FFF2F0":"#fff",color:on?"#F15A29":"#5b6470",fontWeight:600,fontSize:12,cursor:"pointer"});
+
+  return createPortal(<div style={overlay} onClick={onClose}>
+    <div style={sheet} onClick={e=>e.stopPropagation()}>
+      <div style={head}>
+        <span style={{fontSize:22}}>🚐</span>
+        <div style={{flex:1,fontSize:16,fontWeight:700}}>{tf.title}</div>
+        <button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#8a93a0",lineHeight:1}}>×</button>
+      </div>
+
+      {step==="select"&&<>
+        <div style={body}>
+          <div style={{display:"flex",gap:8,marginBottom:12}}>
+            <div onClick={()=>{setDir("arrival");runSearch("arrival");}} style={chip(dir==="arrival")}>{tf.arrival}</div>
+            <div onClick={()=>{setDir("departure");}} style={chip(dir==="departure")}>{tf.departure}</div>
+          </div>
+          {dir==="departure"&&<div style={{marginBottom:12}}>
+            <p style={lbl}>{tf.pickTime}</p>
+            <div style={{display:"flex",gap:8}}>
+              <input type="datetime-local" value={depDT} onChange={e=>setDepDT(e.target.value)} style={inp}/>
+              <button onClick={()=>runSearch("departure")} style={{...ghost,flexShrink:0}}>{tf.search}</button>
+            </div>
+          </div>}
+          <details style={{marginBottom:12}}>
+            <summary style={{fontSize:12,color:"#5b6470",cursor:"pointer"}}>{tf.manualQ}</summary>
+            <div style={{display:"flex",gap:8,marginTop:8}}>
+              <input value={manualIata.trim()} onChange={e=>setManualIata(e.target.value)} placeholder={tf.manualIata} maxLength={3} style={{...inp,textTransform:"uppercase"}}/>
+              <button onClick={()=>runSearch()} style={{...ghost,flexShrink:0}}>{tf.search}</button>
+            </div>
+          </details>
+          {searchErr&&<p style={{color:"#c0392b",fontSize:12,margin:"0 0 10px"}}>{searchErr}</p>}
+          {loading&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10,padding:"28px 10px",color:"#5b6470",fontSize:14,textAlign:"center"}}>
+            <div style={{width:26,height:26,border:"3px solid #eef0f3",borderTopColor:"#F15A29",borderRadius:"50%",animation:"spin .8s linear infinite"}}/>
+            <span>🚐 {tf.loading}</span></div>}
+          {!loading&&!transfers.length&&<div style={{color:"#5b6470",fontSize:14}}>{tf.none}</div>}
+          {!loading&&transfers.map((tr,i)=>
+            <div key={i} onClick={()=>{setSel(tr);setStep("passenger");}} style={{border:"1px solid #eef0f3",borderRadius:12,padding:"12px 14px",marginBottom:10,cursor:"pointer",display:"flex",justifyContent:"space-between",gap:10,alignItems:"center"}}>
+              <div style={{minWidth:0}}>
+                <div style={{fontWeight:700,fontSize:14,color:"#1f2730"}}>{tr.vehicleDescription||tr.vehicleCategory||"Transfer"}</div>
+                <div style={{fontSize:12,color:"#5b6470",marginTop:2}}>
+                  {tr.seatsCapacity?`👤 ${tr.seatsCapacity} ${tf.seats}`:""}{tr.durationMin?` · ${tr.durationMin} min`:""}
+                </div>
+                {tr.freeCancelUntilMin&&pickupDT?<div style={{fontSize:11,color:"#1e874b",marginTop:3}}>✓ {tf.freeCancel} {fmtFree(tr.freeCancelUntilMin,pickupDT)}</div>:null}
+              </div>
+              <div style={{textAlign:"right",flexShrink:0}}>
+                <div style={{fontWeight:800,fontSize:16,color:"#F15A29"}}>{money(tr.price)}</div>
+                <button style={{...primary,flex:"none",padding:"6px 14px",marginTop:4,fontSize:12}}>{tf.book}</button>
+              </div>
+            </div>)}
+        </div>
+      </>}
+
+      {step==="passenger"&&sel&&<>
+        <div style={body}>
+          <div style={{background:"#f8f9fb",borderRadius:10,padding:"10px 12px",marginBottom:14,fontSize:12,color:"#5b6470"}}>
+            <div><strong style={{color:"#1f2730"}}>{sel.vehicleDescription||sel.vehicleCategory}</strong> · {money(sel.price)}</div>
+            <div style={{marginTop:2}}>{fmtDT(pickupDT)}</div>
+          </div>
+          <p style={{fontSize:14,fontWeight:700,margin:"0 0 10px"}}>{tf.paxTitle}</p>
+          <div style={{display:"flex",gap:8,marginBottom:10}}>
+            <div style={{width:90}}><p style={lbl}>{tf.title}</p>
+              <select value={pax.title} onChange={e=>setPax({...pax,title:e.target.value})} style={inp}><option>MR</option><option>MRS</option><option>MS</option></select></div>
+            <div style={{flex:1}}><p style={lbl}>{tf.first} *</p><input value={pax.firstName} onChange={e=>setPax({...pax,firstName:e.target.value})} style={inp}/></div>
+            <div style={{flex:1}}><p style={lbl}>{tf.last} *</p><input value={pax.lastName} onChange={e=>setPax({...pax,lastName:e.target.value})} style={inp}/></div>
+          </div>
+          <div style={{marginBottom:10}}><p style={lbl}>{tf.email} *</p><input value={pax.email} onChange={e=>setPax({...pax,email:e.target.value})} style={inp}/></div>
+          <div style={{display:"flex",gap:8,marginBottom:10}}>
+            <div style={{width:90}}><p style={lbl}>{tf.areaCode}</p><input value={pax.areaCode} onChange={e=>setPax({...pax,areaCode:e.target.value})} placeholder="+39" style={inp}/></div>
+            <div style={{flex:1}}><p style={lbl}>{tf.phone} *</p><input value={pax.phone} onChange={e=>setPax({...pax,phone:e.target.value})} style={inp}/></div>
+          </div>
+          <div style={{marginBottom:6}}><p style={lbl}>✈ {tf.flight} *</p><input value={flightNo} onChange={e=>{setFlightNo(e.target.value.toUpperCase());setFlightMsg("");}} placeholder="LH114" style={{...inp,textTransform:"uppercase"}}/></div>
+          {flightMsg&&<p style={{fontSize:11,color:"#874d00",background:"#fff7e6",border:"1px solid #ffe3ad",borderRadius:8,padding:"7px 9px",margin:"0 0 4px"}}>ℹ️ {flightMsg}</p>}
+        </div>
+        <div style={foot}>
+          <button onClick={()=>setStep("select")} style={ghost}>‹</button>
+          <button onClick={()=>{ if(paxValid) setStep("payment"); }} disabled={!paxValid} style={{...primary,opacity:paxValid?1:.5}}>{tf.toPay}</button>
+        </div>
+      </>}
+
+      {step==="payment"&&sel&&<>
+        <div style={body}>
+          <div style={{display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:"#F15A29",marginBottom:12}}>
+            <span>{tf.total}</span><span>{money(pi?pi.amount:sel.price)}</span>
+          </div>
+          {previewOff
+            ? <div style={{fontSize:13,color:"#874d00",background:"#fff7e6",border:"1px solid #ffe3ad",borderRadius:10,padding:"12px 14px",lineHeight:1.5}}>🔒 {tf.previewOff}</div>
+            : <><div id="bb-tr-pay-el"/>
+               <p style={{fontSize:11,color:"#8a93a0",marginTop:10}}>{tf.hold}</p></>}
+          {payErr&&<p style={{color:"#c0392b",fontSize:12,marginTop:8}}>{payErr}</p>}
+        </div>
+        <div style={foot}>
+          <button onClick={()=>setStep("passenger")} style={ghost}>‹</button>
+          {!previewOff&&<button onClick={payAndBook} disabled={paying||!pi} style={{...primary,opacity:(paying||!pi)?.6:1}}>{paying?"…":tf.pay}</button>}
+        </div>
+      </>}
+
+      {step==="done"&&<>
+        <div style={body}><div style={{textAlign:"center",padding:"24px 10px"}}>
+          <div style={{fontSize:40}}>✅</div>
+          <div style={{fontSize:18,fontWeight:700,margin:"8px 0 6px"}}>{tf.doneTitle}</div>
+          <p style={{fontSize:13,color:"#5b6470"}}>{tf.doneMsg}</p>
+        </div></div>
+        <div style={foot}><button onClick={onClose} style={primary}>{tf.close}</button></div>
+      </>}
+    </div>
+  </div>, document.body);
+}
+
 function Shop({b,lang,services}){
   const t = T[lang]||T.EN;
   const [status,setStatus] = useState({});   // { [serviceId]: "sending"|"sent"|"error" }
@@ -4142,7 +4413,7 @@ function Shop({b,lang,services}){
   // deep-link: ?service=baggage|carrental apre direttamente il funnel (es. dalla pagina volo)
   useEffect(()=>{
     const s=getQ("service");
-    if(s==="baggage"||s==="carrental") setFlow(s);
+    if(s==="baggage"||s==="carrental"||s==="transfer") setFlow(s);
   },[]);
   const pick = (o)=> (o&&(o[lang]||o.EN))||"";
 
@@ -4205,7 +4476,7 @@ function Shop({b,lang,services}){
               return <button onClick={()=>setFlow(card.live)} style={{background:"#F15A29",color:"#fff",border:"none",
                   padding:"10px 16px",borderRadius:10,fontWeight:600,fontSize:14,cursor:"pointer",
                   display:"inline-flex",alignItems:"center",justifyContent:"center",gap:6}}>
-                  <Ico name="bb-search" size={14} light/> {card.live==="baggage"?(BF[lang]||BF.EN).open:(CF[lang]||CF.EN).open}
+                  <Ico name="bb-search" size={14} light/> {card.live==="baggage"?(BF[lang]||BF.EN).open:card.live==="transfer"?(TF[lang]||TF.EN).open:(CF[lang]||CF.EN).open}
                 </button>;
             return st==="sent"?sentBox:reqBtn;
           })()}
@@ -4214,6 +4485,7 @@ function Shop({b,lang,services}){
     </div>
     {flow==="carrental"&&<CarRentalFlow b={b} lang={lang} onClose={()=>setFlow(null)}/>}
     {flow==="baggage"&&<BaggageFlow b={b} lang={lang} onClose={()=>setFlow(null)}/>}
+    {flow==="transfer"&&<TransferFlow b={b} lang={lang} onClose={()=>setFlow(null)}/>}
   </div>;
 }
 
