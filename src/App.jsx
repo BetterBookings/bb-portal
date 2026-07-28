@@ -4278,6 +4278,7 @@ function TransferFlow({b,lang,onClose}){
   const stripeRef=useRef(null); const elementsRef=useRef(null);
   const bookBody=()=>({slug:slugRef.current,pickup:pickupSide(),dropoff:dropoffSide(),
     pickupDateTime:pickupDT||(when+":00"),pax,quoteIdentifier:sel&&sel.quoteIdentifier,
+    vehicleClass:sel&&sel.vehicleClass,vehicleType:sel&&sel.vehicleCategory,
     pickupLabel:pickupLabel(),dropoffLabel:dropoffLabel(),lang});
   useEffect(()=>{
     if(step!=="payment"||pi||previewOff) return;
@@ -4391,8 +4392,8 @@ function TransferFlow({b,lang,onClose}){
           {transfers.map((tr,i)=>
             <div key={i} onClick={()=>{setSel(tr);setStep("passenger");}} style={{border:"1px solid #eef0f3",borderRadius:12,padding:"12px 14px",marginBottom:10,cursor:"pointer",display:"flex",justifyContent:"space-between",gap:10,alignItems:"center"}}>
               <div style={{minWidth:0}}>
-                <div style={{fontWeight:700,fontSize:14,color:"#1f2730"}}>{tr.vehicleDescription||tr.vehicleCategory||"Transfer"}</div>
-                <div style={{fontSize:12,color:"#5b6470",marginTop:2}}>{tr.seatsCapacity?`👤 ${tr.seatsCapacity} ${tf.seats}`:""}{tr.durationMin?` · ${tr.durationMin} min`:""}</div>
+                <div style={{fontWeight:700,fontSize:14,color:"#1f2730"}}>{tr.vehicleCategory==="VAN"?"Van":tr.vehicleCategory==="LIMO"?"Limousine":(tr.vehicleCategory||"Transfer")}{tr.classLabel?` · ${tr.classLabel}`:""}</div>
+                <div style={{fontSize:12,color:"#5b6470",marginTop:2}}>{tr.vehicleDescription?tr.vehicleDescription+" · ":""}{tr.seatsCapacity?`👤 ${tr.seatsCapacity} ${tf.seats}`:""}{tr.durationMin?` · ${tr.durationMin} min`:""}</div>
                 {tr.freeCancelUntilMin&&pickupDT?<div style={{fontSize:11,color:"#1e874b",marginTop:3}}>✓ {tf.freeCancel} {fmtFree(tr.freeCancelUntilMin,pickupDT)}</div>:null}
               </div>
               <div style={{textAlign:"right",flexShrink:0}}>
