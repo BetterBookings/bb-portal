@@ -4202,9 +4202,11 @@ function TransferFlow({b,lang,onClose}){
   const fmtDT=(iso)=>{ const s=String(iso||""); return s.length>=16?`${s.slice(8,10)}/${s.slice(5,7)}/${s.slice(0,4)} ${s.slice(11,16)}`:s.slice(0,10); };
   const fmtFree=(min,pickIso)=>{ if(!min||!pickIso) return ""; const d=new Date(String(pickIso).slice(0,19)); d.setMinutes(d.getMinutes()-min); const z=n=>String(n).padStart(2,"0"); return `${z(d.getDate())}/${z(d.getMonth()+1)} ${z(d.getHours())}:${z(d.getMinutes())}`; };
 
+  const [lastError,setLastError]=useState("");
   function applyResult(d){
     setTransfers(Array.isArray(d.transfers)?d.transfers:[]);
     setPickupDT(d.pickupDateTime||"");
+    setLastError(d.error||(d.configured===false?"not_configured":""));
   }
   // caricamento iniziale (arrivo) + auto-lookup numero volo
   useEffect(()=>{
@@ -4331,7 +4333,7 @@ function TransferFlow({b,lang,onClose}){
           {loading&&<div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10,padding:"28px 10px",color:"#5b6470",fontSize:14,textAlign:"center"}}>
             <div style={{width:26,height:26,border:"3px solid #eef0f3",borderTopColor:"#F15A29",borderRadius:"50%",animation:"spin .8s linear infinite"}}/>
             <span>🚐 {tf.loading}</span></div>}
-          {!loading&&!transfers.length&&<div style={{color:"#5b6470",fontSize:14}}>{tf.none}</div>}
+          {!loading&&!transfers.length&&<div style={{color:"#5b6470",fontSize:14}}>{tf.none}{lastError?<span style={{display:"block",marginTop:6,fontSize:11,color:"#8a93a0"}}>[{lastError}]</span>:null}</div>}
           {!loading&&transfers.map((tr,i)=>
             <div key={i} onClick={()=>{setSel(tr);setStep("passenger");}} style={{border:"1px solid #eef0f3",borderRadius:12,padding:"12px 14px",marginBottom:10,cursor:"pointer",display:"flex",justifyContent:"space-between",gap:10,alignItems:"center"}}>
               <div style={{minWidth:0}}>
