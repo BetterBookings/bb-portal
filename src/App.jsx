@@ -4140,9 +4140,12 @@ const TF = {
   EN:{open:"Book transfer",title:"Airport transfer",loading:"Loading your trip…",
     tripType:"What do you need?",tripRound:"Round trip",tripOut:"One way · Airport → Stay",tripRet:"One way · Stay → Airport",
     legOut:"Outbound",legRet:"Return",from:"Pick-up",to:"Drop-off",airport:"Airport",change:"change",
-    dest:"Address / accommodation",searchPlace:"Type a hotel or address…",
+    dest:"Your accommodation",searchPlace:"Search hotel or address…",searchAirport:"Airport name, city or code…",
+    noFound:"No results — keep typing",
     bFlight:"from your flight",bBooking:"from your booking",bConfirmed:"confirmed",bEnter:"please enter",
-    confirmLeg:"I confirm these details are correct",
+    confirmLeg:"I confirm the pick-up and drop-off of this leg",
+    addrReview:"Check the address matches your accommodation.",addrConfirm:"I confirm this is the correct address of my accommodation",
+    needPlaceConfirm:"Please search and confirm your accommodation address.",
     when:"Pick-up date & time",retHint:"Your flight departs at {t} — we suggest pick-up 3h earlier. Adjust if needed.",
     pax:"Passengers",searchBtn:"Search transfers",
     needAirport:"Please enter the airport (3-letter code) for each leg.",needPlace:"Please search and confirm the address.",
@@ -4162,9 +4165,12 @@ const TF = {
   IT:{open:"Prenota transfer",title:"Transfer aeroporto",loading:"Carico il tuo viaggio…",
     tripType:"Cosa ti serve?",tripRound:"Andata e ritorno",tripOut:"Solo andata · Aeroporto → Struttura",tripRet:"Solo ritorno · Struttura → Aeroporto",
     legOut:"Andata",legRet:"Ritorno",from:"Ritiro",to:"Destinazione",airport:"Aeroporto",change:"modifica",
-    dest:"Indirizzo / struttura",searchPlace:"Scrivi un hotel o un indirizzo…",
+    dest:"La tua struttura",searchPlace:"Cerca hotel o indirizzo…",searchAirport:"Nome aeroporto, città o codice…",
+    noFound:"Nessun risultato — continua a scrivere",
     bFlight:"dal tuo volo",bBooking:"dalla prenotazione",bConfirmed:"confermata",bEnter:"da inserire",
-    confirmLeg:"Confermo che questi dati sono corretti",
+    confirmLeg:"Confermo il ritiro e la destinazione di questa tratta",
+    addrReview:"Controlla che l'indirizzo corrisponda alla tua struttura.",addrConfirm:"Confermo che questo è l'indirizzo corretto della struttura",
+    needPlaceConfirm:"Cerca e conferma l'indirizzo della tua struttura.",
     when:"Data e ora del ritiro",retHint:"Il tuo volo parte alle {t} — ti consigliamo il ritiro 3h prima. Modificalo se serve.",
     pax:"Passeggeri",searchBtn:"Cerca transfer",
     needAirport:"Inserisci l'aeroporto (codice di 3 lettere) per ogni tratta.",needPlace:"Cerca e conferma l'indirizzo.",
@@ -4203,10 +4209,13 @@ function TransferFlow({b,lang,onClose}){
   const [placeQuery,setPlaceQuery]=useState("");
   const [placeResults,setPlaceResults]=useState([]);
   const [placeOpen,setPlaceOpen]=useState(false);
+  const [placeAddrOk,setPlaceAddrOk]=useState(false);   // conferma esplicita indirizzo
   const [airOut,setAirOut]=useState({iata:"",label:"",fromNinox:false});
   const [airRet,setAirRet]=useState({iata:"",label:"",fromNinox:false});
   const [editOut,setEditOut]=useState(false);
   const [editRet,setEditRet]=useState(false);
+  const [airQ,setAirQ]=useState("");                    // ricerca aeroporto (per la tratta in edit)
+  const [airRes,setAirRes]=useState([]);
   const [whenOut,setWhenOut]=useState("");
   const [whenRet,setWhenRet]=useState("");
   const [flightTimeRet,setFlightTimeRet]=useState("");   // orario volo partenza (per suggerimento + flightTimeOfArrival)
@@ -4268,11 +4277,23 @@ function TransferFlow({b,lang,onClose}){
       fetch(`${API_TRANSFER}/places?q=${encodeURIComponent(q)}&lang=${String(lang).toLowerCase()}`).then(r=>r.json()).then(d=>{
         setPlaceResults(Array.isArray(d.results)?d.results:[]);
       }).catch(()=>setPlaceResults([]));
-    },350);
+    },400);
     return ()=>clearTimeout(t);
   },[placeQuery,placeOpen]);
 
-  function pickPlace(r){ setPlace({label:r.label,address:r.address||r.label,lat:r.lat,lon:r.lon,fromNinox:false}); setPlaceQuery(r.label); setPlaceOpen(false); setPlaceResults([]); setPlaceEdit(false); setConf({outbound:false,return:false}); }
+  useEffect(()=>{
+    const q=airQ.trim();
+    if(!(editOut||editRet)||q.length<2){ setAirRes([]); return; }
+    const t=setTimeout(()=>{
+      fetch(`${API_TRANSFER}/airports?q=${encodeURIComponent(q)}`).then(r=>r.json()).then(d=>{
+        setAirRes(Array.isArray(d.results)?d.results:[]);
+      }).catch(()=>setAirRes([]));
+    },250);
+    return ()=>clearTimeout(t);
+  },[airQ,editOut,editRet]);
+
+  function pickPlace(r){ setPlace({label:r.label,address:r.address||r.label,lat:r.lat,lon:r.lon,fromNinox:false}); setPlaceQuery(r.label); setPlaceOpen(false); setPlaceResults([]); setPlaceEdit(false); setPlaceAddrOk(false); setConf({outbound:false,return:false}); }
+  function pickAirport(which,a){ const isOut=which==="out"; (isOut?setAirOut:setAirRet)({iata:a.iata,label:a.label||a.iata,fromNinox:false}); (isOut?setEditOut:setEditRet)(false); setAirQ(""); setAirRes([]); setConf(c=>({...c,[isOut?"outbound":"return"]:false})); }
 
   const airLbl=(a)=> a.label||a.iata||"—";
   const airLoc=(a)=> (a.iata&&a.iata.length===3)?{iata:a.iata}:null;
@@ -4298,7 +4319,7 @@ function TransferFlow({b,lang,onClose}){
   async function runSearch(){
     setSearchErr("");
     if(!legList.every(d=> airLoc(legAir(d)))){ setSearchErr(tf.needAirport); return; }
-    if(!placeLoc()){ setSearchErr(tf.needPlace); return; }
+    if(!placeLoc()||!placeAddrOk){ setSearchErr(tf.needPlaceConfirm); return; }
     if(!legList.every(d=>legWhen(d))){ setSearchErr(tf.dateErr); return; }
     if(!legList.every(d=>conf[d])){ setSearchErr(tf.confirmErr); return; }
     setSearching(true); setOptions([]);
@@ -4350,7 +4371,7 @@ function TransferFlow({b,lang,onClose}){
   }
 
   const paxValid = passenger.firstName&&passenger.lastName&&passenger.email&&passenger.phone;
-  const allConfirmed = legList.every(d=>legValid(d)) && pax>=1;
+  const allConfirmed = legList.every(d=>legValid(d)) && pax>=1 && placeAddrOk;
   const vehName=(o)=> (o.vehicleCategory==="VAN"?"Van":o.vehicleCategory==="LIMO"?"Limousine":(o.vehicleCategory||"Transfer"))+(o.classLabel?` · ${o.classLabel}`:"");
 
   const overlay={position:"fixed",inset:0,background:"rgba(15,20,30,.55)",zIndex:9999,display:"flex",justifyContent:"center",alignItems:isMobile?"stretch":"flex-start",padding:isMobile?0:"4vh 12px",overflowY:isMobile?"hidden":"auto"};
@@ -4363,6 +4384,8 @@ function TransferFlow({b,lang,onClose}){
   const inp={width:"100%",padding:"10px 11px",border:"1px solid #d7dce2",borderRadius:9,fontSize:13,color:"#1f2730",fontFamily:"inherit",boxSizing:"border-box"};
   const lbl={fontSize:11,fontWeight:600,color:"#5b6470",margin:"0 0 4px",textTransform:"uppercase",letterSpacing:.3};
   const linkBtn={background:"none",border:"none",color:"#F15A29",fontSize:12,fontWeight:600,cursor:"pointer",padding:0};
+  const dd={position:"absolute",left:14,right:14,zIndex:6,background:"#fff",border:"1px solid #d7dce2",borderRadius:10,boxShadow:"0 8px 24px rgba(0,0,0,.12)",marginTop:4,maxHeight:220,overflowY:"auto"};
+  const ddItem=(i,n)=>({padding:"9px 12px",cursor:"pointer",borderBottom:i<n-1?"1px solid #f2f4f7":"none"});
 
   const Badge=({kind})=>{ const green=kind!=="enter";
     const txt = kind==="flight"?tf.bFlight:kind==="booking"?tf.bBooking:kind==="confirmed"?tf.bConfirmed:tf.bEnter;
@@ -4371,50 +4394,63 @@ function TransferFlow({b,lang,onClose}){
   const tripChip=(val,label)=>(
     <div onClick={()=>setTripType(val)} style={{flex:1,padding:"9px 6px",borderRadius:9,border:"1px solid "+(tripType===val?"#F15A29":"#d7dce2"),background:tripType===val?"#FFF2F0":"#fff",color:tripType===val?"#F15A29":"#5b6470",fontWeight:600,fontSize:11.5,cursor:"pointer",textAlign:"center",lineHeight:1.25}}>{label}</div>);
 
-  // struttura (alloggio) condivisa — bloccata in cima, editabile con ricerca
+  // struttura (alloggio) condivisa — ricerca SEMPRE visibile + conferma esplicita dell'indirizzo
   const placeCard=()=>(
     <div style={{border:"1px solid #eef0f3",borderRadius:12,padding:"12px 14px",marginBottom:12,position:"relative"}}>
       <p style={lbl}>{tf.dest}</p>
-      {(placeEdit||place.lat==null)
-        ? <>
-            <input value={placeQuery} placeholder={tf.searchPlace}
-              onChange={e=>{setPlaceQuery(e.target.value);setPlaceOpen(true);setPlace(p=>({...p,lat:null,lon:null,fromNinox:false}));setConf({outbound:false,return:false});}}
-              onFocus={()=>setPlaceOpen(true)} style={inp}/>
-            {placeOpen&&placeResults.length>0&&
-              <div style={{position:"absolute",left:14,right:14,zIndex:5,background:"#fff",border:"1px solid #d7dce2",borderRadius:10,boxShadow:"0 8px 24px rgba(0,0,0,.12)",marginTop:4,maxHeight:200,overflowY:"auto"}}>
-                {placeResults.map((r,i)=>
-                  <div key={i} onClick={()=>pickPlace(r)} style={{padding:"9px 12px",cursor:"pointer",borderBottom:i<placeResults.length-1?"1px solid #f2f4f7":"none"}}>
-                    <div style={{fontSize:13,fontWeight:600,color:"#1f2730"}}>{r.label}</div>
-                    {r.sublabel&&<div style={{fontSize:11,color:"#8a93a0"}}>{r.sublabel}</div>}
-                  </div>)}
-              </div>}
-            {place.lat==null&&<div style={{marginTop:6}}><Badge kind="enter"/></div>}
-          </>
-        : <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8}}>
-            <span style={{fontSize:14,fontWeight:700,color:"#1f2730",minWidth:0,overflow:"hidden",textOverflow:"ellipsis"}}>📍 {place.label||place.address}</span>
-            <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
-              <Badge kind={place.fromNinox?"booking":"confirmed"}/>
-              <button onClick={()=>{setPlaceEdit(true);setPlaceOpen(true);}} style={linkBtn}>{tf.change}</button>
-            </div>
+      <input value={placeQuery} placeholder={tf.searchPlace}
+        onChange={e=>{setPlaceQuery(e.target.value);setPlaceOpen(true);setPlace(p=>({...p,lat:null,lon:null,fromNinox:false}));setPlaceAddrOk(false);setConf({outbound:false,return:false});}}
+        style={inp}/>
+      {placeOpen&&placeResults.length>0&&
+        <div style={dd}>
+          {placeResults.map((r,i)=>
+            <div key={i} onClick={()=>pickPlace(r)} style={ddItem(i,placeResults.length)}>
+              <div style={{fontSize:13,fontWeight:600,color:"#1f2730"}}>{r.label}</div>
+              {r.sublabel&&<div style={{fontSize:11,color:"#8a93a0"}}>{r.sublabel}</div>}
+            </div>)}
+        </div>}
+      {place.lat==null
+        ? <div style={{marginTop:6}}><Badge kind="enter"/></div>
+        : <div style={{marginTop:10,background:"#f7fafd",border:"1px solid "+(placeAddrOk?"#bfe3cd":"#dbe6f5"),borderRadius:10,padding:"10px 12px"}}>
+            <div style={{fontSize:13,fontWeight:700,color:"#1f2730"}}>📍 {place.label}</div>
+            {place.address&&place.address!==place.label&&<div style={{fontSize:12,color:"#5b6470",marginTop:2}}>{place.address}</div>}
+            <div style={{fontSize:11,color:"#8a5a00",marginTop:6}}>⚠ {tf.addrReview}</div>
+            <label style={{display:"flex",alignItems:"flex-start",gap:8,marginTop:8,cursor:"pointer",fontSize:12.5,fontWeight:600,color:placeAddrOk?"#1e874b":"#1f2730"}}>
+              <input type="checkbox" checked={placeAddrOk} onChange={e=>{setPlaceAddrOk(e.target.checked);setConf({outbound:false,return:false});}} style={{width:16,height:16,marginTop:1,accentColor:"#F15A29"}}/>
+              <span>{tf.addrConfirm}</span>
+            </label>
           </div>}
     </div>);
 
+  // aeroporto per tratta — ricerca interattiva per nome/città/codice (dataset airports)
   const airportNode=(which)=>{
     const isOut=which==="out"; const a=isOut?airOut:airRet; const edit=isOut?editOut:editRet;
-    const setEdit=isOut?setEditOut:setEditRet; const setA=isOut?setAirOut:setAirRet;
-    return edit
-      ? <input autoFocus value={a.iata} maxLength={3} placeholder="FCO"
-          onChange={e=>{const iata=e.target.value.toUpperCase().replace(/[^A-Z]/g,"").slice(0,3);setA({iata,label:iata,fromNinox:false});setConf(c=>({...c,[isOut?"outbound":"return"]:false}));}}
-          onBlur={()=>setEdit(false)} style={{...inp,textTransform:"uppercase",fontWeight:700,maxWidth:130}}/>
-      : <span style={{display:"inline-flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
-          <span style={{fontWeight:700,fontSize:14}}>✈ {airLbl(a)}</span>
-          {a.fromNinox&&a.iata&&<Badge kind="flight"/>}
-          <button onClick={()=>setEdit(true)} style={linkBtn}>{tf.change}</button>
-        </span>;
+    const setEdit=isOut?setEditOut:setEditRet;
+    if(edit) return <div style={{position:"relative"}}>
+      <input autoFocus value={airQ} placeholder={tf.searchAirport}
+        onChange={e=>setAirQ(e.target.value)} style={inp}/>
+      {airRes.length>0&&
+        <div style={{...dd,left:0,right:0}}>
+          {airRes.map((r,i)=>
+            <div key={i} onClick={()=>pickAirport(which,r)} style={ddItem(i,airRes.length)}>
+              <div style={{fontSize:13,fontWeight:600,color:"#1f2730"}}>✈ {r.label}</div>
+              {r.sublabel&&<div style={{fontSize:11,color:"#8a93a0"}}>{r.sublabel}</div>}
+            </div>)}
+        </div>}
+      {airQ.trim().length>=2&&airRes.length===0&&<div style={{fontSize:11,color:"#8a93a0",marginTop:4}}>{tf.noFound}</div>}
+    </div>;
+    return <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:8}}>
+      <span style={{display:"inline-flex",alignItems:"center",gap:8,flexWrap:"wrap",minWidth:0}}>
+        <span style={{fontWeight:700,fontSize:14}}>✈ {airLbl(a)}</span>
+        {a.fromNinox&&a.iata&&<Badge kind="flight"/>}
+        {!a.iata&&<Badge kind="enter"/>}
+      </span>
+      <button onClick={()=>{setEdit(true);setAirQ("");setAirRes([]);}} style={linkBtn}>{a.iata?tf.change:"＋"}</button>
+    </div>;
   };
   const placeNode=()=> <span style={{display:"inline-flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
       <span style={{fontWeight:700,fontSize:14}}>📍 {place.label||place.address||"—"}</span>
-      {place.lat!=null?<Badge kind={place.fromNinox?"booking":"confirmed"}/>:<Badge kind="enter"/>}
+      {place.lat!=null&&placeAddrOk&&<Badge kind="confirmed"/>}
     </span>;
   const miniRow=(role,node)=> <div><div style={lbl}>{role}</div><div>{node}</div></div>;
 
