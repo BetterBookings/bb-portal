@@ -4144,8 +4144,8 @@ const TF = {
     noFound:"No results — keep typing",
     bFlight:"from your flight",bBooking:"from your booking",bConfirmed:"confirmed",bEnter:"please enter",
     confirmLeg:"I confirm the pick-up and drop-off of this leg",
-    addrReview:"Check the address matches your accommodation.",addrConfirm:"I confirm this is the correct address of my accommodation",
-    needPlaceConfirm:"Please search and confirm your accommodation address.",
+    addrReview:"Check this address matches your accommodation — search again to correct it.",addrConfirm:"I have verified this is the correct address of my accommodation",
+    needPlaceConfirm:"Please verify your accommodation address.",
     when:"Pick-up date & time",retHint:"Your flight departs at {t} — we suggest pick-up 3h earlier. Adjust if needed.",
     pax:"Passengers",searchBtn:"Search transfers",
     needAirport:"Please enter the airport (3-letter code) for each leg.",needPlace:"Please search and confirm the address.",
@@ -4169,8 +4169,8 @@ const TF = {
     noFound:"Nessun risultato — continua a scrivere",
     bFlight:"dal tuo volo",bBooking:"dalla prenotazione",bConfirmed:"confermata",bEnter:"da inserire",
     confirmLeg:"Confermo il ritiro e la destinazione di questa tratta",
-    addrReview:"Controlla che l'indirizzo corrisponda alla tua struttura.",addrConfirm:"Confermo che questo è l'indirizzo corretto della struttura",
-    needPlaceConfirm:"Cerca e conferma l'indirizzo della tua struttura.",
+    addrReview:"Controlla che l'indirizzo corrisponda alla tua struttura — cerca di nuovo per correggerlo.",addrConfirm:"Ho verificato che questo è l'indirizzo corretto della struttura",
+    needPlaceConfirm:"Verifica l'indirizzo della tua struttura.",
     when:"Data e ora del ritiro",retHint:"Il tuo volo parte alle {t} — ti consigliamo il ritiro 3h prima. Modificalo se serve.",
     pax:"Passeggeri",searchBtn:"Cerca transfer",
     needAirport:"Inserisci l'aeroporto (codice di 3 lettere) per ogni tratta.",needPlace:"Cerca e conferma l'indirizzo.",
@@ -4221,7 +4221,6 @@ function TransferFlow({b,lang,onClose}){
   const [flightTimeRet,setFlightTimeRet]=useState("");   // orario volo partenza (per suggerimento + flightTimeOfArrival)
   const [flightOut,setFlightOut]=useState(""); const [flightRet,setFlightRet]=useState("");
   const [autoOut,setAutoOut]=useState(false); const [autoRet,setAutoRet]=useState(false);
-  const [conf,setConf]=useState({outbound:false,return:false});
   const [pax,setPax]=useState(1);
   const [searching,setSearching]=useState(false);
   const [options,setOptions]=useState([]);
@@ -4253,8 +4252,10 @@ function TransferFlow({b,lang,onClose}){
       setAirRet({iata:dep.iata||"",label:dep.label||dep.iata||"",fromNinox:!!dep.iata});
       setPlace({label:h.label||"",address:h.address||"",lat:(h.hasCoords?h.lat:null),lon:(h.hasCoords?h.lon:null),fromNinox:!!h.hasCoords});
       setPlaceQuery(h.label||h.address||""); setPlaceEdit(!h.hasCoords);
-      setWhenOut(dtLocal(c.arrivalTime,10)||"");
-      const depL=dtLocal(c.departureTime,10)||""; setFlightTimeRet(depL); setWhenRet(minusHours(depL,3));
+      // orario REALE del volo (arrivo/partenza) in ora locale, come il resto del portale
+      // (dtLocal SENZA secondo argomento = usa l'ora vera; col 10 forzava sempre le 10:00).
+      setWhenOut(dtLocal(c.arrivalTime)||"");
+      const depL=dtLocal(c.departureTime)||""; setFlightTimeRet(depL); setWhenRet(minusHours(depL,3));
       setPax(c.pax||1);
       setTripType((arr.iata&&dep.iata)?"roundtrip":(arr.iata?"outbound":(dep.iata?"return":"outbound")));
       setLoading(false);
@@ -4292,8 +4293,8 @@ function TransferFlow({b,lang,onClose}){
     return ()=>clearTimeout(t);
   },[airQ,editOut,editRet]);
 
-  function pickPlace(r){ setPlace({label:r.label,address:r.address||r.label,lat:r.lat,lon:r.lon,fromNinox:false}); setPlaceQuery(r.label); setPlaceOpen(false); setPlaceResults([]); setPlaceEdit(false); setPlaceAddrOk(false); setConf({outbound:false,return:false}); }
-  function pickAirport(which,a){ const isOut=which==="out"; (isOut?setAirOut:setAirRet)({iata:a.iata,label:a.label||a.iata,fromNinox:false}); (isOut?setEditOut:setEditRet)(false); setAirQ(""); setAirRes([]); setConf(c=>({...c,[isOut?"outbound":"return"]:false})); }
+  function pickPlace(r){ setPlace({label:r.label,address:r.address||r.label,lat:r.lat,lon:r.lon,fromNinox:false}); setPlaceQuery(r.label); setPlaceOpen(false); setPlaceResults([]); setPlaceEdit(false); setPlaceAddrOk(true); }
+  function pickAirport(which,a){ const isOut=which==="out"; (isOut?setAirOut:setAirRet)({iata:a.iata,label:a.label||a.iata,fromNinox:false}); (isOut?setEditOut:setEditRet)(false); setAirQ(""); setAirRes([]); }
 
   const airLbl=(a)=> a.label||a.iata||"—";
   const airLoc=(a)=> (a.iata&&a.iata.length===3)?{iata:a.iata}:null;
@@ -4307,7 +4308,7 @@ function TransferFlow({b,lang,onClose}){
   const legPickLbl=(dir)=> dir==="outbound"?airLbl(airOut):(place.label||place.address||"—");
   const legDropLbl=(dir)=> dir==="outbound"?(place.label||place.address||"—"):airLbl(airRet);
   const legRouteLbl=(dir)=> `${legPickLbl(dir)} → ${legDropLbl(dir)}`;
-  const legValid=(dir)=> !!(legPick(dir)&&legDrop(dir)&&legWhen(dir)&&conf[dir]);
+  const legValid=(dir)=> !!(legPick(dir)&&legDrop(dir)&&legWhen(dir));
 
   const buildLegs=(withFlight)=> legList.map(dir=>{
     const o={pickup:legPick(dir),dropoff:legDrop(dir),pickupDateTime:legWhen(dir)+":00",direction:dir,
@@ -4321,7 +4322,6 @@ function TransferFlow({b,lang,onClose}){
     if(!legList.every(d=> airLoc(legAir(d)))){ setSearchErr(tf.needAirport); return; }
     if(!placeLoc()||!placeAddrOk){ setSearchErr(tf.needPlaceConfirm); return; }
     if(!legList.every(d=>legWhen(d))){ setSearchErr(tf.dateErr); return; }
-    if(!legList.every(d=>conf[d])){ setSearchErr(tf.confirmErr); return; }
     setSearching(true); setOptions([]);
     try{
       const r=await fetch(`${API_TRANSFER}/search`,{method:"POST",headers:{"Content-Type":"application/json"},
@@ -4399,7 +4399,7 @@ function TransferFlow({b,lang,onClose}){
     <div style={{border:"1px solid #eef0f3",borderRadius:12,padding:"12px 14px",marginBottom:12,position:"relative"}}>
       <p style={lbl}>{tf.dest}</p>
       <input value={placeQuery} placeholder={tf.searchPlace}
-        onChange={e=>{setPlaceQuery(e.target.value);setPlaceOpen(true);setPlace(p=>({...p,lat:null,lon:null,fromNinox:false}));setPlaceAddrOk(false);setConf({outbound:false,return:false});}}
+        onChange={e=>{setPlaceQuery(e.target.value);setPlaceOpen(true);setPlace(p=>({...p,lat:null,lon:null,fromNinox:false}));setPlaceAddrOk(false);}}
         style={inp}/>
       {placeOpen&&placeResults.length>0&&
         <div style={dd}>
@@ -4416,7 +4416,7 @@ function TransferFlow({b,lang,onClose}){
             {place.address&&place.address!==place.label&&<div style={{fontSize:12,color:"#5b6470",marginTop:2}}>{place.address}</div>}
             <div style={{fontSize:11,color:"#8a5a00",marginTop:6}}>⚠ {tf.addrReview}</div>
             <label style={{display:"flex",alignItems:"flex-start",gap:8,marginTop:8,cursor:"pointer",fontSize:12.5,fontWeight:600,color:placeAddrOk?"#1e874b":"#1f2730"}}>
-              <input type="checkbox" checked={placeAddrOk} onChange={e=>{setPlaceAddrOk(e.target.checked);setConf({outbound:false,return:false});}} style={{width:16,height:16,marginTop:1,accentColor:"#F15A29"}}/>
+              <input type="checkbox" checked={placeAddrOk} onChange={e=>setPlaceAddrOk(e.target.checked)} style={{width:16,height:16,marginTop:1,accentColor:"#F15A29"}}/>
               <span>{tf.addrConfirm}</span>
             </label>
           </div>}
@@ -4464,13 +4464,9 @@ function TransferFlow({b,lang,onClose}){
       <div style={{marginTop:8}}>
         <div style={lbl}>{tf.when}</div>
         <input type="datetime-local" value={isOut?whenOut:whenRet}
-          onChange={e=>{const v=e.target.value; if(isOut) setWhenOut(v); else setWhenRet(v); setConf(c=>({...c,[dir]:false}));}} style={inp}/>
+          onChange={e=>{const v=e.target.value; if(isOut) setWhenOut(v); else setWhenRet(v);}} style={inp}/>
         {!isOut&&flightTimeRet&&<div style={{fontSize:11,color:"#8a93a0",marginTop:4}}>{tf.retHint.replace("{t}",fmtHM(flightTimeRet))}</div>}
       </div>
-      <label style={{display:"flex",alignItems:"center",gap:8,marginTop:10,cursor:"pointer",fontSize:12.5,fontWeight:600,color:conf[dir]?"#1e874b":"#1f2730"}}>
-        <input type="checkbox" checked={!!conf[dir]} onChange={e=>setConf(c=>({...c,[dir]:e.target.checked}))} style={{width:16,height:16,accentColor:"#F15A29"}}/>
-        <span>{tf.confirmLeg}</span>
-      </label>
     </div>;
   };
 
