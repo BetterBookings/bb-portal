@@ -4211,6 +4211,7 @@ function TransferFlow({b,lang,onClose}){
   const [locAir,setLocAir]=useState([]); const [locPlc,setLocPlc]=useState([]);
   const [options,setOptions]=useState([]); const [searching,setSearching]=useState(false); const [searchErr,setSearchErr]=useState("");
   const [sel,setSel]=useState(null);
+  const [imgFail,setImgFail]=useState({});   // fallback SVG se manca l'immagine reale del veicolo
 
   const _ad=(b.adults||0)+(b.addroom?(b.adults2||0):0);
   const _ch=(b.child||0)+(b.addroom?(b.child2||0):0);
@@ -4367,6 +4368,13 @@ function TransferFlow({b,lang,onClose}){
   const paxValid = passenger.firstName&&passenger.lastName&&passenger.email&&passenger.phone;
   const vehName=(o)=> (o.vehicleCategory==="VAN"?"Van":o.vehicleCategory==="LIMO"?"Limousine":(o.vehicleCategory||"Transfer"))+(o.classLabel?` · ${o.classLabel}`:"");
   const lug=(o)=>{ const m=o.maxLuggage; if(!Array.isArray(m)) return null; let s=0; for(const x of m){ if(String(x.size||"").toLowerCase()!=="small") s+=(x.quantity||0); } if(!s) s=m.reduce((a,x)=>a+(x.quantity||0),0); return s||null; };
+  // Immagine reale del veicolo (fornita da Luigi in public/vehicles/): sedan / van / executive.
+  // Mappata su categoria (VAN/LIMO) e classe (BU/FC = executive). Se il file manca → fallback SVG.
+  const vehKey=(o)=> o.vehicleCategory==="VAN"?"van":(o.vehicleClass==="BU"||o.vehicleClass==="FC")?"executive":"sedan";
+  const vehImg=(o)=> `${import.meta.env.BASE_URL}vehicles/${vehKey(o)}.png`;
+  const vehMedia=(o,i)=> imgFail[vehKey(o)]
+    ? vehSvg(o,i)
+    : <img src={vehImg(o)} alt={vehName(o)} width="62" height="40" style={{objectFit:"contain",display:"block"}} onError={()=>setImgFail(p=>({...p,[vehKey(o)]:true}))}/>;
   // L'API WT non fornisce immagini veicolo → illustrazioni SVG on-brand (berlina/van)
   // con gradiente carrozzeria, ombra a terra, cerchi in lega e fari; tonalità premium
   // (più scura) per Business/First. Inline, nessun asset esterno. id gradienti per-indice.
@@ -4576,7 +4584,7 @@ function TransferFlow({b,lang,onClose}){
             const rt=(o.legs||[]).length>1;
             return <div key={i} onClick={()=>{setSel(o);goNext();}} style={{border:"1px solid #eef0f3",borderRadius:12,padding:"12px 14px",marginBottom:10,cursor:"pointer",display:"flex",justifyContent:"space-between",gap:10,alignItems:"flex-start"}}>
               <div style={{minWidth:0,display:"flex",gap:11,alignItems:"flex-start"}}>
-                <span style={{flexShrink:0,marginTop:1}}>{vehSvg(o,i)}</span>
+                <span style={{flexShrink:0,marginTop:1}}>{vehMedia(o,i)}</span>
                 <div style={{minWidth:0}}>
                 <div style={{fontWeight:700,fontSize:14,color:"#1f2730"}}>{vehName(o)}</div>
                 <div style={{fontSize:12,color:"#5b6470",marginTop:2}}>{o.seatsCapacity?`👤 ${o.seatsCapacity} ${tf.seats}`:""}{lug(o)?` · 🧳 ${lug(o)}`:""}{o.legs&&o.legs[0]&&o.legs[0].durationMin?` · ${o.legs[0].durationMin} min`:""}</div>
