@@ -4151,7 +4151,7 @@ const TF = {
     dateErr:"Please choose a valid date and time.",needLoc:"Please set pick-up and drop-off.",needVerify:"Please verify the address.",
     needAirport:"One side must be an airport — pick it from the Airports list.",
     none:"No transfers available for this route.",seats:"seats",freeCancel:"Free cancellation until",select:"Select",
-    perLegOut:"Outbound",perLegRet:"Return",vehTitle:"Choose your vehicle",
+    perLegOut:"Outbound",perLegRet:"Return",vehTitle:"Choose your vehicle",orSimilar:"or similar",
     paxTitle:"Passenger details",ttl:"Title",first:"First name",last:"Last name",email:"Email",
     areaCode:"Area code",phone:"Phone",
     toPay:"Continue to payment",pay:"Pay & book",
@@ -4173,7 +4173,7 @@ const TF = {
     dateErr:"Scegli una data e un'ora valide.",needLoc:"Imposta ritiro e destinazione.",needVerify:"Verifica l'indirizzo.",
     needAirport:"Un lato deve essere un aeroporto — sceglilo dalla sezione Aeroporti.",
     none:"Nessun transfer disponibile per questa tratta.",seats:"posti",freeCancel:"Cancellazione gratuita fino al",select:"Scegli",
-    perLegOut:"Andata",perLegRet:"Ritorno",vehTitle:"Scegli il veicolo",
+    perLegOut:"Andata",perLegRet:"Ritorno",vehTitle:"Scegli il veicolo",orSimilar:"o simile",
     paxTitle:"Dati del passeggero",ttl:"Titolo",first:"Nome",last:"Cognome",email:"Email",
     areaCode:"Prefisso",phone:"Telefono",
     toPay:"Continua al pagamento",pay:"Paga e prenota",
@@ -4365,6 +4365,8 @@ function TransferFlow({b,lang,onClose}){
 
   const paxValid = passenger.firstName&&passenger.lastName&&passenger.email&&passenger.phone;
   const vehName=(o)=> (o.vehicleCategory==="VAN"?"Van":o.vehicleCategory==="LIMO"?"Limousine":(o.vehicleCategory||"Transfer"))+(o.classLabel?` · ${o.classLabel}`:"");
+  const vehIcon=(o)=> o.vehicleCategory==="VAN"?"🚐":"🚘";   // l'API WT non fornisce immagini veicolo → icona per categoria
+  const lug=(o)=>{ const m=o.maxLuggage; if(!Array.isArray(m)) return null; let s=0; for(const x of m){ if(String(x.size||"").toLowerCase()!=="small") s+=(x.quantity||0); } if(!s) s=m.reduce((a,x)=>a+(x.quantity||0),0); return s||null; };
 
   // wizard: sequenza dei passi in base al tipo viaggio
   const flow=["trip",...legList.map(d=>"leg-"+d),"vehicle","passenger","payment"];
@@ -4448,13 +4450,18 @@ function TransferFlow({b,lang,onClose}){
     return pointField(fid,point,setter,role);
   };
 
+  // Numero volo: se lo abbiamo recuperato (SerpAPI) lo mostriamo come chip confermato
+  // (nessun inserimento manuale). Altrimenti campo OPZIONALE. Solo per tratte con aeroporto.
   const flightField=(dir)=>{
     const isOut=dir==="outbound"; const val=isOut?flightOut:flightRet; const setV=isOut?setFlightOut:setFlightRet;
     const auto=isOut?autoOut:autoRet; const setAuto=isOut?setAutoOut:setAutoRet;
+    if(auto&&val) return <div style={{marginBottom:10,display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,background:"#f0f7f2",border:"1px solid #cfe7d8",borderRadius:9,padding:"9px 11px"}}>
+      <span style={{fontSize:13,color:"#1f2730"}}>✈ <strong>{tf.flightNum}: {val}</strong> <span style={{color:"#1e874b",fontSize:11,fontWeight:600}}>· {tf.bFlight}</span></span>
+      <button onClick={()=>setAuto(false)} style={linkBtn}>{tf.change}</button>
+    </div>;
     return <div style={{marginBottom:10}}>
       <p style={lbl}>✈ {tf.flightNum} <span style={{textTransform:"none",fontWeight:400,color:"#a0a8b2"}}>({tf.flightOpt})</span></p>
-      <input value={val} onChange={e=>{setV(e.target.value.toUpperCase());setAuto(false);}} placeholder="LH114" style={{...inp,textTransform:"uppercase"}}/>
-      {auto&&val&&<p style={{fontSize:11,color:"#874d00",background:"#fff7e6",border:"1px solid #ffe3ad",borderRadius:8,padding:"6px 9px",margin:"5px 0 0"}}>ℹ️ {tf.flightHint}</p>}
+      <input value={val} onChange={e=>setV(e.target.value.toUpperCase())} placeholder="LH114" style={{...inp,textTransform:"uppercase"}}/>
     </div>;
   };
 
@@ -4530,14 +4537,18 @@ function TransferFlow({b,lang,onClose}){
           {!searching&&options.map((o,i)=>{
             const rt=(o.legs||[]).length>1;
             return <div key={i} onClick={()=>{setSel(o);goNext();}} style={{border:"1px solid #eef0f3",borderRadius:12,padding:"12px 14px",marginBottom:10,cursor:"pointer",display:"flex",justifyContent:"space-between",gap:10,alignItems:"flex-start"}}>
-              <div style={{minWidth:0}}>
+              <div style={{minWidth:0,display:"flex",gap:11,alignItems:"flex-start"}}>
+                <span style={{fontSize:26,lineHeight:1,flexShrink:0}}>{vehIcon(o)}</span>
+                <div style={{minWidth:0}}>
                 <div style={{fontWeight:700,fontSize:14,color:"#1f2730"}}>{vehName(o)}</div>
-                <div style={{fontSize:12,color:"#5b6470",marginTop:2}}>{o.seatsCapacity?`👤 ${o.seatsCapacity} ${tf.seats}`:""}{o.legs&&o.legs[0]&&o.legs[0].durationMin?` · ${o.legs[0].durationMin} min`:""}</div>
+                <div style={{fontSize:12,color:"#5b6470",marginTop:2}}>{o.seatsCapacity?`👤 ${o.seatsCapacity} ${tf.seats}`:""}{lug(o)?` · 🧳 ${lug(o)}`:""}{o.legs&&o.legs[0]&&o.legs[0].durationMin?` · ${o.legs[0].durationMin} min`:""}</div>
+                {o.vehicleDescription&&<div style={{fontSize:11,color:"#8a93a0",marginTop:1}}>{o.vehicleDescription} · {tf.orSimilar}</div>}
                 {rt
                   ? <div style={{marginTop:5,fontSize:11.5,color:"#5b6470",lineHeight:1.5}}>
                       {o.legs.map((lg,j)=><div key={j}>{lg.direction==="outbound"?tf.perLegOut:tf.perLegRet}: <strong style={{color:"#1f2730"}}>{money(lg.price)}</strong>{lg.freeCancelUntilMin&&lg.pickupDateTime?` · ✓ ${fmtFree(lg.freeCancelUntilMin,lg.pickupDateTime)}`:""}</div>)}
                     </div>
                   : (o.legs&&o.legs[0]&&o.legs[0].freeCancelUntilMin&&o.legs[0].pickupDateTime?<div style={{fontSize:11,color:"#1e874b",marginTop:3}}>✓ {tf.freeCancel} {fmtFree(o.legs[0].freeCancelUntilMin,o.legs[0].pickupDateTime)}</div>:null)}
+                </div>
               </div>
               <div style={{textAlign:"right",flexShrink:0}}>
                 {rt&&<div style={{fontSize:10,color:"#8a93a0",marginBottom:1}}>{tf.totalRound}</div>}
