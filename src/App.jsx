@@ -4149,6 +4149,7 @@ const TF = {
     pax:"Passengers",flightNum:"Flight number",flightHint:"Pre-filled from your flight — please check it.",flightOpt:"optional",
     next:"Continue",back:"Back",searchBtn:"See prices",searching:"Searching…",
     dateErr:"Please choose a valid date and time.",needLoc:"Please set pick-up and drop-off.",needVerify:"Please verify the address.",
+    needAirport:"One side must be an airport — pick it from the Airports list.",
     none:"No transfers available for this route.",seats:"seats",freeCancel:"Free cancellation until",select:"Select",
     perLegOut:"Outbound",perLegRet:"Return",vehTitle:"Choose your vehicle",
     paxTitle:"Passenger details",ttl:"Title",first:"First name",last:"Last name",email:"Email",
@@ -4170,6 +4171,7 @@ const TF = {
     pax:"Passeggeri",flightNum:"Numero volo",flightHint:"Precompilato dal tuo volo — verificalo.",flightOpt:"opzionale",
     next:"Continua",back:"Indietro",searchBtn:"Vedi i prezzi",searching:"Cerco…",
     dateErr:"Scegli una data e un'ora valide.",needLoc:"Imposta ritiro e destinazione.",needVerify:"Verifica l'indirizzo.",
+    needAirport:"Un lato deve essere un aeroporto — sceglilo dalla sezione Aeroporti.",
     none:"Nessun transfer disponibile per questa tratta.",seats:"posti",freeCancel:"Cancellazione gratuita fino al",select:"Scegli",
     perLegOut:"Andata",perLegRet:"Ritorno",vehTitle:"Scegli il veicolo",
     paxTitle:"Dati del passeggero",ttl:"Titolo",first:"Nome",last:"Cognome",email:"Email",
@@ -4215,7 +4217,8 @@ function TransferFlow({b,lang,onClose}){
   const _ba=(b.baby||0)+(b.addroom?(b.baby2||0):0);
   const adults=parseTravellers(b.TravellerDetails,b.checkIn,{adults:_ad,child:_ch,baby:_ba}).filter(t=>t.ageType==="adult");
   const lead=adults[0]||{};
-  const [passenger,setPassenger]=useState({title:"MR",firstName:lead.firstName||"",lastName:lead.lastName||"",
+  const [passenger,setPassenger]=useState({title:"MR",
+    firstName:lead.firstName||b.guestname||"",lastName:lead.lastName||b.guestSurname||"",
     email:(b.guestEmail&&b.guestEmail[0])||"",areaCode:"",phone:(b.guestTelephone&&b.guestTelephone[0])||""});
 
   const money=(v)=> v!=null?`${Number(v).toFixed(2)} €`:"—";
@@ -4228,12 +4231,18 @@ function TransferFlow({b,lang,onClose}){
 
   // ── punti (aeroporto / luogo) ──
   const airToPoint=(a)=> (a&&a.iata)?{kind:"airport",iata:a.iata,label:a.label||a.iata,fromNinox:true,verified:true}:null;
-  const accToPoint=(ac)=> ac?{kind:"place",label:ac.name||ac.address||"",address:ac.address||ac.name||"",lat:(ac.hasCoords?ac.lat:null),lon:(ac.hasCoords?ac.lon:null),fromNinox:true,verified:false,acc:ac}:null;
+  // accommodation → punto con ADDRESS geocodabile (niente coordinate grezze Ninox), auto-verificato
+  const accToPoint=(ac)=> ac?{kind:"place",label:ac.name||ac.address||"",address:ac.address||ac.name||"",lat:null,lon:null,fromNinox:true,verified:true,acc:ac}:null;
   const resToPoint=(r,kind)=> kind==="airport"
     ? {kind:"airport",iata:r.iata,label:r.label||r.iata,fromNinox:false,verified:true}
     : {kind:"place",label:r.label,address:r.address||r.label,lat:r.lat,lon:r.lon,fromNinox:false,verified:true};
-  const pointLoc=(p)=> !p?null : p.kind==="airport" ? (p.iata?{iata:p.iata}:null) : (p.lat!=null&&p.lon!=null?{address:p.address||p.label,lat:p.lat,lon:p.lon}:null);
-  const pointReady=(p)=> !!(pointLoc(p) && (p.kind==="airport"||p.verified||!p.fromNinox));
+  // pickup/dropoff verso WT: aeroporto={iata}; luogo={address (+coord se le abbiamo)}.
+  // WT geocodifica l'address da solo → per gli hotel Ninox mandiamo solo l'indirizzo.
+  const pointLoc=(p)=>{ if(!p) return null;
+    if(p.kind==="airport") return p.iata?{iata:p.iata}:null;
+    const addr=(p.address||p.label||"").trim(); if(!addr) return null;
+    const o={address:addr}; if(p.lat!=null&&p.lon!=null){ o.lat=p.lat; o.lon=p.lon; } return o; };
+  const pointReady=(p)=> !!pointLoc(p);
 
   const matchAcc=(list,ms,mode)=>{
     if(!list||!list.length) return null;
@@ -4294,7 +4303,7 @@ function TransferFlow({b,lang,onClose}){
   const legWhen=(dir)=> dir==="outbound"?whenOut:whenRet;
   const legFlightTime=(dir)=> dir==="outbound"?(whenOut?whenOut+":00":null):((flightTimeRet||whenRet)?((flightTimeRet||whenRet)+":00"):null);
   const legHasAirport=(dir)=>{ const p=legPick(dir),d=legDrop(dir); return !!((p&&p.kind==="airport")||(d&&d.kind==="airport")); };
-  const legReady=(dir)=> !!(pointReady(legPick(dir))&&pointReady(legDrop(dir))&&legWhen(dir));
+  const legReady=(dir)=> !!(pointReady(legPick(dir))&&pointReady(legDrop(dir))&&legWhen(dir)&&legHasAirport(dir));
   const legRouteLbl=(dir)=> `${(legPick(dir)&&legPick(dir).label)||"—"} → ${(legDrop(dir)&&legDrop(dir).label)||"—"}`;
 
   const buildLegs=(withFlight)=> legList.map(dir=>{
@@ -4395,29 +4404,23 @@ function TransferFlow({b,lang,onClose}){
       {locQ.trim().length>=2&&!locAir.length&&!locPlc.length&&<div style={{fontSize:11,color:"#8a93a0",marginTop:4}}>{tf.noFound}</div>}
     </div>);
 
-  // campo "punto" generico: display + cambia via ricerca, con verifica indirizzo se dato Ninox
+  // campo "punto" generico: mostra il valore + "modifica" via ricerca. Nessun flag manuale:
+  // ciò che il cliente cerca+seleziona è già verificato; l'hotel Ninox è auto-verificato.
   const pointField=(fid,point,setter,role)=>(
     <div style={{marginBottom:12}}>
       <div style={lbl}>{role}</div>
       {locOpen===fid
         ? searchBox(setter)
         : (point&&pointLoc(point)
-          ? <div style={{background:"#f7fafd",border:"1px solid "+((point.kind==="place"&&point.fromNinox&&!point.verified)?"#dbe6f5":"#e6eef7"),borderRadius:10,padding:"10px 12px"}}>
+          ? <div style={{background:"#f7fafd",border:"1px solid #e6eef7",borderRadius:10,padding:"10px 12px"}}>
               <div style={{display:"flex",justifyContent:"space-between",gap:8,alignItems:"flex-start"}}>
                 <div style={{minWidth:0}}>
                   <div style={{fontSize:14,fontWeight:700,color:"#1f2730"}}>{point.kind==="airport"?"✈":"📍"} {point.label}</div>
                   {point.kind==="place"&&point.address&&point.address!==point.label&&<div style={{fontSize:12,color:"#5b6470",marginTop:2}}>{point.address}</div>}
-                  <div style={{marginTop:5}}>{point.kind==="airport"?<Badge kind={point.fromNinox?"flight":"confirmed"}/>:<Badge kind={point.verified?"confirmed":"booking"}/>}</div>
+                  <div style={{marginTop:5}}>{point.kind==="airport"?<Badge kind={point.fromNinox?"flight":"confirmed"}/>:<Badge kind={point.fromNinox?"booking":"confirmed"}/>}</div>
                 </div>
                 <button onClick={()=>openSearch(fid)} style={linkBtn}>{tf.change}</button>
               </div>
-              {point.kind==="place"&&point.fromNinox&&!point.verified&&<>
-                <div style={{fontSize:11,color:"#8a5a00",marginTop:8}}>⚠ {tf.addrReview}</div>
-                <label style={{display:"flex",alignItems:"flex-start",gap:8,marginTop:6,cursor:"pointer",fontSize:12.5,fontWeight:600,color:"#1f2730"}}>
-                  <input type="checkbox" checked={!!point.verified} onChange={e=>setter(prev=>prev?{...prev,verified:e.target.checked}:prev)} style={{width:16,height:16,marginTop:1,accentColor:"#F15A29"}}/>
-                  <span>{tf.addrConfirm}</span>
-                </label>
-              </>}
             </div>
           : <button onClick={()=>openSearch(fid)} style={{width:"100%",textAlign:"left",background:"#fff5e0",color:"#8a5a00",border:"1px solid #ffe3ad",borderRadius:9,padding:"11px",fontWeight:600,fontSize:13,cursor:"pointer"}}>⚠ {tf.set} — {tf.searchLoc}</button>)}
     </div>);
@@ -4432,8 +4435,8 @@ function TransferFlow({b,lang,onClose}){
       return <div style={{marginBottom:12,position:"relative"}}>
         <div style={lbl}>{role} · {tf.chooseAcc}</div>
         {accs.map((ac,i)=>{
-          const active=point&&point.acc&&(point.acc.name===ac.name&&point.acc.address===ac.address)&&point.verified;
-          return <div key={i} onClick={()=> ac.hasCoords?setter({...accToPoint(ac),verified:true}):(openSearch(fid),setLocQ(ac.name||ac.address||""))}
+          const active=point&&point.acc&&(point.acc.name===ac.name&&point.acc.address===ac.address);
+          return <div key={i} onClick={()=>setter(accToPoint(ac))}
             style={{border:"1px solid "+(active?"#F15A29":"#e6e9ee"),background:active?"#FFF7F4":"#fff",borderRadius:10,padding:"9px 11px",marginBottom:6,cursor:"pointer"}}>
             <div style={{fontSize:13,fontWeight:700,color:"#1f2730"}}>📍 {ac.name||ac.address}{ac===sug&&<span style={{marginLeft:6,fontSize:10,fontWeight:700,color:"#1e874b",background:"#e8f6ef",borderRadius:6,padding:"1px 6px"}}>{tf.accSuggested}</span>}</div>
             {(ac.address||ac.checkIn)&&<div style={{fontSize:11,color:"#8a93a0",marginTop:1}}>{ac.address}{ac.checkIn?` · ${ac.checkIn}${ac.checkOut?" → "+ac.checkOut:""}`:""}</div>}
@@ -4475,7 +4478,7 @@ function TransferFlow({b,lang,onClose}){
           {!isOut&&flightTimeRet&&<div style={{fontSize:11,color:"#8a93a0",marginTop:4}}>{tf.retHint.replace("{t}",fmtHM(flightTimeRet))}</div>}
         </div>
         {legHasAirport(dir)&&flightField(dir)}
-        {!ready&&<p style={{fontSize:12,color:"#8a93a0",margin:"2px 0 0"}}>{(pointReady(legPick(dir))&&pointReady(legDrop(dir)))?tf.dateErr:tf.needLoc}</p>}
+        {!ready&&<p style={{fontSize:12,color:"#8a5a00",margin:"2px 0 0"}}>{!(pointReady(legPick(dir))&&pointReady(legDrop(dir)))?tf.needLoc:!legHasAirport(dir)?tf.needAirport:tf.dateErr}</p>}
       </div>
       <div style={foot}>
         <button onClick={goBack} style={ghost}>‹ {tf.back}</button>
