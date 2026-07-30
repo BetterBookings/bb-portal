@@ -3966,7 +3966,19 @@ function BaggageFlow({b,lang,onClose}){
   const _ad=(b.adults||0)+(b.addroom?(b.adults2||0):0);
   const _ch=(b.child||0)+(b.addroom?(b.child2||0):0);
   const _ba=(b.baby||0)+(b.addroom?(b.baby2||0):0);
-  const passengers = parseTravellers(b.TravellerDetails, b.checkIn, {adults:_ad,child:_ch,baby:_ba}).filter(t=>t.ageType!=="infant");
+  const _paxRaw = parseTravellers(b.TravellerDetails, b.checkIn, {adults:_ad,child:_ch,baby:_ba}).filter(t=>t.ageType!=="infant");
+  // Fallback: se la prenotazione non ha i dettagli passeggeri (TravellerDetails vuoto),
+  // genero i passeggeri dai CONTEGGI (adulti/bambini) così le opzioni bagaglio compaiono.
+  const _ageL = AGE_LABEL[lang]||AGE_LABEL.EN;
+  const passengers = _paxRaw.length ? _paxRaw : (()=>{
+    const out=[];
+    for(let i=0;i<_ad;i++) out.push(i===0&&(b.guestname||b.guestSurname)
+      ? {firstName:b.guestname||"",lastName:b.guestSurname||"",ageType:"adult"}
+      : {firstName:`${_ageL.adult} ${i+1}`,lastName:"",ageType:"adult"});
+    for(let i=0;i<_ch;i++) out.push({firstName:`${_ageL.child} ${i+1}`,lastName:"",ageType:"child"});
+    if(!out.length) out.push({firstName:`${_ageL.adult} 1`,lastName:"",ageType:"adult"});
+    return out;
+  })();
   const pname=(p)=>`${p.firstName||""} ${p.lastName||""}`.trim();
   const legPrice=(legKey,code)=>{ const lg=legs.find(l=>l.key===legKey); return (((lg&&lg.types)||[]).find(t=>t.code===code)||{}).price||0; };
   const hasReturn = legs.some(l=>l.key==="ret");
