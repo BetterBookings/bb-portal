@@ -4231,8 +4231,9 @@ function TransferFlow({b,lang,onClose}){
 
   // ── punti (aeroporto / luogo) ──
   const airToPoint=(a)=> (a&&a.iata)?{kind:"airport",iata:a.iata,label:a.label||a.iata,fromNinox:true,verified:true}:null;
-  // accommodation → punto con ADDRESS geocodabile (niente coordinate grezze Ninox), auto-verificato
-  const accToPoint=(ac)=> ac?{kind:"place",label:ac.name||ac.address||"",address:ac.address||ac.name||"",lat:null,lon:null,fromNinox:true,verified:true,acc:ac}:null;
+  // accommodation → punto: address + coordinate GEOCODIFICATE lato server (SerpAPI, stesso
+  // provider della ricerca manuale) → prezzo corretto anche da prefill. Auto-verificato.
+  const accToPoint=(ac)=> ac?{kind:"place",label:ac.name||ac.address||"",address:ac.address||ac.name||"",lat:(ac.lat!=null?ac.lat:null),lon:(ac.lon!=null?ac.lon:null),fromNinox:true,verified:true,acc:ac}:null;
   const resToPoint=(r,kind)=> kind==="airport"
     ? {kind:"airport",iata:r.iata,label:r.label||r.iata,fromNinox:false,verified:true}
     : {kind:"place",label:r.label,address:r.address||r.label,lat:r.lat,lon:r.lon,fromNinox:false,verified:true};
