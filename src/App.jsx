@@ -4365,8 +4365,29 @@ function TransferFlow({b,lang,onClose}){
 
   const paxValid = passenger.firstName&&passenger.lastName&&passenger.email&&passenger.phone;
   const vehName=(o)=> (o.vehicleCategory==="VAN"?"Van":o.vehicleCategory==="LIMO"?"Limousine":(o.vehicleCategory||"Transfer"))+(o.classLabel?` · ${o.classLabel}`:"");
-  const vehIcon=(o)=> o.vehicleCategory==="VAN"?"🚐":"🚘";   // l'API WT non fornisce immagini veicolo → icona per categoria
   const lug=(o)=>{ const m=o.maxLuggage; if(!Array.isArray(m)) return null; let s=0; for(const x of m){ if(String(x.size||"").toLowerCase()!=="small") s+=(x.quantity||0); } if(!s) s=m.reduce((a,x)=>a+(x.quantity||0),0); return s||null; };
+  // L'API WT non fornisce immagini veicolo → illustrazioni SVG on-brand (berlina/van),
+  // tonalità premium (più scura) per Business/First. Inline, nessun asset esterno.
+  const vehSvg=(o)=>{
+    const van=o.vehicleCategory==="VAN";
+    const dark=o.vehicleClass==="BU"||o.vehicleClass==="FC";
+    const body=dark?"#7c8797":"#c9d2de", win=dark?"#aeb8c6":"#e9f0f8", wheel="#2b3441", hub=dark?"#c3ccd8":"#e7ecf2";
+    const wh=(cx)=><g><circle cx={cx} cy={26.5} r={6} fill={wheel}/><circle cx={cx} cy={26.5} r={2.3} fill={hub}/></g>;
+    if(van) return <svg width="56" height="31" viewBox="0 0 64 34" aria-hidden="true">
+      <path d="M4 26 L4 13 C4 10.8 5.6 9.3 8 9.3 L43 9.3 C46 9.3 48.6 10.9 50.6 13.6 L58.6 20.4 C60.1 21.4 61 22.6 61 24.2 L61 26 Z" fill={body}/>
+      <rect x="9" y="12.6" width="8.5" height="6.6" rx="1.2" fill={win}/>
+      <rect x="19.5" y="12.6" width="8.5" height="6.6" rx="1.2" fill={win}/>
+      <rect x="30" y="12.6" width="8.5" height="6.6" rx="1.2" fill={win}/>
+      <path d="M41.5 12.6 L44 12.6 C45.4 12.6 46.6 13.2 47.5 14.4 L50.5 18.6 L41.5 18.6 Z" fill={win}/>
+      {wh(18)}{wh(47)}
+    </svg>;
+    return <svg width="56" height="31" viewBox="0 0 64 34" aria-hidden="true">
+      <path d="M3 26 L3 21 C3 19.5 4 18.7 5.5 18.4 L17.5 16.4 C20 12 23.6 9.4 27.6 9.4 L38.4 9.4 C42.6 9.4 46 11.9 48.4 16.4 L58.5 18.4 C60 18.7 61 19.5 61 21 L61 26 Z" fill={body}/>
+      <path d="M20.8 16.1 L24.8 11.4 C25.5 10.6 26.4 10.3 27.4 10.3 L37.6 10.3 C39.2 10.3 40.5 11 41.4 12.5 L43.6 16.1 Z" fill={win}/>
+      <rect x="31.3" y="10.6" width="1.4" height="5.5" fill={body}/>
+      {wh(19)}{wh(45)}
+    </svg>;
+  };
 
   // wizard: sequenza dei passi in base al tipo viaggio
   const flow=["trip",...legList.map(d=>"leg-"+d),"vehicle","passenger","payment"];
@@ -4538,7 +4559,7 @@ function TransferFlow({b,lang,onClose}){
             const rt=(o.legs||[]).length>1;
             return <div key={i} onClick={()=>{setSel(o);goNext();}} style={{border:"1px solid #eef0f3",borderRadius:12,padding:"12px 14px",marginBottom:10,cursor:"pointer",display:"flex",justifyContent:"space-between",gap:10,alignItems:"flex-start"}}>
               <div style={{minWidth:0,display:"flex",gap:11,alignItems:"flex-start"}}>
-                <span style={{fontSize:26,lineHeight:1,flexShrink:0}}>{vehIcon(o)}</span>
+                <span style={{flexShrink:0,marginTop:1}}>{vehSvg(o)}</span>
                 <div style={{minWidth:0}}>
                 <div style={{fontWeight:700,fontSize:14,color:"#1f2730"}}>{vehName(o)}</div>
                 <div style={{fontSize:12,color:"#5b6470",marginTop:2}}>{o.seatsCapacity?`👤 ${o.seatsCapacity} ${tf.seats}`:""}{lug(o)?` · 🧳 ${lug(o)}`:""}{o.legs&&o.legs[0]&&o.legs[0].durationMin?` · ${o.legs[0].durationMin} min`:""}</div>
