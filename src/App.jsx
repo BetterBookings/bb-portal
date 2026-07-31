@@ -4160,6 +4160,7 @@ const TF = {
     when:"Pick-up date & time",retHint:"Your flight departs at {t} — pick-up suggested 3h earlier.",
     pax:"Passengers",flightNum:"Flight number",flightHint:"Pre-filled from your flight — please check it.",flightOpt:"optional",
     flightReq:"required",flightWhy:"The driver tracks this flight to adjust your pick-up if it's delayed. It's required by the transfer company.",needFlight:"Please enter your flight number to continue.",
+    flightSel:"Select your flight",flyingTo:"Flying to",flyingFrom:"Flying from",depAirport:"Departure airport",arrAirport:"Arrival airport",airlineOpt:"Airline (optional)",airlinePh:"e.g. Ryanair",flightSearchBtn:"Search flights",flightsFound:"flight(s) found",flightNoneFound:"No flights found — try another airport or enter the number manually.",flightManualExp:"Or enter flight number manually",foSearchPh:"Search airport…",
     next:"Continue",back:"Back",searchBtn:"See prices",searching:"Searching…",
     dateErr:"Please choose a valid date and time.",needLoc:"Please set pick-up and drop-off.",needVerify:"Please verify the address.",
     needAirport:"One side must be an airport — pick it from the Airports list.",
@@ -4183,6 +4184,7 @@ const TF = {
     when:"Data e ora del ritiro",retHint:"Il volo parte alle {t} — ritiro consigliato 3h prima.",
     pax:"Passeggeri",flightNum:"Numero volo",flightHint:"Precompilato dal tuo volo — verificalo.",flightOpt:"opzionale",
     flightReq:"obbligatorio",flightWhy:"L'autista monitora questo volo per adattare il ritiro in caso di ritardo. È richiesto dalla società di transfer.",needFlight:"Inserisci il numero del volo per continuare.",
+    flightSel:"Seleziona il tuo volo",flyingTo:"Volo verso",flyingFrom:"Volo da",depAirport:"Aeroporto di partenza",arrAirport:"Aeroporto di arrivo",airlineOpt:"Compagnia (opzionale)",airlinePh:"es. Ryanair",flightSearchBtn:"Cerca voli",flightsFound:"voli trovati",flightNoneFound:"Nessun volo trovato — prova un altro aeroporto o inserisci il numero manualmente.",flightManualExp:"Oppure inserisci il numero volo manualmente",foSearchPh:"Cerca aeroporto…",
     next:"Continua",back:"Indietro",searchBtn:"Vedi i prezzi",searching:"Cerco…",
     dateErr:"Scegli una data e un'ora valide.",needLoc:"Imposta ritiro e destinazione.",needVerify:"Verifica l'indirizzo.",
     needAirport:"Un lato deve essere un aeroporto — sceglilo dalla sezione Aeroporti.",
@@ -4220,6 +4222,13 @@ function TransferFlow({b,lang,onClose}){
   const [flightTimeRet,setFlightTimeRet]=useState("");
   const [flightOut,setFlightOut]=useState(""); const [flightRet,setFlightRet]=useState("");
   const [autoOut,setAutoOut]=useState(false); const [autoRet,setAutoRet]=useState(false);
+  // selettore volo interattivo (fallback quando l'auto-lookup non basta)
+  const [flightCand,setFlightCand]=useState({outbound:[],return:[]});     // candidati per direzione
+  const [flightOther,setFlightOther]=useState({outbound:null,return:null}); // {iata,label} altro aeroporto
+  const [flightAirline,setFlightAirline]=useState({outbound:"",return:""});
+  const [flightPickOpen,setFlightPickOpen]=useState(null);   // "outbound"|"return"|null → forza il picker su un chip confermato
+  const [flightSearching,setFlightSearching]=useState(null); // dir in corso di ricerca
+  const [foOpen,setFoOpen]=useState(null); const [foQ,setFoQ]=useState(""); const [foRes,setFoRes]=useState([]); // ricerca "altro aeroporto"
   const [pax,setPax]=useState(1);
   const [locOpen,setLocOpen]=useState(null); const [locQ,setLocQ]=useState("");  // ricerca location unificata
   const [locAir,setLocAir]=useState([]); const [locPlc,setLocPlc]=useState([]);
@@ -4287,12 +4296,17 @@ function TransferFlow({b,lang,onClose}){
       setTripType((c.hasArrivalAirport&&c.hasDepartureAirport)?"roundtrip":(c.hasArrivalAirport?"outbound":(c.hasDepartureAirport?"return":"roundtrip")));
       setLoading(false);
     }).catch(()=>{ if(!dead) setLoading(false); });
-    fetch(`${API_TRANSFER}/flight-lookup`,{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({slug:slugRef.current,direction:"outbound"})}).then(r=>r.json()).then(d=>{
-      if(!dead&&d&&d.flightNumber){ setFlightOut(d.flightNumber); setAutoOut(true); }}).catch(()=>{});
-    fetch(`${API_TRANSFER}/flight-lookup`,{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({slug:slugRef.current,direction:"return"})}).then(r=>r.json()).then(d=>{
-      if(!dead&&d&&d.flightNumber){ setFlightRet(d.flightNumber); setAutoRet(true); }}).catch(()=>{});
+    ["outbound","return"].forEach(dir=>{
+      fetch(`${API_TRANSFER}/flight-lookup`,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({slug:slugRef.current,direction:dir})}).then(r=>r.json()).then(d=>{
+        if(dead||!d) return;
+        if(Array.isArray(d.candidates)) setFlightCand(s=>({...s,[dir]:d.candidates}));
+        if(d.otherAirport&&d.otherAirport.iata) setFlightOther(s=>({...s,[dir]:d.otherAirport}));
+        if(d.route&&d.route.airline) setFlightAirline(s=>({...s,[dir]:d.route.airline}));
+        // auto-fill SOLO se univoco (d.ok); ambiguo/no-match → il picker mostra i candidati
+        if(d.ok&&d.flightNumber){ if(dir==="outbound"){setFlightOut(d.flightNumber);setAutoOut(true);} else {setFlightRet(d.flightNumber);setAutoRet(true);} }
+      }).catch(()=>{});
+    });
     return ()=>{dead=true;};
   },[]);
 
@@ -4307,6 +4321,17 @@ function TransferFlow({b,lang,onClose}){
     },300);
     return ()=>clearTimeout(t);
   },[locQ,locOpen]);
+
+  // ricerca "altro aeroporto" del selettore volo (solo aeroporti)
+  useEffect(()=>{
+    const q=foQ.trim();
+    if(!foOpen||q.length<2){ setFoRes([]); return; }
+    const t=setTimeout(()=>{
+      fetch(`${API_TRANSFER}/locations?q=${encodeURIComponent(q)}&lang=${String(lang).toLowerCase()}`).then(r=>r.json())
+        .then(d=>setFoRes(Array.isArray(d.airports)?d.airports:[])).catch(()=>setFoRes([]));
+    },250);
+    return ()=>clearTimeout(t);
+  },[foQ,foOpen]);
 
   // tornando a tratta/tipo viaggio invalida la quotazione
   useEffect(()=>{ if(step==="trip"||step.indexOf("leg-")===0){ setOptions([]); setSel(null); setSearchErr(""); } },[step]);
@@ -4513,19 +4538,72 @@ function TransferFlow({b,lang,onClose}){
     return pointField(fid,point,setter,role);
   };
 
-  // Numero volo: se lo abbiamo recuperato (SerpAPI) lo mostriamo come chip confermato
-  // (nessun inserimento manuale). Altrimenti campo OPZIONALE. Solo per tratte con aeroporto.
+  // ── Selettore volo interattivo ────────────────────────────────────────────
+  // L'auto-lookup (SerpAPI) precompila quando trova UN volo univoco; altrimenti il
+  // cliente sceglie dai candidati (aeroporto noto fisso + altro aeroporto ricercabile +
+  // compagnia opz) o inserisce il numero a mano. WT esige il numero → obbligatorio.
+  const flightDate=(dir)=> (legWhen(dir)||"").slice(0,10);
+  const flightKnownAirport=(dir)=>{ const p=legPick(dir),d=legDrop(dir); return (p&&p.kind==="airport")?p:((d&&d.kind==="airport")?d:null); };
+  const flightSearch=async(dir)=>{
+    const known=flightKnownAirport(dir), other=flightOther[dir], date=flightDate(dir);
+    if(!known||!known.iata||!other||!other.iata||!date) return;
+    const isOut=dir==="outbound";
+    const departureIata=isOut?other.iata:known.iata, arrivalIata=isOut?known.iata:other.iata;
+    setFlightSearching(dir);
+    try{
+      const r=await fetch(`${API_TRANSFER}/flight-search`,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({departureIata,arrivalIata,date,airline:flightAirline[dir]||""})});
+      const d=await r.json();
+      setFlightCand(s=>({...s,[dir]:Array.isArray(d.candidates)?d.candidates:[]}));
+    }catch{ setFlightCand(s=>({...s,[dir]:[]})); } finally{ setFlightSearching(null); }
+  };
+  const pickFlight=(dir,fn)=>{ (dir==="outbound"?setFlightOut:setFlightRet)(fn); (dir==="outbound"?setAutoOut:setAutoRet)(false); setFlightPickOpen(null); };
+  const chooseOtherAir=(dir,r)=>{ setFlightOther(s=>({...s,[dir]:{iata:r.iata,label:r.label}})); setFoOpen(null); setFoQ(""); setFoRes([]); };
+
   const flightField=(dir)=>{
-    const isOut=dir==="outbound"; const val=isOut?flightOut:flightRet; const setV=isOut?setFlightOut:setFlightRet;
-    const auto=isOut?autoOut:autoRet; const setAuto=isOut?setAutoOut:setAutoRet;
-    if(auto&&val) return <div style={{marginBottom:10,display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,background:"#f0f7f2",border:"1px solid #cfe7d8",borderRadius:9,padding:"9px 11px"}}>
-      <span style={{fontSize:13,color:"#1f2730"}}>✈ <strong>{tf.flightNum}: {val}</strong> <span style={{color:"#1e874b",fontSize:11,fontWeight:600}}>· {tf.bFlight}</span></span>
-      <button onClick={()=>setAuto(false)} style={linkBtn}>{tf.change}</button>
+    const isOut=dir==="outbound"; const val=isOut?flightOut:flightRet;
+    const known=flightKnownAirport(dir), other=flightOther[dir];
+    const cands=flightCand[dir]||[]; const busy=flightSearching===dir; const fid="fo-"+dir;
+    // chip confermato: numero presente e non sto editando
+    if(val&&flightPickOpen!==dir) return <div style={{marginBottom:10,display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,background:"#f0f7f2",border:"1px solid #cfe7d8",borderRadius:9,padding:"9px 11px"}}>
+      <span style={{fontSize:13,color:"#1f2730"}}>✈ <strong>{tf.flightNum}: {val}</strong></span>
+      <button onClick={()=>setFlightPickOpen(dir)} style={linkBtn}>{tf.change}</button>
     </div>;
-    return <div style={{marginBottom:10}}>
-      <p style={lbl}>✈ {tf.flightNum} <span style={{textTransform:"none",fontWeight:400,color:"#c0392b"}}>({tf.flightReq})</span></p>
-      <input value={val} onChange={e=>setV(e.target.value.toUpperCase())} placeholder="LH114" style={{...inp,textTransform:"uppercase"}}/>
-      <p style={{fontSize:11,color:"#8a93a0",marginTop:4,lineHeight:1.4}}>{tf.flightWhy}</p>
+    return <div style={{marginBottom:10,border:"1px solid #e6eef7",borderRadius:11,padding:"11px 12px",background:"#fbfdff"}}>
+      <div style={{...lbl,marginBottom:8}}>✈ {tf.flightSel} <span style={{textTransform:"none",fontWeight:400,color:"#c0392b"}}>({tf.flightReq})</span></div>
+      <div style={{fontSize:12,color:"#5b6470",marginBottom:8}}>{isOut?tf.flyingTo:tf.flyingFrom}: <strong>✈ {(known&&known.label)||"—"}</strong></div>
+      <div style={{marginBottom:8,position:"relative"}}>
+        <div style={lbl}>{isOut?tf.depAirport:tf.arrAirport}</div>
+        {foOpen===fid
+          ? <div style={{position:"relative"}}>
+              <input autoFocus value={foQ} placeholder={tf.foSearchPh} onChange={e=>setFoQ(e.target.value)} style={inp}/>
+              {foRes.length>0&&<div style={dd}>{foRes.map((r,i)=><div key={i} onClick={()=>chooseOtherAir(dir,r)} style={ddItem(i,foRes.length)}><div style={{fontSize:13,fontWeight:600,color:"#1f2730"}}>✈ {r.label}</div>{r.sublabel&&<div style={{fontSize:11,color:"#8a93a0"}}>{r.sublabel}</div>}</div>)}</div>}
+            </div>
+          : <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,background:"#fff",border:"1px solid #d7dce2",borderRadius:9,padding:"9px 11px"}}>
+              <span style={{fontSize:13,fontWeight:600,color:other?"#1f2730":"#a0a8b2",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{other?`✈ ${other.label}`:tf.foSearchPh}</span>
+              <button onClick={()=>{setFoOpen(fid);setFoQ("");setFoRes([]);}} style={linkBtn}>{other?tf.change:tf.set}</button>
+            </div>}
+      </div>
+      <div style={{marginBottom:8}}>
+        <div style={lbl}>{tf.airlineOpt}</div>
+        <input value={flightAirline[dir]||""} onChange={e=>setFlightAirline(s=>({...s,[dir]:e.target.value}))} placeholder={tf.airlinePh} style={inp}/>
+      </div>
+      <button onClick={()=>flightSearch(dir)} disabled={busy||!other} style={{...primary,opacity:(busy||!other)?.6:1,marginBottom:10}}>{busy?"…":tf.flightSearchBtn}</button>
+      {cands.length>0
+        ? <div style={{marginBottom:4}}>
+            <div style={{fontSize:11,color:"#8a93a0",marginBottom:6}}>{cands.length} {tf.flightsFound}</div>
+            {cands.slice(0,8).map((c,i)=><div key={i} onClick={()=>pickFlight(dir,c.flightNumber)} style={{border:"1px solid "+(val===c.flightNumber?"#F15A29":"#e6e9ee"),background:val===c.flightNumber?"#FFF7F4":"#fff",borderRadius:9,padding:"8px 10px",marginBottom:6,cursor:"pointer",display:"flex",alignItems:"center",gap:8}}>
+              <div style={{minWidth:64}}><div style={{fontSize:10.5,fontWeight:600,color:"#8a93a0",lineHeight:1.2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.airline}</div><div style={{fontSize:12,fontWeight:800,color:"#1f2730"}}>{c.flightNumber}</div></div>
+              <div style={{fontSize:13,fontWeight:700,color:"#1f2730"}}>{c.depTime||"—"}</div>
+              <div style={{flex:1,textAlign:"center",color:"#c7ccd4"}}>→</div>
+              <div style={{fontSize:13,fontWeight:700,color:"#1f2730"}}>{c.arrTime||"—"}</div>
+            </div>)}
+          </div>
+        : (!busy&&<div style={{fontSize:11,color:"#8a93a0",marginBottom:6}}>{tf.flightNoneFound}</div>)}
+      <details>
+        <summary style={{fontSize:12,color:"#F15A29",cursor:"pointer",fontWeight:600}}>{tf.flightManualExp}</summary>
+        <input value={val} onChange={e=>{ (isOut?setFlightOut:setFlightRet)(e.target.value.toUpperCase()); (isOut?setAutoOut:setAutoRet)(false); }} placeholder="LH114" style={{...inp,textTransform:"uppercase",marginTop:6}}/>
+      </details>
     </div>;
   };
 
