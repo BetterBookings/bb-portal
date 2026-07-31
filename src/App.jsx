@@ -4160,7 +4160,7 @@ const TF = {
     when:"Pick-up date & time",retHint:"Your flight departs at {t} — pick-up suggested 3h earlier.",
     pax:"Passengers",flightNum:"Flight number",flightHint:"Pre-filled from your flight — please check it.",flightOpt:"optional",
     flightReq:"required",flightWhy:"The driver tracks this flight to adjust your pick-up if it's delayed. It's required by the transfer company.",needFlight:"Please enter your flight number to continue.",
-    flightSel:"Select your flight",flyingTo:"Flying to",flyingFrom:"Flying from",depAirport:"Departure airport",arrAirport:"Arrival airport",airlineOpt:"Airline (optional)",airlinePh:"e.g. Ryanair",flightSearchBtn:"Search flights",flightsFound:"flight(s) found",flightNoneFound:"No flights found — try another airport or enter the number manually.",flightManualExp:"Or enter flight number manually",foSearchPh:"Search airport…",
+    flightSection:"Your flight",flightSel:"Select your flight",flyingTo:"Flying to",flyingFrom:"Flying from",depAirport:"Departure airport",arrAirport:"Arrival airport",airlineOpt:"Airline (optional)",airlinePh:"e.g. Ryanair",flightSearchBtn:"Search flights",flightsFound:"flight(s) found",flightNoneFound:"No flights found — try another airport or enter the number manually.",flightManualExp:"Or enter flight number manually",foSearchPh:"Search airport…",
     next:"Continue",back:"Back",searchBtn:"See prices",searching:"Searching…",
     dateErr:"Please choose a valid date and time.",needLoc:"Please set pick-up and drop-off.",needVerify:"Please verify the address.",
     needAirport:"One side must be an airport — pick it from the Airports list.",
@@ -4184,7 +4184,7 @@ const TF = {
     when:"Data e ora del ritiro",retHint:"Il volo parte alle {t} — ritiro consigliato 3h prima.",
     pax:"Passeggeri",flightNum:"Numero volo",flightHint:"Precompilato dal tuo volo — verificalo.",flightOpt:"opzionale",
     flightReq:"obbligatorio",flightWhy:"L'autista monitora questo volo per adattare il ritiro in caso di ritardo. È richiesto dalla società di transfer.",needFlight:"Inserisci il numero del volo per continuare.",
-    flightSel:"Seleziona il tuo volo",flyingTo:"Volo verso",flyingFrom:"Volo da",depAirport:"Aeroporto di partenza",arrAirport:"Aeroporto di arrivo",airlineOpt:"Compagnia (opzionale)",airlinePh:"es. Ryanair",flightSearchBtn:"Cerca voli",flightsFound:"voli trovati",flightNoneFound:"Nessun volo trovato — prova un altro aeroporto o inserisci il numero manualmente.",flightManualExp:"Oppure inserisci il numero volo manualmente",foSearchPh:"Cerca aeroporto…",
+    flightSection:"Il tuo volo",flightSel:"Seleziona il tuo volo",flyingTo:"Volo verso",flyingFrom:"Volo da",depAirport:"Aeroporto di partenza",arrAirport:"Aeroporto di arrivo",airlineOpt:"Compagnia (opzionale)",airlinePh:"es. Ryanair",flightSearchBtn:"Cerca voli",flightsFound:"voli trovati",flightNoneFound:"Nessun volo trovato — prova un altro aeroporto o inserisci il numero manualmente.",flightManualExp:"Oppure inserisci il numero volo manualmente",foSearchPh:"Cerca aeroporto…",
     next:"Continua",back:"Indietro",searchBtn:"Vedi i prezzi",searching:"Cerco…",
     dateErr:"Scegli una data e un'ora valide.",needLoc:"Imposta ritiro e destinazione.",needVerify:"Verifica l'indirizzo.",
     needAirport:"Un lato deve essere un aeroporto — sceglilo dalla sezione Aeroporti.",
@@ -4208,7 +4208,7 @@ const TF = {
     when:"Fecha y hora de recogida",retHint:"Tu vuelo sale a las {t} — recogida sugerida 3h antes.",
     pax:"Pasajeros",flightNum:"Número de vuelo",flightHint:"Precargado de tu vuelo — verifícalo.",flightOpt:"opcional",
     flightReq:"obligatorio",flightWhy:"El conductor sigue este vuelo para ajustar tu recogida en caso de retraso. Lo exige la empresa de traslados.",needFlight:"Introduce tu número de vuelo para continuar.",
-    flightSel:"Selecciona tu vuelo",flyingTo:"Vuelo hacia",flyingFrom:"Vuelo desde",depAirport:"Aeropuerto de salida",arrAirport:"Aeropuerto de llegada",airlineOpt:"Aerolínea (opcional)",airlinePh:"p. ej. Ryanair",flightSearchBtn:"Buscar vuelos",flightsFound:"vuelo(s) encontrados",flightNoneFound:"No se han encontrado vuelos — prueba otro aeropuerto o introduce el número manualmente.",flightManualExp:"O introduce el número de vuelo manualmente",foSearchPh:"Buscar aeropuerto…",
+    flightSection:"Tu vuelo",flightSel:"Selecciona tu vuelo",flyingTo:"Vuelo hacia",flyingFrom:"Vuelo desde",depAirport:"Aeropuerto de salida",arrAirport:"Aeropuerto de llegada",airlineOpt:"Aerolínea (opcional)",airlinePh:"p. ej. Ryanair",flightSearchBtn:"Buscar vuelos",flightsFound:"vuelo(s) encontrados",flightNoneFound:"No se han encontrado vuelos — prueba otro aeropuerto o introduce el número manualmente.",flightManualExp:"O introduce el número de vuelo manualmente",foSearchPh:"Buscar aeropuerto…",
     next:"Continuar",back:"Atrás",searchBtn:"Ver precios",searching:"Buscando…",
     dateErr:"Elige una fecha y hora válidas.",needLoc:"Indica recogida y destino.",needVerify:"Verifica la dirección.",
     needAirport:"Un lado debe ser un aeropuerto — elígelo de la lista de Aeropuertos.",
@@ -4232,7 +4232,7 @@ const TF = {
     when:"Date et heure de prise en charge",retHint:"Votre vol part à {t} — prise en charge conseillée 3h avant.",
     pax:"Passagers",flightNum:"Numéro de vol",flightHint:"Pré-rempli depuis votre vol — vérifiez-le.",flightOpt:"facultatif",
     flightReq:"obligatoire",flightWhy:"Le chauffeur suit ce vol pour adapter votre prise en charge en cas de retard. C'est exigé par la société de transfert.",needFlight:"Saisissez votre numéro de vol pour continuer.",
-    flightSel:"Sélectionnez votre vol",flyingTo:"Vol vers",flyingFrom:"Vol depuis",depAirport:"Aéroport de départ",arrAirport:"Aéroport d'arrivée",airlineOpt:"Compagnie (facultatif)",airlinePh:"ex. Ryanair",flightSearchBtn:"Rechercher des vols",flightsFound:"vol(s) trouvés",flightNoneFound:"Aucun vol trouvé — essayez un autre aéroport ou saisissez le numéro manuellement.",flightManualExp:"Ou saisissez le numéro de vol manuellement",foSearchPh:"Rechercher un aéroport…",
+    flightSection:"Votre vol",flightSel:"Sélectionnez votre vol",flyingTo:"Vol vers",flyingFrom:"Vol depuis",depAirport:"Aéroport de départ",arrAirport:"Aéroport d'arrivée",airlineOpt:"Compagnie (facultatif)",airlinePh:"ex. Ryanair",flightSearchBtn:"Rechercher des vols",flightsFound:"vol(s) trouvés",flightNoneFound:"Aucun vol trouvé — essayez un autre aéroport ou saisissez le numéro manuellement.",flightManualExp:"Ou saisissez le numéro de vol manuellement",foSearchPh:"Rechercher un aéroport…",
     next:"Continuer",back:"Retour",searchBtn:"Voir les prix",searching:"Recherche…",
     dateErr:"Choisissez une date et une heure valides.",needLoc:"Indiquez la prise en charge et la destination.",needVerify:"Vérifiez l'adresse.",
     needAirport:"Un côté doit être un aéroport — choisissez-le dans la liste des Aéroports.",
@@ -4256,7 +4256,7 @@ const TF = {
     when:"Ophaaldatum en -tijd",retHint:"Je vlucht vertrekt om {t} — ophalen aanbevolen 3u eerder.",
     pax:"Passagiers",flightNum:"Vluchtnummer",flightHint:"Vooraf ingevuld vanaf je vlucht — controleer het.",flightOpt:"optioneel",
     flightReq:"verplicht",flightWhy:"De chauffeur volgt deze vlucht om je ophaaltijd aan te passen bij vertraging. Het is vereist door het transferbedrijf.",needFlight:"Voer je vluchtnummer in om door te gaan.",
-    flightSel:"Selecteer je vlucht",flyingTo:"Vlucht naar",flyingFrom:"Vlucht vanaf",depAirport:"Vertrekluchthaven",arrAirport:"Aankomstluchthaven",airlineOpt:"Luchtvaartmaatschappij (optioneel)",airlinePh:"bijv. Ryanair",flightSearchBtn:"Zoek vluchten",flightsFound:"vlucht(en) gevonden",flightNoneFound:"Geen vluchten gevonden — probeer een andere luchthaven of voer het nummer handmatig in.",flightManualExp:"Of voer het vluchtnummer handmatig in",foSearchPh:"Zoek luchthaven…",
+    flightSection:"Je vlucht",flightSel:"Selecteer je vlucht",flyingTo:"Vlucht naar",flyingFrom:"Vlucht vanaf",depAirport:"Vertrekluchthaven",arrAirport:"Aankomstluchthaven",airlineOpt:"Luchtvaartmaatschappij (optioneel)",airlinePh:"bijv. Ryanair",flightSearchBtn:"Zoek vluchten",flightsFound:"vlucht(en) gevonden",flightNoneFound:"Geen vluchten gevonden — probeer een andere luchthaven of voer het nummer handmatig in.",flightManualExp:"Of voer het vluchtnummer handmatig in",foSearchPh:"Zoek luchthaven…",
     next:"Doorgaan",back:"Terug",searchBtn:"Bekijk prijzen",searching:"Zoeken…",
     dateErr:"Kies een geldige datum en tijd.",needLoc:"Stel ophalen en bestemming in.",needVerify:"Verifieer het adres.",
     needAirport:"Eén kant moet een luchthaven zijn — kies deze uit de lijst met Luchthavens.",
@@ -4280,7 +4280,7 @@ const TF = {
     when:"Datum und Uhrzeit der Abholung",retHint:"Ihr Flug startet um {t} — Abholung 3 Std. früher empfohlen.",
     pax:"Passagiere",flightNum:"Flugnummer",flightHint:"Aus Ihrem Flug vorausgefüllt — bitte prüfen.",flightOpt:"optional",
     flightReq:"erforderlich",flightWhy:"Der Fahrer verfolgt diesen Flug, um Ihre Abholung bei Verspätung anzupassen. Vom Transferunternehmen verlangt.",needFlight:"Bitte geben Sie Ihre Flugnummer ein, um fortzufahren.",
-    flightSel:"Wählen Sie Ihren Flug",flyingTo:"Flug nach",flyingFrom:"Flug von",depAirport:"Abflughafen",arrAirport:"Ankunftsflughafen",airlineOpt:"Fluggesellschaft (optional)",airlinePh:"z. B. Ryanair",flightSearchBtn:"Flüge suchen",flightsFound:"Flug/Flüge gefunden",flightNoneFound:"Keine Flüge gefunden — versuchen Sie einen anderen Flughafen oder geben Sie die Nummer manuell ein.",flightManualExp:"Oder Flugnummer manuell eingeben",foSearchPh:"Flughafen suchen…",
+    flightSection:"Ihr Flug",flightSel:"Wählen Sie Ihren Flug",flyingTo:"Flug nach",flyingFrom:"Flug von",depAirport:"Abflughafen",arrAirport:"Ankunftsflughafen",airlineOpt:"Fluggesellschaft (optional)",airlinePh:"z. B. Ryanair",flightSearchBtn:"Flüge suchen",flightsFound:"Flug/Flüge gefunden",flightNoneFound:"Keine Flüge gefunden — versuchen Sie einen anderen Flughafen oder geben Sie die Nummer manuell ein.",flightManualExp:"Oder Flugnummer manuell eingeben",foSearchPh:"Flughafen suchen…",
     next:"Weiter",back:"Zurück",searchBtn:"Preise ansehen",searching:"Suche…",
     dateErr:"Bitte wählen Sie ein gültiges Datum und eine gültige Uhrzeit.",needLoc:"Bitte Abholung und Ziel angeben.",needVerify:"Bitte Adresse überprüfen.",
     needAirport:"Eine Seite muss ein Flughafen sein — wählen Sie ihn aus der Flughafen-Liste.",
@@ -4572,13 +4572,13 @@ function TransferFlow({b,lang,onClose}){
   const goBack=()=>{ if(stepIdx>0) setStep(flow[stepIdx-1]); };
 
   const overlay={position:"fixed",inset:0,background:"rgba(15,20,30,.55)",zIndex:9999,display:"flex",justifyContent:"center",alignItems:isMobile?"stretch":"flex-start",padding:isMobile?0:"4vh 12px",overflowY:isMobile?"hidden":"auto"};
-  const sheet={background:"#fff",color:"#1f2730",borderRadius:isMobile?0:16,maxWidth:isMobile?"100%":540,width:"100%",boxShadow:"0 20px 60px rgba(0,0,0,.3)",display:"flex",flexDirection:"column",height:isMobile?"100%":"auto",maxHeight:isMobile?"100%":"92vh"};
+  const sheet={background:"#fff",color:"#1f2730",colorScheme:"light",borderRadius:isMobile?0:16,maxWidth:isMobile?"100%":540,width:"100%",boxShadow:"0 20px 60px rgba(0,0,0,.3)",display:"flex",flexDirection:"column",height:isMobile?"100%":"auto",maxHeight:isMobile?"100%":"92vh"};
   const head={display:"flex",alignItems:"center",gap:10,padding:"14px 18px",borderBottom:"1px solid #eef0f3",flexShrink:0};
   const body={padding:"16px 18px",overflowY:"auto",flex:1,minHeight:0,WebkitOverflowScrolling:"touch"};
   const foot={display:"flex",gap:10,padding:"12px 18px",borderTop:"1px solid #eef0f3",flexShrink:0};
   const primary={flex:1,background:"#F15A29",color:"#fff",border:"none",padding:"11px",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"};
   const ghost={background:"#eef1f5",color:"#1f2730",border:"none",padding:"11px 16px",borderRadius:10,fontWeight:600,fontSize:14,cursor:"pointer"};
-  const inp={width:"100%",padding:"10px 11px",border:"1px solid #d7dce2",borderRadius:9,fontSize:13,color:"#1f2730",fontFamily:"inherit",boxSizing:"border-box"};
+  const inp={width:"100%",padding:"10px 11px",border:"1px solid #d7dce2",borderRadius:9,fontSize:16,color:"#1f2730",background:"#fff",WebkitTextFillColor:"#1f2730",colorScheme:"light",fontFamily:"inherit",boxSizing:"border-box"};
   const lbl={fontSize:11,fontWeight:600,color:"#5b6470",margin:"0 0 4px",textTransform:"uppercase",letterSpacing:.3};
   const linkBtn={background:"none",border:"none",color:"#F15A29",fontSize:12,fontWeight:600,cursor:"pointer",padding:0};
   const dd={position:"absolute",left:0,right:0,zIndex:6,background:"#fff",border:"1px solid #d7dce2",borderRadius:10,boxShadow:"0 8px 24px rgba(0,0,0,.12)",marginTop:4,maxHeight:240,overflowY:"auto"};
@@ -4691,19 +4691,19 @@ function TransferFlow({b,lang,onClose}){
       <button onClick={()=>setFlightPickOpen(dir)} style={linkBtn}>{tf.change}</button>
     </div>;
     return <div style={{marginBottom:10,border:"1px solid #e6eef7",borderRadius:11,padding:"11px 12px",background:"#fbfdff"}}>
-      <div style={{...lbl,marginBottom:8}}>✈ {tf.flightSel} <span style={{textTransform:"none",fontWeight:400,color:"#c0392b"}}>({tf.flightReq})</span></div>
-      <div style={{fontSize:12,color:"#5b6470",marginBottom:8}}>{isOut?tf.flyingTo:tf.flyingFrom}: <strong>✈ {(known&&known.label)||"—"}</strong></div>
       <div style={{marginBottom:8,position:"relative"}}>
-        <div style={lbl}>{isOut?tf.depAirport:tf.arrAirport}</div>
+        <div style={lbl}>{isOut?tf.depAirport:tf.arrAirport} <span style={{textTransform:"none",fontWeight:400,color:"#c0392b"}}>({tf.flightReq})</span></div>
         {foOpen===fid
           ? <div style={{position:"relative"}}>
               <input autoFocus value={foQ} placeholder={tf.foSearchPh} onChange={e=>setFoQ(e.target.value)} style={inp}/>
               {foRes.length>0&&<div style={dd}>{foRes.map((r,i)=><div key={i} onClick={()=>chooseOtherAir(dir,r)} style={ddItem(i,foRes.length)}><div style={{fontSize:13,fontWeight:600,color:"#1f2730"}}>✈ {r.label}</div>{r.sublabel&&<div style={{fontSize:11,color:"#8a93a0"}}>{r.sublabel}</div>}</div>)}</div>}
             </div>
-          : <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,background:"#fff",border:"1px solid #d7dce2",borderRadius:9,padding:"9px 11px"}}>
-              <span style={{fontSize:13,fontWeight:600,color:other?"#1f2730":"#a0a8b2",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{other?`✈ ${other.label}`:tf.foSearchPh}</span>
-              <button onClick={()=>{setFoOpen(fid);setFoQ("");setFoRes([]);}} style={linkBtn}>{other?tf.change:tf.set}</button>
-            </div>}
+          : other
+            ? <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,background:"#fff",border:"1px solid #d7dce2",borderRadius:9,padding:"9px 11px"}}>
+                <span style={{fontSize:14,fontWeight:600,color:"#1f2730",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>✈ {other.label}</span>
+                <button onClick={()=>{setFoOpen(fid);setFoQ("");setFoRes([]);}} style={linkBtn}>{tf.change}</button>
+              </div>
+            : <button onClick={()=>{setFoOpen(fid);setFoQ("");setFoRes([]);}} style={{width:"100%",textAlign:"left",background:"#fff",color:"#F15A29",border:"1.5px dashed #F5B08F",borderRadius:9,padding:"12px",fontWeight:600,fontSize:14,cursor:"pointer"}}>🔍 {tf.foSearchPh}</button>}
       </div>
       <div style={{marginBottom:8}}>
         <div style={lbl}>{tf.airlineOpt}</div>
@@ -4738,16 +4738,23 @@ function TransferFlow({b,lang,onClose}){
     const isOut=dir==="outbound"; const ready=legReady(dir);
     return <>
       <div style={body}>
-        <div style={{fontSize:11,fontWeight:800,color:"#F15A29",textTransform:"uppercase",letterSpacing:.4,marginBottom:10}}>{isOut?tf.legOut:tf.legRet}</div>
+        <div style={{fontSize:11,fontWeight:800,color:"#F15A29",textTransform:"uppercase",letterSpacing:.4,marginBottom:12}}>{isOut?tf.legOut:tf.legRet}</div>
+        {/* 1 & 2 — le due estremità del transfer */}
         {isOut
-          ? <>{pointField("out-pick",outP,setOutP,tf.from)}{accField("outbound")}</>
-          : <>{accField("return")}{pointField("ret-drop",retD,setRetD,tf.to)}</>}
-        <div style={{marginBottom:8}}>
+          ? <>{pointField("out-pick",outP,setOutP,tf.arrAirport)}{accField("outbound")}</>
+          : <>{accField("return")}{pointField("ret-drop",retD,setRetD,tf.depAirport)}</>}
+        {/* 3 — il volo (spiegato): serve a identificarlo e a calcolare l'orario */}
+        {legHasAirport(dir)&&<div style={{marginTop:2}}>
+          <div style={{fontSize:12.5,fontWeight:800,color:"#1f2730",marginBottom:3}}>✈ {tf.flightSection}</div>
+          <div style={{fontSize:11.5,color:"#8a93a0",margin:"0 0 8px",lineHeight:1.45}}>{tf.flightWhy}</div>
+          {flightField(dir)}
+        </div>}
+        {/* 4 — orario di ritiro (auto dal volo, modificabile) */}
+        <div style={{marginTop:6,marginBottom:4}}>
           <div style={lbl}>{tf.when}</div>
           <input type="datetime-local" value={isOut?whenOut:whenRet} onChange={e=>{const v=e.target.value; if(isOut)setWhenOut(v);else setWhenRet(v);}} style={inp}/>
           {!isOut&&flightTimeRet&&<div style={{fontSize:11,color:"#8a93a0",marginTop:4}}>{tf.retHint.replace("{t}",fmtHM(flightTimeRet))}</div>}
         </div>
-        {legHasAirport(dir)&&flightField(dir)}
         {!ready&&<p style={{fontSize:12,color:"#8a5a00",margin:"2px 0 0"}}>{!(pointReady(legPick(dir))&&pointReady(legDrop(dir)))?tf.needLoc:!legHasAirport(dir)?tf.needAirport:!legWhen(dir)?tf.dateErr:tf.needFlight}</p>}
       </div>
       <div style={foot}>
