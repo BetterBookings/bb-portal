@@ -3418,7 +3418,7 @@ function LiveCars({lang,onRequest,fallback}){
           {car.image&&<img src={car.image} alt="" style={{width:54,height:36,objectFit:"contain"}}/>}
           <div style={{flex:1,minWidth:0}}>
             <div style={{fontSize:14,fontWeight:600,color:"#1f2730",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{car.name}</div>
-            <div style={{fontSize:12,color:"#8a93a0"}}>{car.supplier}{car.onRequest?" · on request":""}</div>
+            <div style={{fontSize:12,color:"#5b6470"}}>{car.supplier}{car.onRequest?" · on request":""}</div>
           </div>
           <div style={{fontSize:15,fontWeight:700,color:"#1f2730",whiteSpace:"nowrap"}}>{Number(car.price).toFixed(0)} {car.currency}</div>
           {ss==="sent"
@@ -3718,8 +3718,8 @@ function CarRentalFlow({b,lang,onClose}){
       <div style={head}>
         <Ico name="bb-car" size={22}/>
         <div style={{flex:1,fontSize:16,fontWeight:700,color:"#1f2730"}}>{cf.title}</div>
-        {step!=="done"&&<div style={{fontSize:12,color:"#8a93a0",fontWeight:600,whiteSpace:"nowrap"}}>{cfx.step[step]} · {steps.indexOf(step)+1}/{steps.length}</div>}
-        <button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#8a93a0",lineHeight:1}}>×</button>
+        {step!=="done"&&<div style={{fontSize:12,color:"#5b6470",fontWeight:600,whiteSpace:"nowrap"}}>{cfx.step[step]} · {steps.indexOf(step)+1}/{steps.length}</div>}
+        <button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#5b6470",lineHeight:1}}>×</button>
       </div>
 
       {step==="search"&&<>
@@ -3777,11 +3777,11 @@ function CarRentalFlow({b,lang,onClose}){
               {car.image&&<img src={car.image} alt="" style={{width:58,height:38,objectFit:"contain"}}/>}
               <div style={{flex:1,minWidth:0}}>
                 <div style={{fontSize:14,fontWeight:600,color:"#1f2730"}}>{car.name}</div>
-                <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:"#8a93a0"}}>
+                <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:"#5b6470"}}>
                   {car.supplierLogo&&<img src={car.supplierLogo} alt="" style={{height:14,maxWidth:54,objectFit:"contain"}}/>}
                   <span>{car.supplier}{car.onRequest?" · "+cf.onreq:""}</span>
                 </div>
-                <div style={{display:"flex",gap:9,marginTop:3,fontSize:11,color:"#8a93a0",flexWrap:"wrap"}}>
+                <div style={{display:"flex",gap:9,marginTop:3,fontSize:11,color:"#5b6470",flexWrap:"wrap"}}>
                   {car.transmission&&<span>⚙ {String(car.transmission).toLowerCase()==="automatic"?cfx.auto:cfx.manual}</span>}
                   {car.seats&&<span>👤 {car.seats} {cfx.seats}</span>}
                   {car.baggage&&<span>🧳 {car.baggage}</span>}
@@ -3806,7 +3806,7 @@ function CarRentalFlow({b,lang,onClose}){
             {sel.image&&<img src={sel.image} alt="" style={{width:84,height:54,objectFit:"contain"}}/>}
             <div style={{flex:1}}>
               <div style={{fontSize:17,fontWeight:700,color:"#1f2730"}}>{sel.name}</div>
-              <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:"#8a93a0"}}>
+              <div style={{display:"flex",alignItems:"center",gap:6,fontSize:12,color:"#5b6470"}}>
                 {sel.supplierLogo&&<img src={sel.supplierLogo} alt="" style={{height:15,maxWidth:60,objectFit:"contain"}}/>}
                 <span>{sel.supplier}{sel.onRequest?" · "+cf.onreq:""}</span>
               </div>
@@ -4076,7 +4076,7 @@ function BaggageFlow({b,lang,onClose}){
       <div style={head}>
         <span style={{fontSize:22}}>🧳</span>
         <div style={{flex:1,fontSize:16,fontWeight:700}}>{bf.title}</div>
-        <button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#8a93a0",lineHeight:1}}>×</button>
+        <button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#5b6470",lineHeight:1}}>×</button>
       </div>
 
       {step==="select"&&<>
@@ -4113,7 +4113,7 @@ function BaggageFlow({b,lang,onClose}){
             <div style={{marginTop:6,paddingTop:10,borderTop:"2px solid #eef0f3",display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:"#F15A29"}}>
               <span>{bf.total}</span><span>{money(total)}</span>
             </div>
-            <p style={{fontSize:11,color:"#8a93a0",marginTop:8}}>{bf.hold}</p>
+            <p style={{fontSize:11,color:"#5b6470",marginTop:8}}>{bf.hold}</p>
             <div style={{fontSize:11,color:"#874d00",background:"#fff7e6",border:"1px solid #ffe3ad",borderRadius:8,padding:"8px 10px",marginTop:8,lineHeight:1.45}}>ℹ️ {bf.weightNote}</div>
           </>}
         </div>
@@ -4579,11 +4579,11 @@ function TransferFlow({b,lang,onClose}){
   const primary={flex:1,background:"#F15A29",color:"#fff",border:"none",padding:"11px",borderRadius:10,fontWeight:700,fontSize:14,cursor:"pointer"};
   const ghost={background:"#eef1f5",color:"#1f2730",border:"none",padding:"11px 16px",borderRadius:10,fontWeight:600,fontSize:14,cursor:"pointer"};
   const inp={width:"100%",padding:"10px 11px",border:"1px solid #d7dce2",borderRadius:9,fontSize:16,color:"#1f2730",background:"#fff",WebkitTextFillColor:"#1f2730",colorScheme:"light",fontFamily:"inherit",boxSizing:"border-box"};
-  const lbl={fontSize:11,fontWeight:600,color:"#5b6470",margin:"0 0 4px",textTransform:"uppercase",letterSpacing:.3};
+  const lbl={fontSize:12,fontWeight:700,color:"#3f4a5f",margin:"0 0 5px",textTransform:"uppercase",letterSpacing:.4};
   const linkBtn={background:"none",border:"none",color:"#F15A29",fontSize:12,fontWeight:600,cursor:"pointer",padding:0};
   const dd={position:"absolute",left:0,right:0,zIndex:6,background:"#fff",border:"1px solid #d7dce2",borderRadius:10,boxShadow:"0 8px 24px rgba(0,0,0,.12)",marginTop:4,maxHeight:240,overflowY:"auto"};
   const ddItem=(i,n)=>({padding:"9px 12px",cursor:"pointer",borderBottom:i<n-1?"1px solid #f2f4f7":"none"});
-  const ddHead={padding:"6px 12px",fontSize:10,fontWeight:700,color:"#8a93a0",textTransform:"uppercase",letterSpacing:.4,background:"#f7f9fc"};
+  const ddHead={padding:"6px 12px",fontSize:10,fontWeight:700,color:"#5b6470",textTransform:"uppercase",letterSpacing:.4,background:"#f7f9fc"};
 
   const Badge=({kind})=>{ const green=kind!=="enter";
     const txt = kind==="flight"?tf.bFlight:kind==="booking"?tf.bBooking:kind==="confirmed"?tf.bConfirmed:tf.bEnter;
@@ -4596,11 +4596,11 @@ function TransferFlow({b,lang,onClose}){
       {(locAir.length>0||locPlc.length>0)&&
         <div style={dd}>
           {locAir.length>0&&<div style={ddHead}>{tf.secAirports}</div>}
-          {locAir.map((r,i)=><div key={"a"+i} onClick={()=>chooseLoc(setter,r,"airport")} style={ddItem(i,locAir.length)}><div style={{fontSize:13,fontWeight:600,color:"#1f2730"}}>✈ {r.label}</div>{r.sublabel&&<div style={{fontSize:11,color:"#8a93a0"}}>{r.sublabel}</div>}</div>)}
+          {locAir.map((r,i)=><div key={"a"+i} onClick={()=>chooseLoc(setter,r,"airport")} style={ddItem(i,locAir.length)}><div style={{fontSize:14,fontWeight:600,color:"#1f2730"}}>✈ {r.label}</div>{r.sublabel&&<div style={{fontSize:11,color:"#5b6470"}}>{r.sublabel}</div>}</div>)}
           {locPlc.length>0&&<div style={ddHead}>{tf.secPlaces}</div>}
-          {locPlc.map((r,i)=><div key={"p"+i} onClick={()=>chooseLoc(setter,r,"place")} style={ddItem(i,locPlc.length)}><div style={{fontSize:13,fontWeight:600,color:"#1f2730"}}>📍 {r.label}</div>{r.sublabel&&<div style={{fontSize:11,color:"#8a93a0"}}>{r.sublabel}</div>}</div>)}
+          {locPlc.map((r,i)=><div key={"p"+i} onClick={()=>chooseLoc(setter,r,"place")} style={ddItem(i,locPlc.length)}><div style={{fontSize:14,fontWeight:600,color:"#1f2730"}}>📍 {r.label}</div>{r.sublabel&&<div style={{fontSize:11,color:"#5b6470"}}>{r.sublabel}</div>}</div>)}
         </div>}
-      {locQ.trim().length>=2&&!locAir.length&&!locPlc.length&&<div style={{fontSize:11,color:"#8a93a0",marginTop:4}}>{tf.noFound}</div>}
+      {locQ.trim().length>=2&&!locAir.length&&!locPlc.length&&<div style={{fontSize:11,color:"#5b6470",marginTop:4}}>{tf.noFound}</div>}
     </div>);
 
   // campo "punto" generico: mostra il valore + "modifica" via ricerca. Nessun flag manuale:
@@ -4614,8 +4614,8 @@ function TransferFlow({b,lang,onClose}){
           ? <div style={{background:"#f7fafd",border:"1px solid #e6eef7",borderRadius:10,padding:"10px 12px"}}>
               <div style={{display:"flex",justifyContent:"space-between",gap:8,alignItems:"flex-start"}}>
                 <div style={{minWidth:0}}>
-                  <div style={{fontSize:14,fontWeight:700,color:"#1f2730"}}>{point.kind==="airport"?"✈":"📍"} {point.label}</div>
-                  {point.kind==="place"&&point.address&&point.address!==point.label&&<div style={{fontSize:12,color:"#5b6470",marginTop:2}}>{point.address}</div>}
+                  <div style={{fontSize:15,fontWeight:700,color:"#1f2730"}}>{point.kind==="airport"?"✈":"📍"} {point.label}</div>
+                  {point.kind==="place"&&point.address&&point.address!==point.label&&<div style={{fontSize:13,color:"#5b6470",marginTop:3}}>{point.address}</div>}
                   <div style={{marginTop:5}}>{point.kind==="airport"?<Badge kind={point.fromNinox?"flight":"confirmed"}/>:<Badge kind={point.fromNinox?"booking":"confirmed"}/>}</div>
                 </div>
                 <button onClick={()=>openSearch(fid)} style={linkBtn}>{tf.change}</button>
@@ -4638,7 +4638,7 @@ function TransferFlow({b,lang,onClose}){
           return <div key={i} onClick={()=>setter(accToPoint(ac))}
             style={{border:"1px solid "+(active?"#F15A29":"#e6e9ee"),background:active?"#FFF7F4":"#fff",borderRadius:10,padding:"9px 11px",marginBottom:6,cursor:"pointer"}}>
             <div style={{fontSize:13,fontWeight:700,color:"#1f2730"}}>📍 {ac.name||ac.address}{ac===sug&&<span style={{marginLeft:6,fontSize:10,fontWeight:700,color:"#1e874b",background:"#e8f6ef",borderRadius:6,padding:"1px 6px"}}>{tf.accSuggested}</span>}</div>
-            {(ac.address||ac.checkIn)&&<div style={{fontSize:11,color:"#8a93a0",marginTop:1}}>{ac.address}{ac.checkIn?` · ${ac.checkIn}${ac.checkOut?" → "+ac.checkOut:""}`:""}</div>}
+            {(ac.address||ac.checkIn)&&<div style={{fontSize:11,color:"#5b6470",marginTop:1}}>{ac.address}{ac.checkIn?` · ${ac.checkIn}${ac.checkOut?" → "+ac.checkOut:""}`:""}</div>}
           </div>;
         })}
         {locOpen===fid?searchBox(setter):<button onClick={()=>openSearch(fid)} style={linkBtn}>+ {tf.otherLoc}</button>}
@@ -4696,7 +4696,7 @@ function TransferFlow({b,lang,onClose}){
         {foOpen===fid
           ? <div style={{position:"relative"}}>
               <input autoFocus value={foQ} placeholder={tf.foSearchPh} onChange={e=>setFoQ(e.target.value)} style={inp}/>
-              {foRes.length>0&&<div style={dd}>{foRes.map((r,i)=><div key={i} onClick={()=>chooseOtherAir(dir,r)} style={ddItem(i,foRes.length)}><div style={{fontSize:13,fontWeight:600,color:"#1f2730"}}>✈ {r.label}</div>{r.sublabel&&<div style={{fontSize:11,color:"#8a93a0"}}>{r.sublabel}</div>}</div>)}</div>}
+              {foRes.length>0&&<div style={dd}>{foRes.map((r,i)=><div key={i} onClick={()=>chooseOtherAir(dir,r)} style={ddItem(i,foRes.length)}><div style={{fontSize:14,fontWeight:600,color:"#1f2730"}}>✈ {r.label}</div>{r.sublabel&&<div style={{fontSize:11,color:"#5b6470"}}>{r.sublabel}</div>}</div>)}</div>}
             </div>
           : other
             ? <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,background:"#fff",border:"1px solid #d7dce2",borderRadius:9,padding:"9px 11px"}}>
@@ -4712,15 +4712,15 @@ function TransferFlow({b,lang,onClose}){
       <button onClick={()=>flightSearch(dir)} disabled={busy||!other} style={{...primary,opacity:(busy||!other)?.6:1,marginBottom:10}}>{busy?"…":tf.flightSearchBtn}</button>
       {cands.length>0
         ? <div style={{marginBottom:4}}>
-            <div style={{fontSize:11,color:"#8a93a0",marginBottom:6}}>{cands.length} {tf.flightsFound}</div>
-            {cands.slice(0,8).map((c,i)=><div key={i} onClick={()=>pickFlight(dir,c)} style={{border:"1px solid "+(val===c.flightNumber?"#F15A29":"#e6e9ee"),background:val===c.flightNumber?"#FFF7F4":"#fff",borderRadius:9,padding:"8px 10px",marginBottom:6,cursor:"pointer",display:"flex",alignItems:"center",gap:8}}>
-              <div style={{minWidth:64}}><div style={{fontSize:10.5,fontWeight:600,color:"#8a93a0",lineHeight:1.2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.airline}</div><div style={{fontSize:12,fontWeight:800,color:"#1f2730"}}>{c.flightNumber}</div></div>
-              <div style={{fontSize:13,fontWeight:700,color:"#1f2730"}}>{c.depTime||"—"}</div>
+            <div style={{fontSize:12.5,color:"#5b6470",marginBottom:7}}>{cands.length} {tf.flightsFound}</div>
+            {cands.slice(0,8).map((c,i)=><div key={i} onClick={()=>pickFlight(dir,c)} style={{border:"1px solid "+(val===c.flightNumber?"#F15A29":"#e6e9ee"),background:val===c.flightNumber?"#FFF7F4":"#fff",borderRadius:9,padding:"10px 11px",marginBottom:7,cursor:"pointer",display:"flex",alignItems:"center",gap:9}}>
+              <div style={{minWidth:70}}><div style={{fontSize:12,fontWeight:600,color:"#5b6470",lineHeight:1.2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.airline}</div><div style={{fontSize:14,fontWeight:800,color:"#1f2730"}}>{c.flightNumber}</div></div>
+              <div style={{fontSize:14.5,fontWeight:700,color:"#1f2730"}}>{c.depTime||"—"}</div>
               <div style={{flex:1,textAlign:"center",color:"#c7ccd4"}}>→</div>
-              <div style={{fontSize:13,fontWeight:700,color:"#1f2730"}}>{c.arrTime||"—"}</div>
+              <div style={{fontSize:14.5,fontWeight:700,color:"#1f2730"}}>{c.arrTime||"—"}</div>
             </div>)}
           </div>
-        : (!busy&&<div style={{fontSize:11,color:"#8a93a0",marginBottom:6}}>{tf.flightNoneFound}</div>)}
+        : (!busy&&<div style={{fontSize:12.5,color:"#5b6470",marginBottom:6}}>{tf.flightNoneFound}</div>)}
       <details>
         <summary style={{fontSize:12,color:"#F15A29",cursor:"pointer",fontWeight:600}}>{tf.flightManualExp}</summary>
         <input value={val} onChange={e=>{ (isOut?setFlightOut:setFlightRet)(e.target.value.toUpperCase()); (isOut?setAutoOut:setAutoRet)(false); }} placeholder="LH114" style={{...inp,textTransform:"uppercase",marginTop:6}}/>
@@ -4731,7 +4731,7 @@ function TransferFlow({b,lang,onClose}){
   const tripChip=(val,label,desc)=>(
     <div onClick={()=>setTripType(val)} style={{flex:1,padding:"12px 8px",borderRadius:11,border:"1.5px solid "+(tripType===val?"#F15A29":"#d7dce2"),background:tripType===val?"#FFF2F0":"#fff",cursor:"pointer",textAlign:"center"}}>
       <div style={{fontWeight:700,fontSize:13,color:tripType===val?"#F15A29":"#1f2730"}}>{label}</div>
-      <div style={{fontSize:10.5,color:"#8a93a0",marginTop:2}}>{desc}</div>
+      <div style={{fontSize:12,color:"#5b6470",marginTop:3}}>{desc}</div>
     </div>);
 
   const legStep=(dir)=>{
@@ -4745,15 +4745,15 @@ function TransferFlow({b,lang,onClose}){
           : <>{accField("return")}{pointField("ret-drop",retD,setRetD,tf.depAirport)}</>}
         {/* 3 — il volo (spiegato): serve a identificarlo e a calcolare l'orario */}
         {legHasAirport(dir)&&<div style={{marginTop:2}}>
-          <div style={{fontSize:12.5,fontWeight:800,color:"#1f2730",marginBottom:3}}>✈ {tf.flightSection}</div>
-          <div style={{fontSize:11.5,color:"#8a93a0",margin:"0 0 8px",lineHeight:1.45}}>{tf.flightWhy}</div>
+          <div style={{fontSize:14,fontWeight:800,color:"#1f2730",marginBottom:4}}>✈ {tf.flightSection}</div>
+          <div style={{fontSize:12.5,color:"#5b6470",margin:"0 0 9px",lineHeight:1.5}}>{tf.flightWhy}</div>
           {flightField(dir)}
         </div>}
         {/* 4 — orario di ritiro (auto dal volo, modificabile) */}
         <div style={{marginTop:6,marginBottom:4}}>
           <div style={lbl}>{tf.when}</div>
           <input type="datetime-local" value={isOut?whenOut:whenRet} onChange={e=>{const v=e.target.value; if(isOut)setWhenOut(v);else setWhenRet(v);}} style={inp}/>
-          {!isOut&&flightTimeRet&&<div style={{fontSize:11,color:"#8a93a0",marginTop:4}}>{tf.retHint.replace("{t}",fmtHM(flightTimeRet))}</div>}
+          {!isOut&&flightTimeRet&&<div style={{fontSize:12.5,color:"#5b6470",marginTop:5}}>{tf.retHint.replace("{t}",fmtHM(flightTimeRet))}</div>}
         </div>
         {!ready&&<p style={{fontSize:12,color:"#8a5a00",margin:"2px 0 0"}}>{!(pointReady(legPick(dir))&&pointReady(legDrop(dir)))?tf.needLoc:!legHasAirport(dir)?tf.needAirport:!legWhen(dir)?tf.dateErr:tf.needFlight}</p>}
       </div>
@@ -4772,9 +4772,9 @@ function TransferFlow({b,lang,onClose}){
         <span style={{fontSize:22}}>🚐</span>
         <div style={{flex:1,minWidth:0}}>
           <div style={{fontSize:16,fontWeight:700}}>{tf.title}</div>
-          {showProg&&<div style={{fontSize:11,color:"#8a93a0"}}>{stepIdx+1}/{flow.length}</div>}
+          {showProg&&<div style={{fontSize:11,color:"#5b6470"}}>{stepIdx+1}/{flow.length}</div>}
         </div>
-        <button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#8a93a0",lineHeight:1}}>×</button>
+        <button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#5b6470",lineHeight:1}}>×</button>
       </div>
 
       {loading&&<div style={body}><div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10,padding:"34px 10px",color:"#5b6470",fontSize:14}}>
@@ -4812,16 +4812,16 @@ function TransferFlow({b,lang,onClose}){
                 <div style={{minWidth:0}}>
                 <div style={{fontWeight:700,fontSize:14,color:"#1f2730"}}>{vehName(o)}</div>
                 <div style={{fontSize:12,color:"#5b6470",marginTop:2}}>{o.seatsCapacity?`👤 ${o.seatsCapacity} ${tf.seats}`:""}{lug(o)?` · 🧳 ${lug(o)}`:""}{o.legs&&o.legs[0]&&o.legs[0].durationMin?` · ${o.legs[0].durationMin} min`:""}</div>
-                {o.vehicleDescription&&<div style={{fontSize:11,color:"#8a93a0",marginTop:1}}>{o.vehicleDescription} · {tf.orSimilar}</div>}
+                {o.vehicleDescription&&<div style={{fontSize:12.5,color:"#5b6470",marginTop:2}}>{o.vehicleDescription} · {tf.orSimilar}</div>}
                 {rt
-                  ? <div style={{marginTop:5,fontSize:11.5,color:"#5b6470",lineHeight:1.5}}>
+                  ? <div style={{marginTop:5,fontSize:12.5,color:"#5b6470",lineHeight:1.5}}>
                       {o.legs.map((lg,j)=><div key={j}>{lg.direction==="outbound"?tf.perLegOut:tf.perLegRet}: <strong style={{color:"#1f2730"}}>{money(lg.price)}</strong>{lg.freeCancelUntilMin&&lg.pickupDateTime?` · ✓ ${fmtFree(lg.freeCancelUntilMin,lg.pickupDateTime)}`:""}</div>)}
                     </div>
-                  : (o.legs&&o.legs[0]&&o.legs[0].freeCancelUntilMin&&o.legs[0].pickupDateTime?<div style={{fontSize:11,color:"#1e874b",marginTop:3}}>✓ {tf.freeCancel} {fmtFree(o.legs[0].freeCancelUntilMin,o.legs[0].pickupDateTime)}</div>:null)}
+                  : (o.legs&&o.legs[0]&&o.legs[0].freeCancelUntilMin&&o.legs[0].pickupDateTime?<div style={{fontSize:12,fontWeight:600,color:"#1e874b",marginTop:3}}>✓ {tf.freeCancel} {fmtFree(o.legs[0].freeCancelUntilMin,o.legs[0].pickupDateTime)}</div>:null)}
                 </div>
               </div>
               <div style={{textAlign:"right",flexShrink:0}}>
-                {rt&&<div style={{fontSize:10,color:"#8a93a0",marginBottom:1}}>{tf.totalRound}</div>}
+                {rt&&<div style={{fontSize:11.5,color:"#5b6470",marginBottom:1}}>{tf.totalRound}</div>}
                 <div style={{fontWeight:800,fontSize:16,color:"#F15A29"}}>{money(o.totalPrice)}</div>
                 <button style={{...primary,flex:"none",padding:"6px 14px",marginTop:4,fontSize:12}}>{tf.select}</button>
               </div>
@@ -4861,7 +4861,7 @@ function TransferFlow({b,lang,onClose}){
           <div style={{display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:"#F15A29",marginBottom:12}}><span>{legList.length>1?tf.totalRound:tf.total}</span><span>{money(pi?pi.amount:sel.totalPrice)}</span></div>
           {previewOff
             ? <div style={{fontSize:13,color:"#874d00",background:"#fff7e6",border:"1px solid #ffe3ad",borderRadius:10,padding:"12px 14px",lineHeight:1.5}}>🔒 {tf.previewOff}</div>
-            : <><div id="bb-tr-pay-el"/><p style={{fontSize:11,color:"#8a93a0",marginTop:10}}>{tf.hold}</p></>}
+            : <><div id="bb-tr-pay-el"/><p style={{fontSize:12.5,color:"#5b6470",marginTop:10}}>{tf.hold}</p></>}
           {payErr&&<p style={{color:"#c0392b",fontSize:12,marginTop:8}}>{payErr}</p>}
         </div>
         <div style={foot}>
