@@ -4159,6 +4159,7 @@ const TF = {
     chooseAcc:"Which accommodation?",accSuggested:"suggested",otherLoc:"Search another place",
     when:"Pick-up date & time",retHint:"Your flight departs at {t} — pick-up suggested 3h earlier.",
     pax:"Passengers",flightNum:"Flight number",flightHint:"Pre-filled from your flight — please check it.",flightOpt:"optional",
+    flightReq:"required",flightWhy:"The driver tracks this flight to adjust your pick-up if it's delayed. It's required by the transfer company.",needFlight:"Please enter your flight number to continue.",
     next:"Continue",back:"Back",searchBtn:"See prices",searching:"Searching…",
     dateErr:"Please choose a valid date and time.",needLoc:"Please set pick-up and drop-off.",needVerify:"Please verify the address.",
     needAirport:"One side must be an airport — pick it from the Airports list.",
@@ -4181,6 +4182,7 @@ const TF = {
     chooseAcc:"Quale struttura?",accSuggested:"suggerita",otherLoc:"Cerca un altro luogo",
     when:"Data e ora del ritiro",retHint:"Il volo parte alle {t} — ritiro consigliato 3h prima.",
     pax:"Passeggeri",flightNum:"Numero volo",flightHint:"Precompilato dal tuo volo — verificalo.",flightOpt:"opzionale",
+    flightReq:"obbligatorio",flightWhy:"L'autista monitora questo volo per adattare il ritiro in caso di ritardo. È richiesto dalla società di transfer.",needFlight:"Inserisci il numero del volo per continuare.",
     next:"Continua",back:"Indietro",searchBtn:"Vedi i prezzi",searching:"Cerco…",
     dateErr:"Scegli una data e un'ora valide.",needLoc:"Imposta ritiro e destinazione.",needVerify:"Verifica l'indirizzo.",
     needAirport:"Un lato deve essere un aeroporto — sceglilo dalla sezione Aeroporti.",
@@ -4317,7 +4319,10 @@ function TransferFlow({b,lang,onClose}){
   const legWhen=(dir)=> dir==="outbound"?whenOut:whenRet;
   const legFlightTime=(dir)=> dir==="outbound"?(whenOut?whenOut+":00":null):((flightTimeRet||whenRet)?((flightTimeRet||whenRet)+":00"):null);
   const legHasAirport=(dir)=>{ const p=legPick(dir),d=legDrop(dir); return !!((p&&p.kind==="airport")||(d&&d.kind==="airport")); };
-  const legReady=(dir)=> !!(pointReady(legPick(dir))&&pointReady(legDrop(dir))&&legWhen(dir)&&legHasAirport(dir));
+  const flightVal=(dir)=> ((dir==="outbound"?flightOut:flightRet)||"").trim();
+  // World Transfer richiede SEMPRE il numero volo per le tratte con aeroporto (tutte, data
+  // la regola ≥1 aeroporto). Senza, /booking risponde 400 "flightNumber is required".
+  const legReady=(dir)=> !!(pointReady(legPick(dir))&&pointReady(legDrop(dir))&&legWhen(dir)&&legHasAirport(dir)&&flightVal(dir));
   const legRouteLbl=(dir)=> `${(legPick(dir)&&legPick(dir).label)||"—"} → ${(legDrop(dir)&&legDrop(dir).label)||"—"}`;
 
   const buildLegs=(withFlight)=> legList.map(dir=>{
@@ -4518,8 +4523,9 @@ function TransferFlow({b,lang,onClose}){
       <button onClick={()=>setAuto(false)} style={linkBtn}>{tf.change}</button>
     </div>;
     return <div style={{marginBottom:10}}>
-      <p style={lbl}>✈ {tf.flightNum} <span style={{textTransform:"none",fontWeight:400,color:"#a0a8b2"}}>({tf.flightOpt})</span></p>
+      <p style={lbl}>✈ {tf.flightNum} <span style={{textTransform:"none",fontWeight:400,color:"#c0392b"}}>({tf.flightReq})</span></p>
       <input value={val} onChange={e=>setV(e.target.value.toUpperCase())} placeholder="LH114" style={{...inp,textTransform:"uppercase"}}/>
+      <p style={{fontSize:11,color:"#8a93a0",marginTop:4,lineHeight:1.4}}>{tf.flightWhy}</p>
     </div>;
   };
 
@@ -4543,7 +4549,7 @@ function TransferFlow({b,lang,onClose}){
           {!isOut&&flightTimeRet&&<div style={{fontSize:11,color:"#8a93a0",marginTop:4}}>{tf.retHint.replace("{t}",fmtHM(flightTimeRet))}</div>}
         </div>
         {legHasAirport(dir)&&flightField(dir)}
-        {!ready&&<p style={{fontSize:12,color:"#8a5a00",margin:"2px 0 0"}}>{!(pointReady(legPick(dir))&&pointReady(legDrop(dir)))?tf.needLoc:!legHasAirport(dir)?tf.needAirport:tf.dateErr}</p>}
+        {!ready&&<p style={{fontSize:12,color:"#8a5a00",margin:"2px 0 0"}}>{!(pointReady(legPick(dir))&&pointReady(legDrop(dir)))?tf.needLoc:!legHasAirport(dir)?tf.needAirport:!legWhen(dir)?tf.dateErr:tf.needFlight}</p>}
       </div>
       <div style={foot}>
         <button onClick={goBack} style={ghost}>‹ {tf.back}</button>
