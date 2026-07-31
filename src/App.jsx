@@ -4241,9 +4241,22 @@ function TransferFlow({b,lang,onClose}){
   const _ba=(b.baby||0)+(b.addroom?(b.baby2||0):0);
   const adults=parseTravellers(b.TravellerDetails,b.checkIn,{adults:_ad,child:_ch,baby:_ba}).filter(t=>t.ageType==="adult");
   const lead=adults[0]||{};
-  const [passenger,setPassenger]=useState({title:"MR",
-    firstName:lead.firstName||b.guestname||"",lastName:lead.lastName||b.guestSurname||"",
-    email:(b.guestEmail&&b.guestEmail[0])||"",areaCode:"",phone:(b.guestTelephone&&b.guestTelephone[0])||""});
+  // WT ESIGE un prefisso internazionale non vuoto → lo precompilo dal numero Ninox se lo
+  // porta ('+NN'/'00NN'), altrimenti default per lingua. Numero locale = solo cifre.
+  const [passenger,setPassenger]=useState(()=>{
+    const raw=String((b.guestTelephone&&b.guestTelephone[0])||"").trim();
+    const DIAL={IT:"+39",FR:"+33",NL:"+31",DE:"+49",ES:"+34",EN:"+44"};
+    const CODES=["351","352","353","354","356","358","359","380","385","386","387","389","420","421","971","972","20","27","30","31","32","33","34","36","39","40","41","43","44","45","46","47","48","49","90","1","7"];
+    const digits=raw.replace(/[^\d]/g,""); let area="",num=digits;
+    if(raw.startsWith("+")||digits.startsWith("00")){
+      const d=digits.startsWith("00")?digits.slice(2):digits;
+      const c=CODES.find(x=>d.startsWith(x)&&d.length>x.length);
+      if(c){ area="+"+c; num=d.slice(c.length); }
+    }
+    if(!area) area=DIAL[lang]||"+39";
+    return {title:"MR",firstName:lead.firstName||b.guestname||"",lastName:lead.lastName||b.guestSurname||"",
+      email:(b.guestEmail&&b.guestEmail[0])||"",areaCode:area,phone:num};
+  });
 
   const money=(v)=> v!=null?`${Number(v).toFixed(2)} €`:"—";
   const fmtDT=(iso)=>{ const s=String(iso||""); return s.length>=16?`${s.slice(8,10)}/${s.slice(5,7)}/${s.slice(0,4)} ${s.slice(11,16)}`:s.slice(0,10); };
@@ -4407,7 +4420,7 @@ function TransferFlow({b,lang,onClose}){
     }catch(e){ setPayErr(tf.bookErr); } finally{ setPaying(false); }
   }
 
-  const paxValid = passenger.firstName&&passenger.lastName&&passenger.email&&passenger.phone;
+  const paxValid = passenger.firstName&&passenger.lastName&&passenger.email&&passenger.areaCode&&passenger.phone;
   const vehName=(o)=> (o.vehicleCategory==="VAN"?"Van":o.vehicleCategory==="LIMO"?"Limousine":(o.vehicleCategory||"Transfer"))+(o.classLabel?` · ${o.classLabel}`:"");
   const lug=(o)=>{ const m=o.maxLuggage; if(!Array.isArray(m)) return null; let s=0; for(const x of m){ if(String(x.size||"").toLowerCase()!=="small") s+=(x.quantity||0); } if(!s) s=m.reduce((a,x)=>a+(x.quantity||0),0); return s||null; };
   // Immagine reale del veicolo (fornita da Luigi in public/vehicles/): sedan / van / executive.
@@ -4718,7 +4731,7 @@ function TransferFlow({b,lang,onClose}){
           </div>
           <div style={{marginBottom:10}}><p style={lbl}>{tf.email} *</p><input value={passenger.email} onChange={e=>setPassenger({...passenger,email:e.target.value})} style={inp}/></div>
           <div style={{display:"flex",gap:8}}>
-            <div style={{width:96}}><p style={lbl}>{tf.areaCode}</p><input value={passenger.areaCode} onChange={e=>setPassenger({...passenger,areaCode:e.target.value})} placeholder="+39" style={inp}/></div>
+            <div style={{width:96}}><p style={lbl}>{tf.areaCode} *</p><input value={passenger.areaCode} onChange={e=>setPassenger({...passenger,areaCode:e.target.value})} placeholder="+39" style={inp}/></div>
             <div style={{flex:1}}><p style={lbl}>{tf.phone} *</p><input value={passenger.phone} onChange={e=>setPassenger({...passenger,phone:e.target.value})} style={inp}/></div>
           </div>
         </div>
