@@ -4197,6 +4197,102 @@ const TF = {
     doneTitle:"Transfer prenotato!",doneMsg:"Il tuo transfer è confermato. I dettagli dell'autista e il punto d'incontro appariranno nella tua area riservata prima del ritiro.",close:"Fatto",
     payErr:"Pagamento non riuscito. Riprova.",bookErr:"Pagamento effettuato ma la prenotazione è in finalizzazione — il team confermerà a breve.",
     previewOff:"Modalità anteprima — il pagamento è disattivato per ora. Il flusso è completo; i pagamenti reali si attivano al go-live."},
+  ES:{open:"Reservar traslado",title:"Traslado aeropuerto",loading:"Cargando tu viaje…",
+    tripType:"¿Qué necesitas?",tripRound:"Ida y vuelta",tripOut:"Solo ida",tripRet:"Solo vuelta",
+    tripRoundD:"Aeropuerto ⇄ alojamiento",tripOutD:"Hacia tu alojamiento",tripRetD:"Hacia el aeropuerto",
+    legOut:"Ida",legRet:"Vuelta",from:"Recogida",to:"Destino",change:"cambiar",set:"Establecer",
+    searchLoc:"Busca aeropuerto, hotel o dirección…",secAirports:"Aeropuertos",secPlaces:"Lugares",
+    noFound:"Sin resultados — sigue escribiendo",bFlight:"de tu vuelo",bBooking:"de tu reserva",bConfirmed:"confirmado",bEnter:"por indicar",
+    addrReview:"Comprueba que esta dirección es correcta — busca de nuevo para cambiarla.",addrConfirm:"He verificado que esta dirección es correcta",
+    chooseAcc:"¿Qué alojamiento?",accSuggested:"sugerido",otherLoc:"Buscar otro lugar",
+    when:"Fecha y hora de recogida",retHint:"Tu vuelo sale a las {t} — recogida sugerida 3h antes.",
+    pax:"Pasajeros",flightNum:"Número de vuelo",flightHint:"Precargado de tu vuelo — verifícalo.",flightOpt:"opcional",
+    flightReq:"obligatorio",flightWhy:"El conductor sigue este vuelo para ajustar tu recogida en caso de retraso. Lo exige la empresa de traslados.",needFlight:"Introduce tu número de vuelo para continuar.",
+    flightSel:"Selecciona tu vuelo",flyingTo:"Vuelo hacia",flyingFrom:"Vuelo desde",depAirport:"Aeropuerto de salida",arrAirport:"Aeropuerto de llegada",airlineOpt:"Aerolínea (opcional)",airlinePh:"p. ej. Ryanair",flightSearchBtn:"Buscar vuelos",flightsFound:"vuelo(s) encontrados",flightNoneFound:"No se han encontrado vuelos — prueba otro aeropuerto o introduce el número manualmente.",flightManualExp:"O introduce el número de vuelo manualmente",foSearchPh:"Buscar aeropuerto…",
+    next:"Continuar",back:"Atrás",searchBtn:"Ver precios",searching:"Buscando…",
+    dateErr:"Elige una fecha y hora válidas.",needLoc:"Indica recogida y destino.",needVerify:"Verifica la dirección.",
+    needAirport:"Un lado debe ser un aeropuerto — elígelo de la lista de Aeropuertos.",
+    none:"No hay traslados disponibles para esta ruta.",seats:"plazas",freeCancel:"Cancelación gratuita hasta",select:"Elegir",
+    perLegOut:"Ida",perLegRet:"Vuelta",vehTitle:"Elige tu vehículo",orSimilar:"o similar",
+    paxTitle:"Datos del pasajero",ttl:"Tratamiento",first:"Nombre",last:"Apellido",email:"Email",
+    areaCode:"Prefijo",phone:"Teléfono",
+    toPay:"Continuar al pago",pay:"Pagar y reservar",
+    hold:"El cargo se realiza ahora; se aplica la cancelación gratuita indicada.",total:"Total",totalRound:"Total ida y vuelta",
+    doneTitle:"¡Traslado reservado!",doneMsg:"Tu traslado está confirmado. Los datos del conductor y el punto de encuentro aparecerán en tu área reservada antes de la recogida.",close:"Hecho",
+    payErr:"No se pudo completar el pago. Inténtalo de nuevo.",bookErr:"Pago realizado pero la reserva se está finalizando — nuestro equipo confirmará en breve.",
+    previewOff:"Modo vista previa — el pago está desactivado por ahora. El flujo es totalmente funcional; los pagos reales empiezan al lanzamiento."},
+  FR:{open:"Réserver un transfert",title:"Transfert aéroport",loading:"Chargement de votre voyage…",
+    tripType:"De quoi avez-vous besoin ?",tripRound:"Aller-retour",tripOut:"Aller simple",tripRet:"Aller simple (retour)",
+    tripRoundD:"Aéroport ⇄ hébergement",tripOutD:"Vers votre hébergement",tripRetD:"Vers l'aéroport",
+    legOut:"Aller",legRet:"Retour",from:"Prise en charge",to:"Destination",change:"modifier",set:"Définir",
+    searchLoc:"Rechercher aéroport, hôtel ou adresse…",secAirports:"Aéroports",secPlaces:"Lieux",
+    noFound:"Aucun résultat — continuez à saisir",bFlight:"de votre vol",bBooking:"de votre réservation",bConfirmed:"confirmé",bEnter:"à définir",
+    addrReview:"Vérifiez que cette adresse est correcte — recherchez à nouveau pour la modifier.",addrConfirm:"J'ai vérifié que cette adresse est correcte",
+    chooseAcc:"Quel hébergement ?",accSuggested:"suggéré",otherLoc:"Rechercher un autre lieu",
+    when:"Date et heure de prise en charge",retHint:"Votre vol part à {t} — prise en charge conseillée 3h avant.",
+    pax:"Passagers",flightNum:"Numéro de vol",flightHint:"Pré-rempli depuis votre vol — vérifiez-le.",flightOpt:"facultatif",
+    flightReq:"obligatoire",flightWhy:"Le chauffeur suit ce vol pour adapter votre prise en charge en cas de retard. C'est exigé par la société de transfert.",needFlight:"Saisissez votre numéro de vol pour continuer.",
+    flightSel:"Sélectionnez votre vol",flyingTo:"Vol vers",flyingFrom:"Vol depuis",depAirport:"Aéroport de départ",arrAirport:"Aéroport d'arrivée",airlineOpt:"Compagnie (facultatif)",airlinePh:"ex. Ryanair",flightSearchBtn:"Rechercher des vols",flightsFound:"vol(s) trouvés",flightNoneFound:"Aucun vol trouvé — essayez un autre aéroport ou saisissez le numéro manuellement.",flightManualExp:"Ou saisissez le numéro de vol manuellement",foSearchPh:"Rechercher un aéroport…",
+    next:"Continuer",back:"Retour",searchBtn:"Voir les prix",searching:"Recherche…",
+    dateErr:"Choisissez une date et une heure valides.",needLoc:"Indiquez la prise en charge et la destination.",needVerify:"Vérifiez l'adresse.",
+    needAirport:"Un côté doit être un aéroport — choisissez-le dans la liste des Aéroports.",
+    none:"Aucun transfert disponible pour cet itinéraire.",seats:"places",freeCancel:"Annulation gratuite jusqu'au",select:"Choisir",
+    perLegOut:"Aller",perLegRet:"Retour",vehTitle:"Choisissez votre véhicule",orSimilar:"ou similaire",
+    paxTitle:"Coordonnées du passager",ttl:"Civilité",first:"Prénom",last:"Nom",email:"Email",
+    areaCode:"Indicatif",phone:"Téléphone",
+    toPay:"Continuer vers le paiement",pay:"Payer et réserver",
+    hold:"Le débit a lieu maintenant ; l'annulation gratuite indiquée s'applique.",total:"Total",totalRound:"Total aller-retour",
+    doneTitle:"Transfert réservé !",doneMsg:"Votre transfert est confirmé. Les détails du chauffeur et le point de rencontre apparaîtront dans votre espace réservé avant la prise en charge.",close:"Terminé",
+    payErr:"Le paiement n'a pas pu aboutir. Veuillez réessayer.",bookErr:"Paiement effectué mais la réservation est en cours de finalisation — notre équipe confirmera sous peu.",
+    previewOff:"Mode aperçu — le paiement est désactivé pour l'instant. Le parcours est entièrement fonctionnel ; les paiements réels démarrent au lancement."},
+  NL:{open:"Transfer boeken",title:"Luchthaventransfer",loading:"Je reis laden…",
+    tripType:"Wat heb je nodig?",tripRound:"Heen en terug",tripOut:"Enkele reis",tripRet:"Enkele reis (terug)",
+    tripRoundD:"Luchthaven ⇄ verblijf",tripOutD:"Naar je verblijf",tripRetD:"Naar de luchthaven",
+    legOut:"Heen",legRet:"Terug",from:"Ophalen",to:"Bestemming",change:"wijzigen",set:"Instellen",
+    searchLoc:"Zoek luchthaven, hotel of adres…",secAirports:"Luchthavens",secPlaces:"Plaatsen",
+    noFound:"Geen resultaten — blijf typen",bFlight:"van je vlucht",bBooking:"van je boeking",bConfirmed:"bevestigd",bEnter:"in te stellen",
+    addrReview:"Controleer of dit adres klopt — zoek opnieuw om het te wijzigen.",addrConfirm:"Ik heb bevestigd dat dit adres correct is",
+    chooseAcc:"Welke accommodatie?",accSuggested:"voorgesteld",otherLoc:"Zoek een andere plaats",
+    when:"Ophaaldatum en -tijd",retHint:"Je vlucht vertrekt om {t} — ophalen aanbevolen 3u eerder.",
+    pax:"Passagiers",flightNum:"Vluchtnummer",flightHint:"Vooraf ingevuld vanaf je vlucht — controleer het.",flightOpt:"optioneel",
+    flightReq:"verplicht",flightWhy:"De chauffeur volgt deze vlucht om je ophaaltijd aan te passen bij vertraging. Het is vereist door het transferbedrijf.",needFlight:"Voer je vluchtnummer in om door te gaan.",
+    flightSel:"Selecteer je vlucht",flyingTo:"Vlucht naar",flyingFrom:"Vlucht vanaf",depAirport:"Vertrekluchthaven",arrAirport:"Aankomstluchthaven",airlineOpt:"Luchtvaartmaatschappij (optioneel)",airlinePh:"bijv. Ryanair",flightSearchBtn:"Zoek vluchten",flightsFound:"vlucht(en) gevonden",flightNoneFound:"Geen vluchten gevonden — probeer een andere luchthaven of voer het nummer handmatig in.",flightManualExp:"Of voer het vluchtnummer handmatig in",foSearchPh:"Zoek luchthaven…",
+    next:"Doorgaan",back:"Terug",searchBtn:"Bekijk prijzen",searching:"Zoeken…",
+    dateErr:"Kies een geldige datum en tijd.",needLoc:"Stel ophalen en bestemming in.",needVerify:"Verifieer het adres.",
+    needAirport:"Eén kant moet een luchthaven zijn — kies deze uit de lijst met Luchthavens.",
+    none:"Geen transfers beschikbaar voor deze route.",seats:"zitplaatsen",freeCancel:"Gratis annuleren tot",select:"Kies",
+    perLegOut:"Heen",perLegRet:"Terug",vehTitle:"Kies je voertuig",orSimilar:"of vergelijkbaar",
+    paxTitle:"Passagiersgegevens",ttl:"Aanhef",first:"Voornaam",last:"Achternaam",email:"E-mail",
+    areaCode:"Netnummer",phone:"Telefoon",
+    toPay:"Door naar betaling",pay:"Betalen en boeken",
+    hold:"Het bedrag wordt nu afgeschreven; de getoonde gratis annulering geldt.",total:"Totaal",totalRound:"Totaal heen en terug",
+    doneTitle:"Transfer geboekt!",doneMsg:"Je transfer is bevestigd. Chauffeursgegevens en het ontmoetingspunt verschijnen vóór het ophalen in je gereserveerde gedeelte.",close:"Klaar",
+    payErr:"Betaling kon niet worden voltooid. Probeer opnieuw.",bookErr:"Betaling gedaan maar de boeking wordt afgerond — ons team bevestigt binnenkort.",
+    previewOff:"Voorbeeldmodus — betaling is nu uitgeschakeld. De flow werkt volledig; echte betalingen starten bij livegang."},
+  DE:{open:"Transfer buchen",title:"Flughafentransfer",loading:"Ihre Reise wird geladen…",
+    tripType:"Was benötigen Sie?",tripRound:"Hin- und Rückfahrt",tripOut:"Nur Hinfahrt",tripRet:"Nur Rückfahrt",
+    tripRoundD:"Flughafen ⇄ Unterkunft",tripOutD:"Zur Unterkunft",tripRetD:"Zum Flughafen",
+    legOut:"Hinfahrt",legRet:"Rückfahrt",from:"Abholung",to:"Ziel",change:"ändern",set:"Festlegen",
+    searchLoc:"Flughafen, Hotel oder Adresse suchen…",secAirports:"Flughäfen",secPlaces:"Orte",
+    noFound:"Keine Ergebnisse — weiter tippen",bFlight:"von Ihrem Flug",bBooking:"von Ihrer Buchung",bConfirmed:"bestätigt",bEnter:"festzulegen",
+    addrReview:"Prüfen Sie, ob diese Adresse korrekt ist — erneut suchen zum Ändern.",addrConfirm:"Ich habe bestätigt, dass diese Adresse korrekt ist",
+    chooseAcc:"Welche Unterkunft?",accSuggested:"vorgeschlagen",otherLoc:"Anderen Ort suchen",
+    when:"Datum und Uhrzeit der Abholung",retHint:"Ihr Flug startet um {t} — Abholung 3 Std. früher empfohlen.",
+    pax:"Passagiere",flightNum:"Flugnummer",flightHint:"Aus Ihrem Flug vorausgefüllt — bitte prüfen.",flightOpt:"optional",
+    flightReq:"erforderlich",flightWhy:"Der Fahrer verfolgt diesen Flug, um Ihre Abholung bei Verspätung anzupassen. Vom Transferunternehmen verlangt.",needFlight:"Bitte geben Sie Ihre Flugnummer ein, um fortzufahren.",
+    flightSel:"Wählen Sie Ihren Flug",flyingTo:"Flug nach",flyingFrom:"Flug von",depAirport:"Abflughafen",arrAirport:"Ankunftsflughafen",airlineOpt:"Fluggesellschaft (optional)",airlinePh:"z. B. Ryanair",flightSearchBtn:"Flüge suchen",flightsFound:"Flug/Flüge gefunden",flightNoneFound:"Keine Flüge gefunden — versuchen Sie einen anderen Flughafen oder geben Sie die Nummer manuell ein.",flightManualExp:"Oder Flugnummer manuell eingeben",foSearchPh:"Flughafen suchen…",
+    next:"Weiter",back:"Zurück",searchBtn:"Preise ansehen",searching:"Suche…",
+    dateErr:"Bitte wählen Sie ein gültiges Datum und eine gültige Uhrzeit.",needLoc:"Bitte Abholung und Ziel angeben.",needVerify:"Bitte Adresse überprüfen.",
+    needAirport:"Eine Seite muss ein Flughafen sein — wählen Sie ihn aus der Flughafen-Liste.",
+    none:"Keine Transfers für diese Strecke verfügbar.",seats:"Sitzplätze",freeCancel:"Kostenlose Stornierung bis",select:"Wählen",
+    perLegOut:"Hinfahrt",perLegRet:"Rückfahrt",vehTitle:"Wählen Sie Ihr Fahrzeug",orSimilar:"oder ähnlich",
+    paxTitle:"Passagierdaten",ttl:"Anrede",first:"Vorname",last:"Nachname",email:"E-Mail",
+    areaCode:"Vorwahl",phone:"Telefon",
+    toPay:"Weiter zur Zahlung",pay:"Bezahlen und buchen",
+    hold:"Die Abbuchung erfolgt jetzt; die angezeigte kostenlose Stornierung gilt.",total:"Gesamt",totalRound:"Gesamt Hin- und Rückfahrt",
+    doneTitle:"Transfer gebucht!",doneMsg:"Ihr Transfer ist bestätigt. Fahrerdaten und Treffpunkt erscheinen vor der Abholung in Ihrem reservierten Bereich.",close:"Fertig",
+    payErr:"Zahlung konnte nicht abgeschlossen werden. Bitte erneut versuchen.",bookErr:"Zahlung erfolgt, aber die Buchung wird abgeschlossen — unser Team bestätigt in Kürze.",
+    previewOff:"Vorschaumodus — Zahlung ist derzeit deaktiviert. Der Ablauf ist voll funktionsfähig; echte Zahlungen starten beim Go-live."},
 };
 
 function TransferFlow({b,lang,onClose}){
@@ -4570,7 +4666,19 @@ function TransferFlow({b,lang,onClose}){
       setFlightCand(s=>({...s,[dir]:Array.isArray(d.candidates)?d.candidates:[]}));
     }catch{ setFlightCand(s=>({...s,[dir]:[]})); } finally{ setFlightSearching(null); }
   };
-  const pickFlight=(dir,fn)=>{ (dir==="outbound"?setFlightOut:setFlightRet)(fn); (dir==="outbound"?setAutoOut:setAutoRet)(false); setFlightPickOpen(null); };
+  const pickFlight=(dir,c)=>{
+    const fn=(typeof c==="string")?c:(c&&c.flightNumber);
+    (dir==="outbound"?setFlightOut:setFlightRet)(fn||"");
+    (dir==="outbound"?setAutoOut:setAutoRet)(false);
+    // aggiorna l'orario di ritiro dal volo scelto: andata = orario di ARRIVO del volo;
+    // ritorno = partenza del volo −3h (ritiro consigliato).
+    if(c&&typeof c==="object"){
+      const date=flightDate(dir);
+      if(dir==="outbound"&&c.arrTime&&date){ setWhenOut(date+"T"+c.arrTime); }
+      else if(dir==="return"&&c.depTime&&date){ const dep=date+"T"+c.depTime; setFlightTimeRet(dep); setWhenRet(minusHours(dep,3)); }
+    }
+    setFlightPickOpen(null);
+  };
   const chooseOtherAir=(dir,r)=>{ setFlightOther(s=>({...s,[dir]:{iata:r.iata,label:r.label}})); setFoOpen(null); setFoQ(""); setFoRes([]); };
 
   const flightField=(dir)=>{
@@ -4605,7 +4713,7 @@ function TransferFlow({b,lang,onClose}){
       {cands.length>0
         ? <div style={{marginBottom:4}}>
             <div style={{fontSize:11,color:"#8a93a0",marginBottom:6}}>{cands.length} {tf.flightsFound}</div>
-            {cands.slice(0,8).map((c,i)=><div key={i} onClick={()=>pickFlight(dir,c.flightNumber)} style={{border:"1px solid "+(val===c.flightNumber?"#F15A29":"#e6e9ee"),background:val===c.flightNumber?"#FFF7F4":"#fff",borderRadius:9,padding:"8px 10px",marginBottom:6,cursor:"pointer",display:"flex",alignItems:"center",gap:8}}>
+            {cands.slice(0,8).map((c,i)=><div key={i} onClick={()=>pickFlight(dir,c)} style={{border:"1px solid "+(val===c.flightNumber?"#F15A29":"#e6e9ee"),background:val===c.flightNumber?"#FFF7F4":"#fff",borderRadius:9,padding:"8px 10px",marginBottom:6,cursor:"pointer",display:"flex",alignItems:"center",gap:8}}>
               <div style={{minWidth:64}}><div style={{fontSize:10.5,fontWeight:600,color:"#8a93a0",lineHeight:1.2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.airline}</div><div style={{fontSize:12,fontWeight:800,color:"#1f2730"}}>{c.flightNumber}</div></div>
               <div style={{fontSize:13,fontWeight:700,color:"#1f2730"}}>{c.depTime||"—"}</div>
               <div style={{flex:1,textAlign:"center",color:"#c7ccd4"}}>→</div>
