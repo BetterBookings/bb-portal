@@ -4661,7 +4661,7 @@ function TransferFlow({b,lang,onClose}){
     setFlightSearching(dir);
     try{
       const r=await fetch(`${API_TRANSFER}/flight-search`,{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({departureIata,arrivalIata,date,airline:flightAirline[dir]||""})});
+        body:JSON.stringify({departureIata,arrivalIata,date,airline:flightAirline[dir]||"",anchor:isOut?"arrival":"departure"})});
       const d=await r.json();
       setFlightCand(s=>({...s,[dir]:Array.isArray(d.candidates)?d.candidates:[]}));
     }catch{ setFlightCand(s=>({...s,[dir]:[]})); } finally{ setFlightSearching(null); }
