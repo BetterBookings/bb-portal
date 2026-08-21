@@ -4160,7 +4160,7 @@ const TF = {
     when:"Pick-up date & time",retHint:"Your flight departs at {t} — pick-up suggested 3h earlier.",
     pax:"Passengers",flightNum:"Flight number",flightHint:"Pre-filled from your flight — please check it.",flightOpt:"optional",
     flightReq:"required",flightWhy:"The driver tracks this flight to adjust your pick-up if it's delayed. It's required by the transfer company.",needFlight:"Please enter your flight number to continue.",
-    flightSection:"Your flight",flightSel:"Select your flight",flyingTo:"Flying to",flyingFrom:"Flying from",depAirport:"Departure airport",arrAirport:"Arrival airport",airlineOpt:"Airline (optional)",airlinePh:"e.g. Ryanair",flightSearchBtn:"Search flights",flightsFound:"flight(s) found",flightNoneFound:"No flights found — try another airport or enter the number manually.",flightManualExp:"Or enter flight number manually",foSearchPh:"Search airport…",
+    flightSection:"Your flight",netLabel:"NET",staffPay:"Book as Better Bookings",staffNote:"Net price, no charge — the supplier invoices Better Bookings. Registered on the booking; no customer email.",staffBadge:"Staff · net",flightSel:"Select your flight",flyingTo:"Flying to",flyingFrom:"Flying from",depAirport:"Departure airport",arrAirport:"Arrival airport",airlineOpt:"Airline (optional)",airlinePh:"e.g. Ryanair",flightSearchBtn:"Search flights",flightsFound:"flight(s) found",flightNoneFound:"No flights found — try another airport or enter the number manually.",flightManualExp:"Or enter flight number manually",foSearchPh:"Search airport…",
     next:"Continue",back:"Back",searchBtn:"See prices",searching:"Searching…",
     dateErr:"Please choose a valid date and time.",needLoc:"Please set pick-up and drop-off.",needVerify:"Please verify the address.",
     needAirport:"One side must be an airport — pick it from the Airports list.",
@@ -4184,7 +4184,7 @@ const TF = {
     when:"Data e ora del ritiro",retHint:"Il volo parte alle {t} — ritiro consigliato 3h prima.",
     pax:"Passeggeri",flightNum:"Numero volo",flightHint:"Precompilato dal tuo volo — verificalo.",flightOpt:"opzionale",
     flightReq:"obbligatorio",flightWhy:"L'autista monitora questo volo per adattare il ritiro in caso di ritardo. È richiesto dalla società di transfer.",needFlight:"Inserisci il numero del volo per continuare.",
-    flightSection:"Il tuo volo",flightSel:"Seleziona il tuo volo",flyingTo:"Volo verso",flyingFrom:"Volo da",depAirport:"Aeroporto di partenza",arrAirport:"Aeroporto di arrivo",airlineOpt:"Compagnia (opzionale)",airlinePh:"es. Ryanair",flightSearchBtn:"Cerca voli",flightsFound:"voli trovati",flightNoneFound:"Nessun volo trovato — prova un altro aeroporto o inserisci il numero manualmente.",flightManualExp:"Oppure inserisci il numero volo manualmente",foSearchPh:"Cerca aeroporto…",
+    flightSection:"Il tuo volo",netLabel:"NETTO",staffPay:"Prenota come Better Bookings",staffNote:"Prezzo netto, nessun addebito — il fornitore fattura Better Bookings. Registrato sulla prenotazione, senza email al cliente.",staffBadge:"Staff · netto",flightSel:"Seleziona il tuo volo",flyingTo:"Volo verso",flyingFrom:"Volo da",depAirport:"Aeroporto di partenza",arrAirport:"Aeroporto di arrivo",airlineOpt:"Compagnia (opzionale)",airlinePh:"es. Ryanair",flightSearchBtn:"Cerca voli",flightsFound:"voli trovati",flightNoneFound:"Nessun volo trovato — prova un altro aeroporto o inserisci il numero manualmente.",flightManualExp:"Oppure inserisci il numero volo manualmente",foSearchPh:"Cerca aeroporto…",
     next:"Continua",back:"Indietro",searchBtn:"Vedi i prezzi",searching:"Cerco…",
     dateErr:"Scegli una data e un'ora valide.",needLoc:"Imposta ritiro e destinazione.",needVerify:"Verifica l'indirizzo.",
     needAirport:"Un lato deve essere un aeroporto — sceglilo dalla sezione Aeroporti.",
@@ -4208,7 +4208,7 @@ const TF = {
     when:"Fecha y hora de recogida",retHint:"Tu vuelo sale a las {t} — recogida sugerida 3h antes.",
     pax:"Pasajeros",flightNum:"Número de vuelo",flightHint:"Precargado de tu vuelo — verifícalo.",flightOpt:"opcional",
     flightReq:"obligatorio",flightWhy:"El conductor sigue este vuelo para ajustar tu recogida en caso de retraso. Lo exige la empresa de traslados.",needFlight:"Introduce tu número de vuelo para continuar.",
-    flightSection:"Tu vuelo",flightSel:"Selecciona tu vuelo",flyingTo:"Vuelo hacia",flyingFrom:"Vuelo desde",depAirport:"Aeropuerto de salida",arrAirport:"Aeropuerto de llegada",airlineOpt:"Aerolínea (opcional)",airlinePh:"p. ej. Ryanair",flightSearchBtn:"Buscar vuelos",flightsFound:"vuelo(s) encontrados",flightNoneFound:"No se han encontrado vuelos — prueba otro aeropuerto o introduce el número manualmente.",flightManualExp:"O introduce el número de vuelo manualmente",foSearchPh:"Buscar aeropuerto…",
+    flightSection:"Tu vuelo",netLabel:"NETO",staffPay:"Reservar como Better Bookings",staffNote:"Precio neto, sin cargo — el proveedor factura a Better Bookings. Registrado en la reserva, sin email al cliente.",staffBadge:"Staff · neto",flightSel:"Selecciona tu vuelo",flyingTo:"Vuelo hacia",flyingFrom:"Vuelo desde",depAirport:"Aeropuerto de salida",arrAirport:"Aeropuerto de llegada",airlineOpt:"Aerolínea (opcional)",airlinePh:"p. ej. Ryanair",flightSearchBtn:"Buscar vuelos",flightsFound:"vuelo(s) encontrados",flightNoneFound:"No se han encontrado vuelos — prueba otro aeropuerto o introduce el número manualmente.",flightManualExp:"O introduce el número de vuelo manualmente",foSearchPh:"Buscar aeropuerto…",
     next:"Continuar",back:"Atrás",searchBtn:"Ver precios",searching:"Buscando…",
     dateErr:"Elige una fecha y hora válidas.",needLoc:"Indica recogida y destino.",needVerify:"Verifica la dirección.",
     needAirport:"Un lado debe ser un aeropuerto — elígelo de la lista de Aeropuertos.",
@@ -4232,7 +4232,7 @@ const TF = {
     when:"Date et heure de prise en charge",retHint:"Votre vol part à {t} — prise en charge conseillée 3h avant.",
     pax:"Passagers",flightNum:"Numéro de vol",flightHint:"Pré-rempli depuis votre vol — vérifiez-le.",flightOpt:"facultatif",
     flightReq:"obligatoire",flightWhy:"Le chauffeur suit ce vol pour adapter votre prise en charge en cas de retard. C'est exigé par la société de transfert.",needFlight:"Saisissez votre numéro de vol pour continuer.",
-    flightSection:"Votre vol",flightSel:"Sélectionnez votre vol",flyingTo:"Vol vers",flyingFrom:"Vol depuis",depAirport:"Aéroport de départ",arrAirport:"Aéroport d'arrivée",airlineOpt:"Compagnie (facultatif)",airlinePh:"ex. Ryanair",flightSearchBtn:"Rechercher des vols",flightsFound:"vol(s) trouvés",flightNoneFound:"Aucun vol trouvé — essayez un autre aéroport ou saisissez le numéro manuellement.",flightManualExp:"Ou saisissez le numéro de vol manuellement",foSearchPh:"Rechercher un aéroport…",
+    flightSection:"Votre vol",netLabel:"NET",staffPay:"Réserver en tant que Better Bookings",staffNote:"Prix net, aucun débit — le fournisseur facture Better Bookings. Enregistré sur la réservation, sans email au client.",staffBadge:"Staff · net",flightSel:"Sélectionnez votre vol",flyingTo:"Vol vers",flyingFrom:"Vol depuis",depAirport:"Aéroport de départ",arrAirport:"Aéroport d'arrivée",airlineOpt:"Compagnie (facultatif)",airlinePh:"ex. Ryanair",flightSearchBtn:"Rechercher des vols",flightsFound:"vol(s) trouvés",flightNoneFound:"Aucun vol trouvé — essayez un autre aéroport ou saisissez le numéro manuellement.",flightManualExp:"Ou saisissez le numéro de vol manuellement",foSearchPh:"Rechercher un aéroport…",
     next:"Continuer",back:"Retour",searchBtn:"Voir les prix",searching:"Recherche…",
     dateErr:"Choisissez une date et une heure valides.",needLoc:"Indiquez la prise en charge et la destination.",needVerify:"Vérifiez l'adresse.",
     needAirport:"Un côté doit être un aéroport — choisissez-le dans la liste des Aéroports.",
@@ -4256,7 +4256,7 @@ const TF = {
     when:"Ophaaldatum en -tijd",retHint:"Je vlucht vertrekt om {t} — ophalen aanbevolen 3u eerder.",
     pax:"Passagiers",flightNum:"Vluchtnummer",flightHint:"Vooraf ingevuld vanaf je vlucht — controleer het.",flightOpt:"optioneel",
     flightReq:"verplicht",flightWhy:"De chauffeur volgt deze vlucht om je ophaaltijd aan te passen bij vertraging. Het is vereist door het transferbedrijf.",needFlight:"Voer je vluchtnummer in om door te gaan.",
-    flightSection:"Je vlucht",flightSel:"Selecteer je vlucht",flyingTo:"Vlucht naar",flyingFrom:"Vlucht vanaf",depAirport:"Vertrekluchthaven",arrAirport:"Aankomstluchthaven",airlineOpt:"Luchtvaartmaatschappij (optioneel)",airlinePh:"bijv. Ryanair",flightSearchBtn:"Zoek vluchten",flightsFound:"vlucht(en) gevonden",flightNoneFound:"Geen vluchten gevonden — probeer een andere luchthaven of voer het nummer handmatig in.",flightManualExp:"Of voer het vluchtnummer handmatig in",foSearchPh:"Zoek luchthaven…",
+    flightSection:"Je vlucht",netLabel:"NETTO",staffPay:"Boeken als Better Bookings",staffNote:"Nettoprijs, geen afschrijving — de leverancier factureert Better Bookings. Geregistreerd op de boeking, zonder e-mail aan de klant.",staffBadge:"Staff · netto",flightSel:"Selecteer je vlucht",flyingTo:"Vlucht naar",flyingFrom:"Vlucht vanaf",depAirport:"Vertrekluchthaven",arrAirport:"Aankomstluchthaven",airlineOpt:"Luchtvaartmaatschappij (optioneel)",airlinePh:"bijv. Ryanair",flightSearchBtn:"Zoek vluchten",flightsFound:"vlucht(en) gevonden",flightNoneFound:"Geen vluchten gevonden — probeer een andere luchthaven of voer het nummer handmatig in.",flightManualExp:"Of voer het vluchtnummer handmatig in",foSearchPh:"Zoek luchthaven…",
     next:"Doorgaan",back:"Terug",searchBtn:"Bekijk prijzen",searching:"Zoeken…",
     dateErr:"Kies een geldige datum en tijd.",needLoc:"Stel ophalen en bestemming in.",needVerify:"Verifieer het adres.",
     needAirport:"Eén kant moet een luchthaven zijn — kies deze uit de lijst met Luchthavens.",
@@ -4280,7 +4280,7 @@ const TF = {
     when:"Datum und Uhrzeit der Abholung",retHint:"Ihr Flug startet um {t} — Abholung 3 Std. früher empfohlen.",
     pax:"Passagiere",flightNum:"Flugnummer",flightHint:"Aus Ihrem Flug vorausgefüllt — bitte prüfen.",flightOpt:"optional",
     flightReq:"erforderlich",flightWhy:"Der Fahrer verfolgt diesen Flug, um Ihre Abholung bei Verspätung anzupassen. Vom Transferunternehmen verlangt.",needFlight:"Bitte geben Sie Ihre Flugnummer ein, um fortzufahren.",
-    flightSection:"Ihr Flug",flightSel:"Wählen Sie Ihren Flug",flyingTo:"Flug nach",flyingFrom:"Flug von",depAirport:"Abflughafen",arrAirport:"Ankunftsflughafen",airlineOpt:"Fluggesellschaft (optional)",airlinePh:"z. B. Ryanair",flightSearchBtn:"Flüge suchen",flightsFound:"Flug/Flüge gefunden",flightNoneFound:"Keine Flüge gefunden — versuchen Sie einen anderen Flughafen oder geben Sie die Nummer manuell ein.",flightManualExp:"Oder Flugnummer manuell eingeben",foSearchPh:"Flughafen suchen…",
+    flightSection:"Ihr Flug",netLabel:"NETTO",staffPay:"Als Better Bookings buchen",staffNote:"Nettopreis, keine Abbuchung — der Anbieter stellt Better Bookings in Rechnung. Auf der Buchung erfasst, ohne Kunden-E-Mail.",staffBadge:"Staff · netto",flightSel:"Wählen Sie Ihren Flug",flyingTo:"Flug nach",flyingFrom:"Flug von",depAirport:"Abflughafen",arrAirport:"Ankunftsflughafen",airlineOpt:"Fluggesellschaft (optional)",airlinePh:"z. B. Ryanair",flightSearchBtn:"Flüge suchen",flightsFound:"Flug/Flüge gefunden",flightNoneFound:"Keine Flüge gefunden — versuchen Sie einen anderen Flughafen oder geben Sie die Nummer manuell ein.",flightManualExp:"Oder Flugnummer manuell eingeben",foSearchPh:"Flughafen suchen…",
     next:"Weiter",back:"Zurück",searchBtn:"Preise ansehen",searching:"Suche…",
     dateErr:"Bitte wählen Sie ein gültiges Datum und eine gültige Uhrzeit.",needLoc:"Bitte Abholung und Ziel angeben.",needVerify:"Bitte Adresse überprüfen.",
     needAirport:"Eine Seite muss ein Flughafen sein — wählen Sie ihn aus der Flughafen-Liste.",
@@ -4479,12 +4479,17 @@ function TransferFlow({b,lang,onClose}){
   }
   useEffect(()=>{ if(step==="vehicle"&&!options.length&&!searching&&!searchErr) runSearch(); },[step]);
 
+  // Modalità STAFF (prenota a netto come BB): attiva con ?staff=<chiave> nell'URL. La
+  // chiave è validata dal server; qui abilita netto + niente Stripe + niente email.
+  const staffKey=(getQ("staff")||"").trim(); const staffMode=!!staffKey;
+  const optPrice=(o)=> staffMode&&o&&o.totalNet!=null?o.totalNet:(o&&o.totalPrice);
+  const legPrice=(lg)=> staffMode&&lg&&lg.priceNet!=null?lg.priceNet:(lg&&lg.price);
   const [pi,setPi]=useState(null); const [payErr,setPayErr]=useState(""); const [paying,setPaying]=useState(false); const [previewOff,setPreviewOff]=useState(false);
   const stripeRef=useRef(null); const elementsRef=useRef(null);
   const piBody=()=>({slug:slugRef.current,legs:buildLegs(true),pax,quoteKey:sel&&sel.key,
     vehicleClass:sel&&sel.vehicleClass,vehicleType:sel&&sel.vehicleCategory,lang});
   useEffect(()=>{
-    if(step!=="payment"||pi||previewOff) return;
+    if(step!=="payment"||pi||previewOff||staffMode) return;
     let dead=false;
     (async()=>{
       setPayErr("");
@@ -4511,6 +4516,16 @@ function TransferFlow({b,lang,onClose}){
       if(!paymentIntent||(paymentIntent.status!=="requires_capture"&&paymentIntent.status!=="succeeded")){ setPayErr(tf.payErr); setPaying(false); return; }
       const r=await fetch(`${API_TRANSFER}/book`,{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({...piBody(),payment_intent_id:pi.payment_intent_id,passenger,bb_ref:b.bookingReference||""})});
+      if(!r.ok) throw new Error("book");
+      setStep("done");
+    }catch(e){ setPayErr(tf.bookErr); } finally{ setPaying(false); }
+  }
+  // prenotazione staff a netto: niente Stripe, chiama /staff-book con la chiave
+  async function staffBook(){
+    setPaying(true); setPayErr("");
+    try{
+      const r=await fetch(`${API_TRANSFER}/staff-book`,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({...piBody(),staffKey,passenger,bb_ref:b.bookingReference||""})});
       if(!r.ok) throw new Error("book");
       setStep("done");
     }catch(e){ setPayErr(tf.bookErr); } finally{ setPaying(false); }
@@ -4771,7 +4786,7 @@ function TransferFlow({b,lang,onClose}){
       <div style={head}>
         <span style={{fontSize:22}}>🚐</span>
         <div style={{flex:1,minWidth:0}}>
-          <div style={{fontSize:16,fontWeight:700}}>{tf.title}</div>
+          <div style={{fontSize:16,fontWeight:700,display:"flex",alignItems:"center",gap:7}}>{tf.title}{staffMode&&<span style={{fontSize:10,fontWeight:800,color:"#fff",background:"#1e5aa8",borderRadius:6,padding:"2px 7px",letterSpacing:.3,textTransform:"uppercase"}}>{tf.staffBadge}</span>}</div>
           {showProg&&<div style={{fontSize:11,color:"#5b6470"}}>{stepIdx+1}/{flow.length}</div>}
         </div>
         <button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#5b6470",lineHeight:1}}>×</button>
@@ -4815,14 +4830,14 @@ function TransferFlow({b,lang,onClose}){
                 {o.vehicleDescription&&<div style={{fontSize:12.5,color:"#5b6470",marginTop:2}}>{o.vehicleDescription} · {tf.orSimilar}</div>}
                 {rt
                   ? <div style={{marginTop:5,fontSize:12.5,color:"#5b6470",lineHeight:1.5}}>
-                      {o.legs.map((lg,j)=><div key={j}>{lg.direction==="outbound"?tf.perLegOut:tf.perLegRet}: <strong style={{color:"#1f2730"}}>{money(lg.price)}</strong>{lg.freeCancelUntilMin&&lg.pickupDateTime?` · ✓ ${fmtFree(lg.freeCancelUntilMin,lg.pickupDateTime)}`:""}</div>)}
+                      {o.legs.map((lg,j)=><div key={j}>{lg.direction==="outbound"?tf.perLegOut:tf.perLegRet}: <strong style={{color:"#1f2730"}}>{money(legPrice(lg))}</strong>{lg.freeCancelUntilMin&&lg.pickupDateTime?` · ✓ ${fmtFree(lg.freeCancelUntilMin,lg.pickupDateTime)}`:""}</div>)}
                     </div>
                   : (o.legs&&o.legs[0]&&o.legs[0].freeCancelUntilMin&&o.legs[0].pickupDateTime?<div style={{fontSize:12,fontWeight:600,color:"#1e874b",marginTop:3}}>✓ {tf.freeCancel} {fmtFree(o.legs[0].freeCancelUntilMin,o.legs[0].pickupDateTime)}</div>:null)}
                 </div>
               </div>
               <div style={{textAlign:"right",flexShrink:0}}>
                 {rt&&<div style={{fontSize:11.5,color:"#5b6470",marginBottom:1}}>{tf.totalRound}</div>}
-                <div style={{fontWeight:800,fontSize:16,color:"#F15A29"}}>{money(o.totalPrice)}</div>
+                <div style={{fontWeight:800,fontSize:16,color:staffMode?"#1e5aa8":"#F15A29"}}>{money(optPrice(o))}{staffMode?<span style={{fontSize:9,fontWeight:700,display:"block",letterSpacing:.3}}>{tf.netLabel}</span>:null}</div>
                 <button style={{...primary,flex:"none",padding:"6px 14px",marginTop:4,fontSize:12}}>{tf.select}</button>
               </div>
             </div>;
@@ -4835,7 +4850,7 @@ function TransferFlow({b,lang,onClose}){
       {!loading&&step==="passenger"&&sel&&<>
         <div style={body}>
           <div style={{background:"#f8f9fb",borderRadius:10,padding:"10px 12px",marginBottom:14,fontSize:12,color:"#5b6470"}}>
-            <div><strong style={{color:"#1f2730"}}>{vehName(sel)}</strong> · {money(sel.totalPrice)}</div>
+            <div><strong style={{color:"#1f2730"}}>{vehName(sel)}</strong> · {money(optPrice(sel))}{staffMode?` · ${tf.netLabel}`:""}</div>
             {(sel.legs||[]).map((lg,i)=><div key={i} style={{marginTop:2}}>{(sel.legs||[]).length>1?`${lg.direction==="outbound"?tf.perLegOut:tf.perLegRet}: `:""}{legRouteLbl(lg.direction)} · {fmtDT(lg.pickupDateTime)}</div>)}
           </div>
           <p style={{fontSize:14,fontWeight:700,margin:"0 0 10px"}}>{tf.paxTitle}</p>
@@ -4858,15 +4873,19 @@ function TransferFlow({b,lang,onClose}){
 
       {!loading&&step==="payment"&&sel&&<>
         <div style={body}>
-          <div style={{display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:"#F15A29",marginBottom:12}}><span>{legList.length>1?tf.totalRound:tf.total}</span><span>{money(pi?pi.amount:sel.totalPrice)}</span></div>
-          {previewOff
-            ? <div style={{fontSize:13,color:"#874d00",background:"#fff7e6",border:"1px solid #ffe3ad",borderRadius:10,padding:"12px 14px",lineHeight:1.5}}>🔒 {tf.previewOff}</div>
-            : <><div id="bb-tr-pay-el"/><p style={{fontSize:12.5,color:"#5b6470",marginTop:10}}>{tf.hold}</p></>}
+          <div style={{display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:staffMode?"#1e5aa8":"#F15A29",marginBottom:12}}><span>{staffMode?tf.netLabel:(legList.length>1?tf.totalRound:tf.total)}</span><span>{money(staffMode?optPrice(sel):(pi?pi.amount:sel.totalPrice))}</span></div>
+          {staffMode
+            ? <div style={{fontSize:13,color:"#1e5aa8",background:"#eef4fc",border:"1px solid #cfe0f5",borderRadius:10,padding:"12px 14px",lineHeight:1.5}}>🧑‍💼 {tf.staffNote}</div>
+            : previewOff
+              ? <div style={{fontSize:13,color:"#874d00",background:"#fff7e6",border:"1px solid #ffe3ad",borderRadius:10,padding:"12px 14px",lineHeight:1.5}}>🔒 {tf.previewOff}</div>
+              : <><div id="bb-tr-pay-el"/><p style={{fontSize:12.5,color:"#5b6470",marginTop:10}}>{tf.hold}</p></>}
           {payErr&&<p style={{color:"#c0392b",fontSize:12,marginTop:8}}>{payErr}</p>}
         </div>
         <div style={foot}>
           <button onClick={goBack} style={ghost}>‹ {tf.back}</button>
-          {!previewOff&&<button onClick={payAndBook} disabled={paying||!pi} style={{...primary,opacity:(paying||!pi)?.6:1}}>{paying?"…":tf.pay}</button>}
+          {staffMode
+            ? <button onClick={staffBook} disabled={paying} style={{...primary,background:"#1e5aa8",opacity:paying?.6:1}}>{paying?"…":tf.staffPay}</button>
+            : (!previewOff&&<button onClick={payAndBook} disabled={paying||!pi} style={{...primary,opacity:(paying||!pi)?.6:1}}>{paying?"…":tf.pay}</button>)}
         </div>
       </>}
 
