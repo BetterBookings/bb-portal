@@ -3519,6 +3519,12 @@ function loadStripeJs(){
 
 function CarRentalFlow({b,lang,onClose}){
   const cf = CF[lang]||CF.EN;
+  // Modalità STAFF (prenota a netto come BB): ?staff=<chiave> nell'URL, validata dal server.
+  const staffKey=(getQ("staff")||"").trim(); const staffMode=!!staffKey;
+  const SFX={EN:{badge:"Staff · net",pay:"Book as Better Bookings",note:"Net price, no charge — the supplier invoices Better Bookings. Registered on the booking; no customer email.",net:"NET"},
+             IT:{badge:"Staff · netto",pay:"Prenota come Better Bookings",note:"Prezzo netto, nessun addebito — il fornitore fattura Better Bookings. Registrato sulla prenotazione, senza email al cliente.",net:"NETTO"}};
+  const sfx=SFX[lang]||SFX.EN;
+  const carNet=(c)=> staffMode&&c&&c.priceNet!=null?c.priceNet:(c&&c.price);
   const cfx = CFX[lang]||CFX.EN;
   const money=(m)=> m&&m.amount!=null ? `${Number(m.amount).toFixed(2)} ${m.currency||""}` : "—";
   const carOverride = new URLSearchParams(window.location.search).get("car")||"";
@@ -3649,7 +3655,7 @@ function CarRentalFlow({b,lang,onClose}){
   const stripeRef=useRef(null); const elementsRef=useRef(null);
 
   useEffect(()=>{
-    if(step!=="payment"||pi||!sel) return;
+    if(step!=="payment"||pi||!sel||staffMode) return;
     let dead=false;
     (async()=>{
       setPayErr("");
@@ -3686,6 +3692,19 @@ function CarRentalFlow({b,lang,onClose}){
     }catch(e){ setPayErr(cf.bookErr); }
     finally{ setPaying(false); }
   }
+  // prenotazione staff a netto: niente Stripe, chiama /staff-book con la chiave
+  async function staffBook(){
+    setPaying(true); setPayErr("");
+    try{
+      const codes=Object.keys(extras);
+      const arrival=b.flight?{transportation_code:1,number:""}:{};
+      const r=await fetch(`${API_CARRENTAL}/staff-book`,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({staffKey,quote_id:sel.id,customer:driver,extras:codes,arrival,lang,
+          slug:getSlug(),car_name:sel.name,pickup_date:pDate+":00",dropoff_date:dDate+":00",booking_ref:b.bookingReference})});
+      if(!r.ok) throw new Error("book");
+      const d=await r.json(); setConfirmed(d); setStep("done");
+    }catch(e){ setPayErr(cf.bookErr); } finally{ setPaying(false); }
+  }
 
   const isMobile = typeof window!=="undefined" && window.matchMedia && window.matchMedia("(max-width:600px)").matches;
   // blocca lo scroll della pagina sotto mentre il modale è aperto
@@ -3717,7 +3736,7 @@ function CarRentalFlow({b,lang,onClose}){
     <div style={sheet} onClick={e=>e.stopPropagation()}>
       <div style={head}>
         <Ico name="bb-car" size={22}/>
-        <div style={{flex:1,fontSize:16,fontWeight:700,color:"#1f2730"}}>{cf.title}</div>
+        <div style={{flex:1,fontSize:16,fontWeight:700,color:"#1f2730",display:"flex",alignItems:"center",gap:7}}>{cf.title}{staffMode&&<span style={{fontSize:10,fontWeight:800,color:"#fff",background:"#1e5aa8",borderRadius:6,padding:"2px 7px",letterSpacing:.3,textTransform:"uppercase"}}>{sfx.badge}</span>}</div>
         {step!=="done"&&<div style={{fontSize:12,color:"#5b6470",fontWeight:600,whiteSpace:"nowrap"}}>{cfx.step[step]} · {steps.indexOf(step)+1}/{steps.length}</div>}
         <button onClick={onClose} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#5b6470",lineHeight:1}}>×</button>
       </div>
@@ -3789,7 +3808,7 @@ function CarRentalFlow({b,lang,onClose}){
                   {car.zeroExcess&&<span style={{color:"#13794a",fontWeight:600}}>🛡 {cfx.zeroExc}</span>}
                 </div>
               </div>
-              <div style={{fontSize:16,fontWeight:700,color:"#1f2730",whiteSpace:"nowrap"}}>{Number(car.price).toFixed(0)} {car.currency}</div>
+              <div style={{fontSize:16,fontWeight:700,color:staffMode?"#1e5aa8":"#1f2730",whiteSpace:"nowrap"}}>{Number(carNet(car)).toFixed(0)} {car.currency}{staffMode?<span style={{fontSize:9,fontWeight:800,display:"block",textAlign:"right"}}>{sfx.net}</span>:null}</div>
             </div>)}
           </div>
         </div>
@@ -3812,7 +3831,7 @@ function CarRentalFlow({b,lang,onClose}){
               </div>
               {sel.zeroExcess&&<div style={{fontSize:11,color:"#13794a",fontWeight:600,marginTop:2}}>🛡 {cfx.zeroExc}</div>}
             </div>
-            <div style={{fontSize:20,fontWeight:800,color:"#F15A29"}}>{Number(sel.price).toFixed(0)} {sel.currency}</div>
+            <div style={{fontSize:20,fontWeight:800,color:staffMode?"#1e5aa8":"#F15A29"}}>{Number(carNet(sel)).toFixed(0)} {sel.currency}{staffMode?` ${sfx.net}`:""}</div>
           </div>}
           {detail&&<div>
             {row(cf.total, money(detail.rate.total))}
@@ -3895,18 +3914,21 @@ function CarRentalFlow({b,lang,onClose}){
         <div style={body}>
           <div style={{fontSize:15,fontWeight:700,color:"#1f2730",marginBottom:10}}>{cf.payTitle}</div>
           {sel&&<div style={{marginBottom:14}}>
-            {row(sel.name, `${Number(sel.price).toFixed(0)} ${sel.currency}`)}
+            {row(sel.name, `${Number(carNet(sel)).toFixed(0)} ${sel.currency}`)}
             {Object.values(extras).map((e,i)=><div key={i}>{row("+ "+e.name, e.price&&e.price.amount!=null?money(e.price):"")}</div>)}
             {driver.name&&row(cf.driverSel, `${driver.name} ${driver.surname}`)}
-            <div style={{display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:"#1f2730",paddingTop:8,borderTop:"2px solid #eef0f3",marginTop:6}}>
-              <span>{cf.total}</span><span>{pi?`${Number(pi.amount).toFixed(2)} ${pi.currency}`:"…"}</span></div>
+            <div style={{display:"flex",justifyContent:"space-between",fontWeight:800,fontSize:16,color:staffMode?"#1e5aa8":"#1f2730",paddingTop:8,borderTop:"2px solid #eef0f3",marginTop:6}}>
+              <span>{staffMode?sfx.net:cf.total}</span><span>{staffMode?`${Number(carNet(sel)).toFixed(2)} ${sel.currency}`:(pi?`${Number(pi.amount).toFixed(2)} ${pi.currency}`:"…")}</span></div>
           </div>}
-          {!pi&&!payErr&&<div style={{color:"#5b6470",fontSize:14}}>{cf.searching}</div>}
-          <div id="bb-pay-el"/>
+          {staffMode
+            ? <div style={{fontSize:13,color:"#1e5aa8",background:"#eef4fc",border:"1px solid #cfe0f5",borderRadius:10,padding:"12px 14px",lineHeight:1.5}}>🧑‍💼 {sfx.note}</div>
+            : <>{!pi&&!payErr&&<div style={{color:"#5b6470",fontSize:14}}>{cf.searching}</div>}<div id="bb-pay-el"/></>}
           {payErr&&<div style={{color:"#c0392b",fontSize:13,marginTop:10,fontWeight:600}}>{payErr}</div>}
         </div>
         <div style={foot}><button onClick={()=>setStep("driver")} disabled={paying} style={ghost}>{cf.back}</button>
-          <button onClick={payAndBook} disabled={!pi||paying} style={{...primary,opacity:(!pi||paying)?.6:1}}>{paying?cf.searching:cf.payBtn}</button></div>
+          {staffMode
+            ? <button onClick={staffBook} disabled={paying} style={{...primary,background:"#1e5aa8",opacity:paying?.6:1}}>{paying?cf.searching:sfx.pay}</button>
+            : <button onClick={payAndBook} disabled={!pi||paying} style={{...primary,opacity:(!pi||paying)?.6:1}}>{paying?cf.searching:cf.payBtn}</button>}</div>
       </>}
 
       {step==="done"&&<>
