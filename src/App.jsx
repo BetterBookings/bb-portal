@@ -4419,10 +4419,16 @@ function TransferFlow({b,lang,onClose}){
       const list=Array.isArray(c.accommodations)?c.accommodations:[];
       setBookingType(c.bookingType||"standard"); setAccs(list);
       setOutP(airToPoint(arr)); setRetD(airToPoint(dep));
-      setOutD(accToPoint(matchAcc(list,c.arrivalTime,"in")));
-      setRetP(accToPoint(matchAcc(list,c.departureTime,"out")));
-      setWhenOut(dtLocal(c.arrivalTime)||"");
-      const depL=dtLocal(c.departureTime)||""; setFlightTimeRet(depL); setWhenRet(minusHours(depL,3));
+      const accIn=matchAcc(list,c.arrivalTime,"in"), accOut=matchAcc(list,c.departureTime,"out");
+      setOutD(accToPoint(accIn)); setRetP(accToPoint(accOut));
+      // Se manca l'orario del volo (booking senza volo → aeroporto da identificare a mano),
+      // ripiega sulla DATA della prenotazione (check-in andata / check-out ritorno) così la
+      // ricerca voli ha comunque una data e non esce in silenzio.
+      const _inDate=accIn&&accIn.checkIn?String(accIn.checkIn).slice(0,10):"";
+      const _outDate=accOut&&accOut.checkOut?String(accOut.checkOut).slice(0,10):"";
+      setWhenOut(dtLocal(c.arrivalTime)||(_inDate?_inDate+"T12:00":""));
+      const depL=dtLocal(c.departureTime)||""; setFlightTimeRet(depL);
+      setWhenRet(depL?minusHours(depL,3):(_outDate?_outDate+"T09:00":""));
       setPax(c.pax||1);
       setTripType((c.hasArrivalAirport&&c.hasDepartureAirport)?"roundtrip":(c.hasArrivalAirport?"outbound":(c.hasDepartureAirport?"return":"roundtrip")));
       setLoading(false);
@@ -4688,7 +4694,12 @@ function TransferFlow({b,lang,onClose}){
   // L'auto-lookup (SerpAPI) precompila quando trova UN volo univoco; altrimenti il
   // cliente sceglie dai candidati (aeroporto noto fisso + altro aeroporto ricercabile +
   // compagnia opz) o inserisce il numero a mano. WT esige il numero → obbligatorio.
-  const flightDate=(dir)=> (legWhen(dir)||"").slice(0,10);
+  const flightDate=(dir)=>{
+    const w=(legWhen(dir)||"").slice(0,10); if(w) return w;
+    const ac=dir==="outbound"?legDrop("outbound"):legPick("return");   // l'accommodation della tratta
+    const d=ac&&ac.acc&&(dir==="outbound"?ac.acc.checkIn:ac.acc.checkOut);
+    return d?String(d).slice(0,10):"";
+  };
   const flightKnownAirport=(dir)=>{ const p=legPick(dir),d=legDrop(dir); return (p&&p.kind==="airport")?p:((d&&d.kind==="airport")?d:null); };
   const flightSearch=async(dir)=>{
     const known=flightKnownAirport(dir), other=flightOther[dir], date=flightDate(dir);
