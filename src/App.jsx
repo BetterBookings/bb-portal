@@ -191,7 +191,7 @@ const T = {
     trainbk:"Train Booking",trainref:"Train Ref.",flightPending:"Your flight is being confirmed. You will receive an email when the tickets are available.",trainPending:"Your train booking is being confirmed. You will receive an email when the tickets are available.",trainStatus:"Train Status",trainManage:"Manage Train Reservation",trainDep:"Departure",trainArr:"Arrival",trainLine:"Train",trainReturn:"Return journey",cancDate:"Cancellation date",payNow:"Pay Now",
     psum:"Payment Summary",total:"Total Amount",split:"Instalment Plan",
     p1:"1st Payment",p2:"2nd Payment",p3:"3rd Payment",paid:"Paid",due:"Due",admFeeMsg:"We were unable to process the charge as per the booking conditions. Please pay the balance using the button below or by bank transfer to:\n\nAccount name: BETTER BOOKINGS LTD\nIBAN: GB67HBUK40127682816735\nSWIFT: HBUKGB4B\nAmount: {amount} (including admin fee)\nReference: {ref}\n\nPlease send proof of payment to invoices@better-bookings.com. If we do not receive confirmation within 48 hours, the booking will be automatically cancelled and cancellation fees will apply.",cancRefund:"We confirm that your booking has been cancelled. If a refund is due, it will be processed within 10 business days to the original payment method.",salesAuto:"The balance will be charged at the due date to the card used for the deposit payment. If you wish to use an alternative payment method, a 5% administrative fee applies (minimum €35.00).",salesManual:"Before the due date you will receive a reminder. You can pay at any time before the deadline by clicking the invoice link.",
-    inv:"Invoices",dlpdf:"Download PDF",noInv:"Not yet available",invAfterCheckout:"Invoices will be available after your check-out.",
+    inv:"Invoices",invOne:"Invoice",dlpdf:"Download PDF",noInv:"Not yet available",invAfterCheckout:"Invoices will be available after your check-out.",
     tact:"Tours & Activities",xtra:"Additional Services",extserv:"External Services",
     shop:"Add Services",shopIntro:"Enhance your trip with these optional extras.",shopOpen:"View / Book",shopRequest:"Request",shopSending:"Sending…",shopSent:"Request sent ✓",shopErr:"Something went wrong. Please try again.",shopPreview:"Preview mode — not visible to customers.",
     guest:"Traveller Details",gname:"Name",gphone:"Phone",
@@ -253,7 +253,7 @@ notfound:"Booking not found.",
     trainbk:"Prenotazione Treno",trainref:"Riferimento Treno",flightPending:"Il tuo volo è in fase di conferma. Riceverai una email quando i biglietti saranno disponibili.",trainPending:"La tua prenotazione treno è in fase di conferma. Riceverai una email quando i biglietti saranno disponibili.",trainStatus:"Stato Treno",trainManage:"Gestisci Prenotazione Treno",trainDep:"Partenza",trainArr:"Arrivo",trainLine:"Treno",trainReturn:"Viaggio di ritorno",cancDate:"Data di cancellazione",payNow:"Paga Ora",
     psum:"Riepilogo Pagamenti",total:"Importo Totale",split:"Piano Rateale",
     p1:"1° Rata",p2:"2° Rata",p3:"3° Rata",paid:"Pagato",due:"Da pagare",admFeeMsg:"Non siamo riusciti ad effettuare l'addebito come previsto dalle condizioni di prenotazione. Per effettuare il saldo utilizza il pulsante qui sotto oppure il bonifico bancario alle seguenti coordinate:\n\nIntestatario: BETTER BOOKINGS LTD\nIBAN: GB67HBUK40127682816735\nSWIFT Code: HBUKGB4B\nImporto: {amount} (importo comprensivo di spese amministrative)\nCausale: Prenotazione {ref}\n\nLe ricordiamo che per confermare la prenotazione abbiamo bisogno di copia della contabile via email a invoices@better-bookings.com. Nel caso non ricevessimo riscontro entro 48 ore, la prenotazione sarà automaticamente cancellata e le saranno addebitate le spese di cancellazione.",cancRefund:"Ti confermiamo che la tua prenotazione è stata cancellata. Qualora sia previsto il rimborso, verrà elaborato entro i prossimi 10 giorni lavorativi direttamente sul metodo di pagamento utilizzato per la prenotazione.",salesAuto:"Il saldo si effettuerà alla scadenza indicata direttamente sulla carta utilizzata per il pagamento dell'acconto. Se desidera procedere con un metodo di pagamento alternativo, il cambio comporta un supplemento amministrativo del 5% dell'importo da saldare, con un minimo di 35,00 €.",salesManual:"In prossimità della scadenza riceverà una notifica di promemoria. La rata è comunque pagabile in qualsiasi momento prima della scadenza cliccando sul link della fattura.",
-    inv:"Fatture",dlpdf:"Scarica PDF",noInv:"Non ancora disponibile",invAfterCheckout:"Le fatture saranno disponibili dopo il check-out.",
+    inv:"Fatture",invOne:"Fattura",dlpdf:"Scarica PDF",noInv:"Non ancora disponibile",invAfterCheckout:"Le fatture saranno disponibili dopo il check-out.",
     tact:"Tour & Attività",xtra:"Servizi Aggiuntivi",extserv:"Servizi Esterni",
     shop:"Aggiungi Servizi",shopIntro:"Arricchisci il tuo viaggio con questi extra opzionali.",shopOpen:"Vedi / Prenota",shopRequest:"Richiedi",shopSending:"Invio…",shopSent:"Richiesta inviata ✓",shopErr:"Qualcosa è andato storto. Riprova.",shopPreview:"Modalità anteprima — non visibile ai clienti.",
     guest:"Dati Viaggiatore",gname:"Nome",gphone:"Telefono",
@@ -315,7 +315,7 @@ notfound:"Prenotazione non trovata.",
     trainbk:"Reserva de Tren",trainref:"Ref. Tren",flightPending:"Tu vuelo está en proceso de confirmación. Recibirás un email cuando los billetes estén disponibles.",trainPending:"Tu reserva de tren está en proceso de confirmación. Recibirás un email cuando los billetes estén disponibles.",trainStatus:"Estado Tren",trainManage:"Gestionar Reserva de Tren",trainDep:"Salida",trainArr:"Llegada",trainLine:"Tren",trainReturn:"Viaje de regreso",cancDate:"Fecha de cancelación",payNow:"Pagar Ahora",
     psum:"Resumen de Pagos",total:"Importe Total",split:"Plan de Pago",
     p1:"1er Pago",p2:"2º Pago",p3:"3er Pago",paid:"Pagado",due:"Pendiente",admFeeMsg:"No hemos podido realizar el cargo según las condiciones de reserva. Le rogamos efectúe el pago usando el botón o mediante transferencia bancaria:\n\nTitular: BETTER BOOKINGS LTD\nIBAN: GB67HBUK40127682816735\nSWIFT: HBUKGB4B\nImporte: {amount} (incluidos gastos administrativos)\nConcepto: Reserva {ref}\n\nEnvíe el justificante a invoices@better-bookings.com. Si no recibimos confirmación en 48 horas, la reserva se cancelará automáticamente con los gastos correspondientes.",cancRefund:"Te confirmamos que tu reserva ha sido cancelada. Si corresponde un reembolso, se procesará en los próximos 10 días hábiles al método de pago original.",salesAuto:"El saldo se realizará en la fecha indicada directamente con la tarjeta utilizada para el pago del depósito. Si desea utilizar otro método de pago, el cambio conlleva un recargo administrativo del 5% del importe a abonar, con un mínimo de 35,00 €.",salesManual:"Antes del vencimiento recibirá un recordatorio. Puede pagar en cualquier momento antes del vencimiento haciendo clic en el enlace de la factura.",
-    inv:"Facturas",dlpdf:"Descargar PDF",noInv:"Aún no disponible",invAfterCheckout:"Las facturas estarán disponibles después del check-out.",
+    inv:"Facturas",invOne:"Factura",dlpdf:"Descargar PDF",noInv:"Aún no disponible",invAfterCheckout:"Las facturas estarán disponibles después del check-out.",
     tact:"Tours y Actividades",xtra:"Servicios Adicionales",extserv:"Servicios Externos",
     shop:"Añadir Servicios",shopIntro:"Mejora tu viaje con estos extras opcionales.",shopOpen:"Ver / Reservar",shopRequest:"Solicitar",shopSending:"Enviando…",shopSent:"Solicitud enviada ✓",shopErr:"Algo salió mal. Inténtalo de nuevo.",shopPreview:"Modo vista previa — no visible para clientes.",
     guest:"Datos del Viajero",gname:"Nombre",gphone:"Teléfono",
@@ -377,7 +377,7 @@ notfound:"Reserva no encontrada.",
     trainbk:"Réservation Train",trainref:"Réf. Train",flightPending:"Votre vol est en cours de confirmation. Vous recevrez un email dès que les billets seront disponibles.",trainPending:"Votre réservation de train est en cours de confirmation. Vous recevrez un email dès que les billets seront disponibles.",trainStatus:"Statut Train",trainManage:"Gérer la Réservation Train",trainDep:"Départ",trainArr:"Arrivée",trainLine:"Train",trainReturn:"Voyage retour",cancDate:"Date d'annulation",payNow:"Payer Maintenant",
     psum:"Récapitulatif Paiements",total:"Montant Total",split:"Plan de Paiement",
     p1:"1er Paiement",p2:"2ème Paiement",p3:"3ème Paiement",paid:"Payé",due:"À payer",admFeeMsg:"Nous n'avons pas pu effectuer le prélèvement comme prévu dans les conditions de réservation. Veuillez régler le solde via le bouton ci-dessous ou par virement bancaire:\n\nBénéficiaire : BETTER BOOKINGS LTD\nIBAN : GB67HBUK40127682816735\nSWIFT : HBUKGB4B\nMontant : {amount} (frais administratifs inclus)\nRéférence : Réservation {ref}\n\nMerci d'envoyer la preuve de paiement à invoices@better-bookings.com. Sans confirmation sous 48h, la réservation sera annulée automatiquement avec les frais correspondants.",cancRefund:"Nous vous confirmons que votre réservation a été annulée. Si un remboursement est prévu, il sera traité dans les 10 jours ouvrables suivants sur le moyen de paiement utilisé.",salesAuto:"Le solde sera débité à l'échéance sur la carte utilisée pour le règlement de l'acompte. Si vous souhaitez utiliser un autre moyen de paiement, un supplément administratif de 5% du montant à régler sera appliqué (minimum 35,00 €).",salesManual:"Avant l'échéance, vous recevrez un rappel. Vous pouvez payer à tout moment avant l'échéance en cliquant sur le lien de la facture.",
-    inv:"Factures",dlpdf:"Télécharger PDF",noInv:"Pas encore disponible",invAfterCheckout:"Les factures seront disponibles après le check-out.",
+    inv:"Factures",invOne:"Facture",dlpdf:"Télécharger PDF",noInv:"Pas encore disponible",invAfterCheckout:"Les factures seront disponibles après le check-out.",
     tact:"Tours & Activités",xtra:"Services Additionnels",extserv:"Services Externes",
     shop:"Ajouter des Services",shopIntro:"Enrichissez votre voyage avec ces extras en option.",shopOpen:"Voir / Réserver",shopRequest:"Demander",shopSending:"Envoi…",shopSent:"Demande envoyée ✓",shopErr:"Une erreur est survenue. Veuillez réessayer.",shopPreview:"Mode aperçu — non visible par les clients.",
     guest:"Données Voyageur",gname:"Nom",gphone:"Téléphone",
@@ -439,7 +439,7 @@ notfound:"Réservation introuvable.",
     trainbk:"Zugreservierung",trainref:"Zugref.",flightPending:"Ihr Flug wird gerade bestätigt. Sie erhalten eine E-Mail, sobald die Tickets verfügbar sind.",trainPending:"Ihre Zugbuchung wird gerade bestätigt. Sie erhalten eine E-Mail, sobald die Tickets verfügbar sind.",trainStatus:"Zugstatus",trainManage:"Zugbuchung verwalten",trainDep:"Abfahrt",trainArr:"Ankunft",trainLine:"Zug",trainReturn:"Rückfahrt",cancDate:"Stornierungsdatum",payNow:"Jetzt Bezahlen",
     psum:"Zahlungsübersicht",total:"Gesamtbetrag",split:"Zahlungsplan",
     p1:"1. Zahlung",p2:"2. Zahlung",p3:"3. Zahlung",paid:"Bezahlt",due:"Ausstehend",admFeeMsg:"Wir konnten die Belastung gemäß den Buchungsbedingungen nicht vornehmen. Bitte begleichen Sie den Restbetrag über den Button unten oder per Überweisung:\n\nKontoinh.: BETTER BOOKINGS LTD\nIBAN: GB67HBUK40127682816735\nSWIFT: HBUKGB4B\nBetrag: {amount} (inkl. Verwaltungsgebühr)\nVerwendungszweck: Buchung {ref}\n\nBitte senden Sie den Zahlungsbeleg an invoices@better-bookings.com. Ohne Bestätigung innerhalb von 48 Stunden wird die Buchung storniert und Stornogebühren werden erhoben.",cancRefund:"Wir bestätigen, dass Ihre Buchung storniert wurde. Sofern eine Erstattung vorgesehen ist, wird diese innerhalb von 10 Werktagen auf die ursprüngliche Zahlungsmethode bearbeitet.",salesAuto:"Der Restbetrag wird zum angegebenen Datum automatisch von der für die Anzahlung verwendeten Karte abgebucht. Bei Wahl einer alternativen Zahlungsmethode fällt eine Verwaltungsgebühr von 5% des offenen Betrags an (mindestens 35,00 €).",salesManual:"Vor dem Fälligkeitsdatum erhalten Sie eine Erinnerung. Sie können jederzeit vor Ablauf der Frist bezahlen, indem Sie auf den Rechnungslink klicken.",
-    inv:"Rechnungen",dlpdf:"PDF herunterladen",noInv:"Noch nicht verfügbar",invAfterCheckout:"Rechnungen sind nach dem Check-out verfügbar.",
+    inv:"Rechnungen",invOne:"Rechnung",dlpdf:"PDF herunterladen",noInv:"Noch nicht verfügbar",invAfterCheckout:"Rechnungen sind nach dem Check-out verfügbar.",
     tact:"Touren & Aktivitäten",xtra:"Zusätzliche Leistungen",extserv:"Externe Dienste",
     shop:"Services Hinzufügen",shopIntro:"Werte deine Reise mit diesen optionalen Extras auf.",shopOpen:"Ansehen / Buchen",shopRequest:"Anfragen",shopSending:"Senden…",shopSent:"Anfrage gesendet ✓",shopErr:"Etwas ist schiefgelaufen. Bitte versuche es erneut.",shopPreview:"Vorschaumodus — für Kunden nicht sichtbar.",
     guest:"Reisendaten",gname:"Name",gphone:"Telefon",
@@ -501,7 +501,7 @@ notfound:"Buchung nicht gefunden.",
     trainbk:"Treinreservering",trainref:"Treinref.",flightPending:"Uw vlucht wordt bevestigd. U ontvangt een e-mail zodra de tickets beschikbaar zijn.",trainPending:"Uw treinboeking wordt bevestigd. U ontvangt een e-mail zodra de tickets beschikbaar zijn.",trainStatus:"Treinstatus",trainManage:"Treinreservering beheren",trainDep:"Vertrek",trainArr:"Aankomst",trainLine:"Trein",trainReturn:"Terugreis",cancDate:"Annuleringsdatum",payNow:"Nu Betalen",
     psum:"Betalingsoverzicht",total:"Totaalbedrag",split:"Betalingsplan",
     p1:"1e Betaling",p2:"2e Betaling",p3:"3e Betaling",paid:"Betaald",due:"Te betalen",admFeeMsg:"Wij konden de afschrijving niet uitvoeren zoals bepaald in de boekingsvoorwaarden. Betaal het restbedrag via de knop hieronder of bankoverschrijving:\n\nBegunstigde: BETTER BOOKINGS LTD\nIBAN: GB67HBUK40127682816735\nSWIFT: HBUKGB4B\nBedrag: {amount} (inclusief administratiekosten)\nMededeling: Boeking {ref}\n\nStuur betalingsbewijs naar invoices@better-bookings.com. Bij geen bevestiging binnen 48 uur wordt de boeking automatisch geannuleerd met bijbehorende kosten.",cancRefund:"Wij bevestigen dat uw boeking is geannuleerd. Als er recht op terugbetaling is, wordt dit binnen 10 werkdagen verwerkt op de oorspronkelijke betaalmethode.",salesAuto:"Het saldo wordt op de vervaldatum automatisch afgeschreven van de kaart die voor de aanbetaling is gebruikt. Als u een alternatieve betaalmethode wilt gebruiken, wordt een administratieve toeslag van 5% van het te betalen bedrag in rekening gebracht (minimaal € 35,00).",salesManual:"Voor de vervaldatum ontvangt u een herinnering. U kunt op elk moment vóór de vervaldatum betalen door op de factuurlink te klikken.",
-    inv:"Facturen",dlpdf:"PDF downloaden",noInv:"Nog niet beschikbaar",invAfterCheckout:"Facturen zijn beschikbaar na uw check-out.",
+    inv:"Facturen",invOne:"Factuur",dlpdf:"PDF downloaden",noInv:"Nog niet beschikbaar",invAfterCheckout:"Facturen zijn beschikbaar na uw check-out.",
     tact:"Tours & Activiteiten",xtra:"Extra Diensten",extserv:"Externe Diensten",
     shop:"Diensten Toevoegen",shopIntro:"Verrijk je reis met deze optionele extra's.",shopOpen:"Bekijk / Boek",shopRequest:"Aanvragen",shopSending:"Versturen…",shopSent:"Aanvraag verzonden ✓",shopErr:"Er ging iets mis. Probeer het opnieuw.",shopPreview:"Voorbeeldmodus — niet zichtbaar voor klanten.",
     guest:"Reizigersgegevens",gname:"Naam",gphone:"Telefoon",
@@ -2551,20 +2551,18 @@ function SalestypeNote({b,t}){
 }
 
 function InvoiceList({b,t}){
-  const isPaidFull = String(b.Paymentcompleted).toLowerCase()==="true";
-  const hasFee = String(b.Administrationfee||b.administrationfee||"").toLowerCase()==="true";
-  const invRows = [
-    b.invoice1?{label:t.p1,amount:b.amount1Payment,inv:b.invoice1}:null,
-    b.invoice2?{label:t.p2,amount:(hasFee&&!isPaidFull&&b.secondpaymentwithadmfee)||b.amount2Payment,inv:b.invoice2}:null,
-    b.invoice3?{label:t.p3,amount:b.amount3Payment,inv:b.invoice3}:null,
-  ].filter(Boolean);
   // Mostra ogni fattura effettivamente emessa: se il link (Xero) esiste, la
   // fattura è disponibile e dev'essere apribile dal cliente — anche quella del
   // saldo nei pagamenti rateali, indipendentemente da Payment completed. Prima
   // si nascondeva tutto tranne l'acconto finché il saldo non era pagato, il che
   // impediva al cliente di aprire/pagare la fattura del saldo. L'empty-state
   // sotto copre il caso "nessuna fattura ancora emessa".
-  const visible = invRows;
+  // Niente etichetta rata né importo: la fattura è spesso unica e totale (link
+  // in INV-Link) e mostrarla come "1° Rata" con l'importo dell'acconto era
+  // fuorviante. Rate e importi restano nel riepilogo pagamenti. Link duplicati
+  // tra i campi vengono mostrati una volta sola.
+  const links = [...new Set([b.invoice1,b.invoice2,b.invoice3].filter(Boolean))];
+  const visible = links.map((inv,i)=>({inv,label:links.length>1?`${t.invOne} ${i+1}`:t.invOne}));
   if(!visible.length) return <div style={{padding:"12px 14px",borderRadius:8,
     background:C.bg,border:"1px dashed "+C.border,
     fontSize:".8rem",color:C.muted,textAlign:"left",lineHeight:1.5,
@@ -2574,10 +2572,7 @@ function InvoiceList({b,t}){
   return <>{visible.map((p,i)=>(
     <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",
       padding:"14px",background:C.bg,borderRadius:10,border:"1px solid "+C.border}}>
-      <div>
-        <div style={{fontSize:".85rem",fontWeight:500,color:C.dark}}>{p.label}</div>
-        {p.amount&&<div style={{fontSize:".72rem",color:C.muted}}>{fmtM(p.amount)}</div>}
-      </div>
+      <div style={{fontSize:".85rem",fontWeight:500,color:C.dark}}>{p.label}</div>
       <a href={p.inv} target="_blank" rel="noopener noreferrer" className="btn-orange"><Ico name="bb-download" size={14} light/> PDF</a>
     </div>
   ))}</>;
