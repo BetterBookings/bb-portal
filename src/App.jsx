@@ -622,7 +622,10 @@ const msToDate = v => { if(v==null)return null; const n=typeof v==="string"?pars
 const fmtD  = (v,l) => { const d=msToDate(v); if(!d||isNaN(d))return"–"; const loc={IT:"it-IT",ES:"es-ES",FR:"fr-FR",DE:"de-DE",NL:"nl-NL",RO:"ro-RO"}; return d.toLocaleDateString(loc[l]||"en-GB",{day:"2-digit",month:"long",year:"numeric"}); };
 const fmtDs = (v,l) => { const d=msToDate(v); if(!d||isNaN(d))return"–"; const loc={IT:"it-IT",ES:"es-ES",FR:"fr-FR",DE:"de-DE",NL:"nl-NL",RO:"ro-RO"}; return d.toLocaleDateString(loc[l]||"en-GB",{day:"2-digit",month:"short",year:"numeric"}); };
 const fmtT  = v => { if(!v)return"–"; const d=msToDate(v); if(!d||isNaN(d))return String(v).slice(0,5); return d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}); };
-const fmtM  = v => { if(v==null||v===""||isNaN(Number(v))) return "–"; const n=Math.round(Number(v)*100)/100; return "€ "+n.toLocaleString("it-IT",{minimumFractionDigits:2,maximumFractionDigits:2}); };
+// Booking currency (2026-11-12): Beyond RO bookings are paid in RON → amounts shown in lei, converted with the
+// booking's own rate (exact RON total when given). Every other market: unchanged (EUR).
+let BOOKING_CUR = null;
+const fmtM  = (v, exact) => { if(v==null||v===""||isNaN(Number(v))) return "–"; if(BOOKING_CUR&&BOOKING_CUR.code==="RON"){ const r=exact!=null&&!isNaN(Number(exact))?Number(exact):Number(v)*BOOKING_CUR.fx; return (Math.round(r*100)/100).toLocaleString("ro-RO",{minimumFractionDigits:2,maximumFractionDigits:2})+" lei"; } const n=Math.round(Number(v)*100)/100; return "€ "+n.toLocaleString("it-IT",{minimumFractionDigits:2,maximumFractionDigits:2}); };
 const daysTo = v => { const d=msToDate(v); if(!d)return null; const t=new Date();t.setHours(0,0,0,0);d.setHours(0,0,0,0); return Math.ceil((d-t)/864e5); };
 const arr1  = v => Array.isArray(v)?v[0]||"":v||"";
 const toArr = v => Array.isArray(v)?v:(v&&String(v).trim()?[v]:[]);
@@ -2692,7 +2695,7 @@ function Payments({b,lang}){
           borderRadius:"50%",background:"rgba(232,80,26,.15)"}}/>
         <div style={{fontSize:".65rem",color:"rgba(255,255,255,.45)",letterSpacing:".1em",
           fontWeight:600,marginBottom:4}}>{t.total.toUpperCase()}</div>
-        <div style={{fontSize:"2.4rem",fontWeight:800,color:C.white,lineHeight:1}}>{fmtM(b.sellingPrice)}</div>
+        <div style={{fontSize:"2.4rem",fontWeight:800,color:C.white,lineHeight:1}}>{fmtM(b.sellingPrice, b.sellingPriceForeign)}</div>
         <div style={{fontSize:".72rem",color:"rgba(255,255,255,.3)",marginTop:6}}>{b.bookingReference}</div>
       </div>
       {/* Payments */}
@@ -5170,6 +5173,7 @@ export default function App(){
       .then(r=>{ if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
       .then(data=>{
         if(!data?.bookingReference){ setState("error"); setErrMsg("Booking not found."); return; }
+        BOOKING_CUR = data.currency==="RON"&&Number(data.fxRate)>0 ? { code:"RON", fx:Number(data.fxRate) } : null;
         setBooking(data);
         const l=LANG_MAP[data.customerlanguage]||"EN";
         setLang(T[l]?l:"EN");
