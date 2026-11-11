@@ -137,7 +137,7 @@ const API_SVCREQ   = "https://review.better-bookings.com/api/ext/service-request
 const API_CARRENTAL = "https://review.better-bookings.com/api/ext/carrental";
 const API_BAGGAGE = "https://review.better-bookings.com/api/ext/baggage";
 const API_TRANSFER = "https://review.better-bookings.com/api/ext/transfer";
-const LANG_MAP    = { 1:"EN", 2:"IT", 3:"ES", 4:"EN", 5:"NL", 6:"FR", 7:"DE" };
+const LANG_MAP    = { 1:"EN", 2:"IT", 3:"ES", 4:"EN", 5:"NL", 6:"FR", 7:"DE", 9:"RO" };
 const STATUS_CODE = {
   "1":"conf",   // CONFIRMED
   "2":"canc",   // CANCELLED
@@ -149,6 +149,7 @@ const STATUS_CODE = {
 };
 const PET = {
   EN:{ "1":"Pets allowed","2":"Pets not allowed","3":"Small & medium pets allowed","4":"Allowed with supplement","5":"On request","0":"Contact hotel" },
+  RO:{ "1":"Animale de companie permise","2":"Animale de companie nepermise","3":"Animale de companie mici și medii permise","4":"Permise cu supliment","5":"La cerere","0":"Contactează hotelul" },
   IT:{ "1":"Animali ammessi","2":"Animali non ammessi","3":"Ammessi piccola e media taglia","4":"Ammessi con supplemento","5":"Su richiesta","0":"Contatta l'hotel" },
   ES:{ "1":"Mascotas permitidas","2":"Mascotas no permitidas","3":"Permitidas razas pequeñas y medianas","4":"Permitidas con suplemento","5":"Bajo petición","0":"Consultar hotel" },
   FR:{ "1":"Animaux acceptés","2":"Animaux non acceptés","3":"Petits et moyens animaux acceptés","4":"Acceptés avec supplément","5":"Sur demande","0":"Contacter l'hôtel" },
@@ -159,6 +160,7 @@ const PET = {
 // Local taxes labels
 const TAXES = {
   EN:{ "1":"Local taxes required","2":"Local taxes not applicable (note: this may change at the destination; please check with the property)" },
+  RO:{ "1":"Taxe locale obligatorii","2":"Taxe locale neaplicabile (notă: acest lucru se poate schimba la destinație; te rugăm să verifici cu unitatea de cazare)" },
   IT:{ "1":"Tassa di soggiorno richiesta","2":"Tassa di soggiorno non richiesta (si precisa che potrebbe essere soggetta a variazioni; si consiglia di verificare direttamente con la struttura)" },
   ES:{ "1":"Tasas locales requeridas","2":"Tasas locales no requeridas (nota: esto podría cambiar; consulte directamente con el alojamiento)" },
   FR:{ "1":"Taxes de séjour requises","2":"Taxes de séjour non requises (remarque : cela peut changer ; veuillez vérifier auprès de l'établissement)" },
@@ -169,6 +171,7 @@ const TAXES = {
 // Disabled access labels
 const ACCESS = {
   EN:{ "1":"Accessible","2":"Not accessible","3":"On request" },
+  RO:{ "1":"Accesibil","2":"Inaccesibil","3":"La cerere" },
   IT:{ "1":"Accessibile","2":"Non accessibile","3":"Su richiesta" },
   ES:{ "1":"Accesible","2":"No accesible","3":"Bajo petición" },
   FR:{ "1":"Accessible","2":"Non accessible","3":"Sur demande" },
@@ -239,6 +242,68 @@ notfound:"Booking not found.",
     docsNotReady:"Documents not yet available",
     docsInfoTitle:"When will you receive your documents?",
     docsInfo:`To offer you maximum transparency, here is a summary of our standard procedures:\n\n🏨 Hotel Voucher: sent approximately 7 days before departure.\n\n✈️ Flight tickets:\n• If you purchased flights through us, all information (schedules, booking codes, baggage allowance) is already available in the e-ticket in your personal area. Boarding passes must be requested directly from the airline within its indicated timeframes.\n• If you purchased flights independently, document management is handled directly with your chosen airline.\n\n🎟️ Event tickets (concerts, shows, etc.): released in digital format by the organiser, usually 3 days before the event, sometimes on the day itself. You will receive your tickets in time and can access them from your smartphone.\n\nAll communications and documents are sent by email to the address provided at booking.\n\n📌 These timelines are standard and apply to all our customers, regardless of destination or package type.`,
+  },
+  RO:{
+    overview:"Prezentare generală",flights:"Zboruri & Tren",payments:"Plăți",tours:"Servicii & Vouchere",
+    checkin:"Check-in",checkout:"Check-out",nights:"nopți",night:"noapte",
+    room:"Cameră",board:"Servicii incluse",ref:"Ref. rezervare",hconf:"Confirmare hotel",
+    booked:"Rezervat pe",status:"Status",conf:"Confirmată",pend:"În așteptare",canc:"Anulată",over:"Suprarezervare",noshow:"Neprezentare",importing:"Importat",
+    days:"zile rămase",today:"Astăzi!",done:"Călătorie încheiată",
+    cancpol:"Politica de anulare",taxes:"Taxe locale",deposit:"Avans",pets:"Animale de companie",access:"Accesibilitate",
+    fout:"Zbor tur",fret:"Zbor retur",direct:"Direct",stop:"Escală",
+    pnr:"PNR",bag:"Bagaj permis",pbag:"Obiect personal",cbag:"Bagaj de cabină",sbag:"Bagaj de cală",
+    mflight:"Gestionează-ți zborul",eticket:"Descarcă E-Bilet",
+    trainbk:"Rezervare tren",trainref:"Ref. tren",flightPending:"Zborul tău este în curs de confirmare. Vei primi un email de îndată ce biletele sunt disponibile.",trainPending:"Rezervarea ta de tren este în curs de confirmare. Vei primi un email de îndată ce biletele sunt disponibile.",trainStatus:"Status tren",trainManage:"Gestionează rezervarea de tren",trainDep:"Plecare",trainArr:"Sosire",trainLine:"Tren",trainReturn:"Călătorie retur",cancDate:"Dată anulare",payNow:"Plătește acum",
+    psum:"Sumar plăți",total:"Sumă totală",split:"Plan de rate",
+    p1:"Prima plată",p2:"A doua plată",p3:"A treia plată",paid:"Plătit",due:"Scadent",admFeeMsg:"Nu am putut procesa plata conform condițiilor rezervării. Te rugăm să achiți soldul folosind butonul de mai jos sau prin transfer bancar către:\n\nNume cont: BETTER BOOKINGS LTD\nIBAN: GB67HBUK40127682816735\nSWIFT: HBUKGB4B\nSumă: {amount} (inclusiv taxa administrativă)\nReferință: {ref}\n\nTe rugăm să trimiți dovada plății la invoices@better-bookings.com. Dacă nu primim confirmarea în 48 de ore, rezervarea va fi anulată automat și se vor aplica taxe de anulare.",cancRefund:"Confirmăm că rezervarea ta a fost anulată. Dacă se datorează o rambursare, aceasta va fi procesată în termen de 10 zile lucrătoare către metoda de plată inițială.",salesAuto:"Soldul va fi taxat la data scadentă pe cardul folosit pentru plata avansului. Dacă dorești să folosești o altă metodă de plată, se aplică o taxă administrativă de 5% (minimum 35,00 €).",salesManual:"Înainte de data scadentă vei primi un memento. Poți plăti oricând înainte de termen accesând link-ul facturii.",
+    inv:"Facturi",invOne:"Factură",dlpdf:"Descarcă PDF",noInv:"Încă indisponibil",invAfterCheckout:"Facturile vor fi disponibile după check-out.",
+    tact:"Tururi & Activități",xtra:"Servicii suplimentare",extserv:"Servicii externe",
+    shop:"Adaugă servicii",shopIntro:"Îmbunătățește-ți călătoria cu aceste opțiuni suplimentare.",shopOpen:"Vizualizează / Rezervă",shopRequest:"Solicită",shopSending:"Se trimite…",shopSent:"Cerere trimisă ✓",shopErr:"A apărut o problemă. Te rugăm să încerci din nou.",shopPreview:"Mod previzualizare — nu este vizibil pentru clienți.",
+    guest:"Detalii călător",gname:"Nume",gphone:"Telefon",
+    voucher:"Vezi voucherul de hotel",dest:"Despre destinație",stay:"Sejurul tău",hotelInfo:"Informații hotel",address:"Adresă",
+    adults:"Adulți",children:"Copii",infants:"Sugari",travellers:"Toți călătorii",
+    vcc:"Card de plată",vccnum:"Număr card",vccexp:"Expiră",vcccvc:"CVC",
+    support:"Asistență & Întrebări frecvente",
+    helpTitle:"Cu ce te putem ajuta?",
+    helpLead:"Găsește răspunsuri la întrebările tale sau trimite-ne o solicitare.",
+    searchLabel:"Caută în întrebări frecvente",
+    searchPh:"Scrie: schimbare dată, factură, check-in…",
+    searchBtn:"Caută",
+    faqTitle:"Cele mai frecvente întrebări",
+    catPayments:"Plăți",
+    catChanges:"Modificări & anulări",
+    catDocs:"Documente & facturi",
+    catFlights:"Zboruri",
+    catHotels:"Hoteluri & servicii",
+    catPrivacy:"Confidențialitate & date",
+    showAll:"Arată tot ({n})",
+    showLess:"Arată mai puțin",
+    noResults:"Niciun rezultat. Încearcă alte cuvinte sau contactează-ne.",
+    formTitle:"Trimite-ne o solicitare",
+    formName:"Nume complet",
+    formEmail:"Email",
+    formBooking:"ID rezervare",
+    formTopic:"Subiect",
+    formMsg:"Mesaj",msgTitle:"Mesaje",msgUnread:"necitite",msgNoMsg:"Încă nu există mesaje.",
+    formMsgPh:"Spune-ne pe scurt cu ce te putem ajuta",
+    formSend:"Trimite solicitarea",
+    formOk:"Mulțumim! Îți vom răspunde în curând.",
+    topicPayments:"Plăți",
+    topicChanges:"Modificare/anulare",
+    topicDocs:"Documente/Factură",
+    topicTravel:"Asistență călătorie",
+    topicOther:"Altele",
+    channels:"Alte canale",
+    loading:"Se încarcă rezervarea ta…",
+    bookingPerson:"Persoană de contact rezervare",
+    tcLabel:"Termeni & Condiții",privacyLabel:"Politica de confidențialitate",
+notfound:"Rezervarea nu a fost găsită.",
+    errtitle:"Ups, a apărut o problemă",errsub:"Te rugăm să verifici link-ul din emailul de confirmare.",
+    hi:"Salut",yourtrip:"Călătoria ta",
+    voucherBtn:"Vezi voucherul de hotel",docsBtn:"Documente de călătorie",
+    docsNotReady:"Documentele nu sunt încă disponibile",
+    docsInfoTitle:"Când vei primi documentele tale?",
+    docsInfo:`Pentru a-ți oferi transparență maximă, iată un rezumat al procedurilor noastre standard:\n\n🏨 Voucher de hotel: trimis cu aproximativ 7 zile înainte de plecare.\n\n✈️ Bilete de avion:\n• Dacă ai achiziționat zborurile prin noi, toate informațiile (orare, coduri de rezervare, bagaj permis) sunt deja disponibile în e-biletul din contul tău personal. Cărțile de îmbarcare trebuie solicitate direct de la compania aeriană, în intervalele de timp indicate de aceasta.\n• Dacă ai achiziționat zborurile independent, gestionarea documentelor se face direct cu compania aeriană aleasă.\n\n🎟️ Bilete pentru evenimente (concerte, spectacole etc.): emise în format digital de organizator, de obicei cu 3 zile înainte de eveniment, uneori chiar în ziua respectivă. Vei primi biletele la timp și le vei putea accesa de pe smartphone.\n\nToate comunicările și documentele sunt trimise prin email la adresa furnizată la rezervare.\n\n📌 Aceste termene sunt standard și se aplică tuturor clienților noștri, indiferent de destinație sau tipul de pachet.`,
   },
   IT:{
     overview:"Panoramica",flights:"Voli & Treno",payments:"Pagamenti",tours:"Servizi & Voucher",
@@ -554,10 +619,13 @@ notfound:"Boeking niet gevonden.",
 
 /* ─── HELPERS ────────────────────────────────────────── */
 const msToDate = v => { if(v==null)return null; const n=typeof v==="string"?parseInt(v,10):Number(v); return isNaN(n)?new Date(v):new Date(n); };
-const fmtD  = (v,l) => { const d=msToDate(v); if(!d||isNaN(d))return"–"; const loc={IT:"it-IT",ES:"es-ES",FR:"fr-FR",DE:"de-DE",NL:"nl-NL"}; return d.toLocaleDateString(loc[l]||"en-GB",{day:"2-digit",month:"long",year:"numeric"}); };
-const fmtDs = (v,l) => { const d=msToDate(v); if(!d||isNaN(d))return"–"; const loc={IT:"it-IT",ES:"es-ES",FR:"fr-FR",DE:"de-DE",NL:"nl-NL"}; return d.toLocaleDateString(loc[l]||"en-GB",{day:"2-digit",month:"short",year:"numeric"}); };
+const fmtD  = (v,l) => { const d=msToDate(v); if(!d||isNaN(d))return"–"; const loc={IT:"it-IT",ES:"es-ES",FR:"fr-FR",DE:"de-DE",NL:"nl-NL",RO:"ro-RO"}; return d.toLocaleDateString(loc[l]||"en-GB",{day:"2-digit",month:"long",year:"numeric"}); };
+const fmtDs = (v,l) => { const d=msToDate(v); if(!d||isNaN(d))return"–"; const loc={IT:"it-IT",ES:"es-ES",FR:"fr-FR",DE:"de-DE",NL:"nl-NL",RO:"ro-RO"}; return d.toLocaleDateString(loc[l]||"en-GB",{day:"2-digit",month:"short",year:"numeric"}); };
 const fmtT  = v => { if(!v)return"–"; const d=msToDate(v); if(!d||isNaN(d))return String(v).slice(0,5); return d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}); };
-const fmtM  = v => { if(v==null||v===""||isNaN(Number(v))) return "–"; const n=Math.round(Number(v)*100)/100; return "€ "+n.toLocaleString("it-IT",{minimumFractionDigits:2,maximumFractionDigits:2}); };
+// Booking currency (2026-11-12): Beyond RO bookings are paid in RON → amounts shown in lei, converted with the
+// booking's own rate (exact RON total when given). Every other market: unchanged (EUR).
+let BOOKING_CUR = null;
+const fmtM  = (v, exact) => { if(v==null||v===""||isNaN(Number(v))) return "–"; if(BOOKING_CUR&&BOOKING_CUR.code==="RON"){ const r=exact!=null&&!isNaN(Number(exact))?Number(exact):Number(v)*BOOKING_CUR.fx; return (Math.round(r*100)/100).toLocaleString("ro-RO",{minimumFractionDigits:2,maximumFractionDigits:2})+" lei"; } const n=Math.round(Number(v)*100)/100; return "€ "+n.toLocaleString("it-IT",{minimumFractionDigits:2,maximumFractionDigits:2}); };
 const daysTo = v => { const d=msToDate(v); if(!d)return null; const t=new Date();t.setHours(0,0,0,0);d.setHours(0,0,0,0); return Math.ceil((d-t)/864e5); };
 const arr1  = v => Array.isArray(v)?v[0]||"":v||"";
 const toArr = v => Array.isArray(v)?v:(v&&String(v).trim()?[v]:[]);
@@ -654,6 +722,9 @@ const FEMALE_TITLES = ["sig.ra","sra.","mrs.","mrs","ms.","mme.","mme","frau","f
 
 // Month names → number (all 6 languages, lower-cased)
 const MONTH_MAP = {
+  // RO
+  "ianuarie":1,"februarie":2,"martie":3,"aprilie":4,"mai":5,"iunie":6,
+  "iulie":7,"august":8,"septembrie":9,"octombrie":10,"noiembrie":11,"decembrie":12,
   // IT
   "gennaio":1,"febbraio":2,"marzo":3,"aprile":4,"maggio":5,"giugno":6,
   "luglio":7,"agosto":8,"settembre":9,"ottobre":10,"novembre":11,"dicembre":12,
@@ -841,6 +912,7 @@ const parseTravellers = (raw, checkIn, counts) => {
 
 const AGE_LABEL = {
   EN:{ adult:"Adult", child:"Child", infant:"Infant" },
+  RO:{ adult:"Adult", child:"Copil", infant:"Bebeluș" },
   IT:{ adult:"Adulto", child:"Bambino", infant:"Neonato" },
   ES:{ adult:"Adulto", child:"Niño/a", infant:"Bebé" },
   FR:{ adult:"Adulte", child:"Enfant", infant:"Nourrisson" },
@@ -896,10 +968,11 @@ const FLAGS = {
   FR:"https://flagcdn.com/h20/fr.png",
   DE:"https://flagcdn.com/h20/de.png",
   NL:"https://flagcdn.com/h20/nl.png",
+  RO:"https://flagcdn.com/h20/ro.png",
 };
 
 // All available portal languages (EN hidden in portal, shown in login only)
-const PORTAL_LANGS = ["EN","IT","ES","FR","DE","NL"];
+const PORTAL_LANGS = ["EN","IT","ES","FR","DE","NL","RO"];
 
 function LangBtn({lang,setLang,showEN=false}){
   const [open,setOpen] = useState(false);
@@ -2622,7 +2695,7 @@ function Payments({b,lang}){
           borderRadius:"50%",background:"rgba(232,80,26,.15)"}}/>
         <div style={{fontSize:".65rem",color:"rgba(255,255,255,.45)",letterSpacing:".1em",
           fontWeight:600,marginBottom:4}}>{t.total.toUpperCase()}</div>
-        <div style={{fontSize:"2.4rem",fontWeight:800,color:C.white,lineHeight:1}}>{fmtM(b.sellingPrice)}</div>
+        <div style={{fontSize:"2.4rem",fontWeight:800,color:C.white,lineHeight:1}}>{fmtM(b.sellingPrice, b.sellingPriceForeign)}</div>
         <div style={{fontSize:".72rem",color:"rgba(255,255,255,.3)",marginTop:6}}>{b.bookingReference}</div>
       </div>
       {/* Payments */}
@@ -2711,6 +2784,18 @@ const LOGIN_T = {
     errServer:"Connection error. Please try again.",
     divider:"or",
     helpText:"You can also use the direct link sent in your confirmation email.",
+  },
+  RO:{
+    title:"Găsește-ți rezervarea",
+    sub:"Introdu numărul de rezervare și adresa de email pentru a accesa portalul tău de călătorie.",
+    refLabel:"Număr de rezervare",refPlaceholder:"ex. BB-2025-2073",
+    emailLabel:"Adresă de email",emailPlaceholder:"email@example.com",
+    btn:"Accesează rezervarea mea",
+    searching:"Se caută…",
+    errNotFound:"Rezervarea nu a fost găsită. Te rugăm să verifici numărul de rezervare și adresa de email.",
+    errServer:"Eroare de conexiune. Te rugăm să încerci din nou.",
+    divider:"sau",
+    helpText:"Poți folosi și linkul direct trimis în emailul tău de confirmare.",
   },
   IT:{
     title:"Trova la tua prenotazione",
@@ -2868,7 +2953,7 @@ function LoginPage({lang,setLang,onFound}){
              lang==="ES"?"Tu reserva, siempre contigo":
              lang==="FR"?"Votre réservation, toujours avec vous":
              lang==="DE"?"Ihre Buchung, immer dabei":
-             lang==="NL"?"Uw boeking, altijd bij u":
+             lang==="RO"?"Rezervarea ta, mereu cu tine":lang==="NL"?"Uw boeking, altijd bij u":
              "Your booking, always with you"}
           </h1>
           <p style={{color:"rgba(255,255,255,.8)",fontSize:"clamp(.85rem,2.5vw,1rem)",
@@ -3012,6 +3097,25 @@ const FAQ_DATA = {
     {cat:"privacy",q:"Which data do you collect?",a:"Only what is necessary to deliver the booked services and to comply with legal obligations."},
     {cat:"privacy",q:"With whom do you share my data?",a:"With involved suppliers (airlines, hotels, insurers, etc.) solely for booking‑related purposes."},
     {cat:"privacy",q:"How do I exercise my privacy rights?",a:"Write to dpo@better-bookings.com. Average response time: 3 days."},
+  ],
+  RO:[
+    {cat:"payments",q:"Ce metode de plată acceptați?",a:"Card, transfer bancar și PayPal."},
+    {cat:"payments",q:"Când plătesc?",a:"Avansul imediat, iar restul de plată în maximum 45 de zile înainte de plecare, dacă nu se specifică altfel."},
+    {cat:"payments",q:"Ce este inclus în preț?",a:"Tot ce apare la secțiunea 'Inclus în preț' din ofertă/confirmare. Costurile neincluse (de exemplu taxe locale, taxă de oraș, taxă de stațiune, bagaj suplimentar, transferuri, suprataxe de combustibil) sunt menționate în ofertă."},
+    {cat:"docs",q:"Ce primesc după rezervare?",a:"Confirmarea rezervării imediat, prin email/cont. Voucherul de cazare cu aproximativ 7 zile înainte de plecare. Pentru zborurile cumpărate la noi: biletul electronic (e‑ticket) cu orele de zbor, codul PNR și bagajul inclus (check‑in-ul se face direct cu compania aeriană). Pentru bilete la evenimente: biletele digitale de la organizator, de obicei cu 3 zile înainte (uneori chiar în aceeași zi)."},
+    {cat:"docs",q:"Când primesc documentele finale de călătorie?",a:"Voucherul de cazare cu aproximativ 7 zile înainte de plecare. Pentru zboruri: datele se regăsesc în biletul electronic; check-in-ul și cardurile de îmbarcare se obțin direct de la compania aeriană. Pentru evenimente: biletele digitale, de obicei cu 3 zile înainte (uneori chiar în aceeași zi)."},
+    {cat:"docs",q:"De ce documente de călătorie am nevoie?",a:"Depinde de destinație. În general este nevoie de un act de identitate valabil; unele țări solicită pașaport cu valabilitate rămasă și/sau viză. Te rugăm să verifici condițiile de intrare pentru destinația ta."},
+    {cat:"changes",q:"Care sunt politicile de anulare?",a:"Diferă în funcție de produs și furnizor (doar cazare / pachet cu zbor / evenimente). Le găsești întotdeauna în ofertă și în confirmarea rezervării."},
+    {cat:"changes",q:"Cum solicit o modificare?",a:"Scrie-ne. Modificările pot implica taxe stabilite de furnizori; modificările de zbor au aproape întotdeauna taxe de schimbare percepute de compania aeriană."},
+    {cat:"flights",q:"Este bagajul inclus?",a:"Depinde de tipul de tarif. Unele tarife includ doar un bagaj de cabină sau un obiect personal mic; bagajul suplimentar poate fi achiziționat separat."},
+    {cat:"flights",q:"Check-in și carduri de îmbarcare",a:"Se realizează direct cu compania aeriană, folosind codurile din biletul tău electronic."},
+    {cat:"flights",q:"Întârzieri/anulări și modificări de orar",a:"Orarele pot fi modificate prin decizia companiei aeriene/autorităților. Se aplică politicile companiei aeriene și protecțiile legale în vigoare."},
+    {cat:"hotel",q:"Este garantat tipul de cameră?",a:"Da, conform celor menționate în confirmarea comenzii tale. În caz de suprarezervare (overbooking), vei fi realocat într-o cameră/unitate similară sau superioară, sau rezervarea va fi anulată cu rambursare, conform politicii aplicabile."},
+    {cat:"hotel",q:"Check-in/check-out, garanții, taxe de oraș",a:"Orele și informațiile se regăsesc în confirmarea rezervării. Unele unități de cazare solicită garanții și taxe locale de oraș, de plătit la fața locului."},
+    {cat:"hotel",q:"Cereri speciale (pătuț, intoleranțe, accesibilitate)",a:"Scrie-ne: vom transmite cererea ta furnizorului. Confirmarea depinde de disponibilitate."},
+    {cat:"privacy",q:"Ce date colectați?",a:"Doar datele necesare pentru livrarea serviciilor rezervate și pentru respectarea obligațiilor legale."},
+    {cat:"privacy",q:"Cu cine sunt partajate datele mele?",a:"Cu furnizorii implicați (companii aeriene, hoteluri, asigurători etc.), exclusiv în scopuri legate de rezervare."},
+    {cat:"privacy",q:"Cum îmi exercit drepturile privind confidențialitatea?",a:"Scrie-ne la dpo@better-bookings.com. Timp mediu de răspuns: 3 zile."},
   ],
   IT:[
     {cat:"payments",q:"Quali metodi di pagamento accettate?",a:"Carta, bonifico e PayPal."},
@@ -3350,6 +3454,7 @@ const TC_LINKS = {
   FR:"https://better-bookings.com/general/tos/T%26C_FR.pdf",
   DE:"https://better-bookings.com/general/tos/T%26C_DE.pdf",
   NL:"https://better-bookings.com/general/tos/T%26C_NL.pdf",
+  RO:"https://better-bookings.ro/termeni.html",
 };
 const PRIVACY_LINKS = {
   EN:"https://better-bookings.com/general/privacy/PRIVACY_EN.pdf",
@@ -3358,6 +3463,7 @@ const PRIVACY_LINKS = {
   FR:"https://better-bookings.com/general/privacy/PRIVACY_FR.pdf",
   DE:"https://better-bookings.com/general/privacy/PRIVACY_DE.pdf",
   NL:"https://better-bookings.com/general/privacy/PRIVACY_NL.pdf",
+  RO:"https://better-bookings.ro/privacy.html",
 };
 
 /* ─── APP ────────────────────────────────────────────── */
@@ -3369,6 +3475,7 @@ const PRIVACY_LINKS = {
 // Stringhe locali per la card noleggio auto live (Tinoleggio)
 const CART = {
   EN:{loading:"Checking live availability…",none:"No live availability right now — request a quote below.",cars:"Available cars",book:"Request",sent:"Requested ✓"},
+  RO:{loading:"Verificăm disponibilitatea în timp real…",none:"Nu există disponibilitate în timp real chiar acum — solicită o ofertă mai jos.",cars:"Mașini disponibile",book:"Solicită",sent:"Solicitat ✓"},
   IT:{loading:"Verifico la disponibilità…",none:"Nessuna disponibilità live al momento — richiedi un preventivo qui sotto.",cars:"Auto disponibili",book:"Richiedi",sent:"Richiesta inviata ✓"},
   ES:{loading:"Comprobando disponibilidad…",none:"Sin disponibilidad en directo ahora — solicita presupuesto abajo.",cars:"Coches disponibles",book:"Solicitar",sent:"Solicitado ✓"},
   FR:{loading:"Vérification des disponibilités…",none:"Pas de disponibilité en direct — demandez un devis ci-dessous.",cars:"Voitures disponibles",book:"Demander",sent:"Demande envoyée ✓"},
@@ -3431,20 +3538,21 @@ function LiveCars({lang,onRequest,fallback}){
 
 /* ─── CAR RENTAL FUNNEL (Tinoleggio) ─────────────────── */
 const FUEL = {
-  fullfull:{EN:"Full to full (return full)",IT:"Pieno/pieno (riconsegna col pieno)",ES:"Lleno/lleno (devolución con depósito lleno)",FR:"Plein/plein (restitution avec le plein)",NL:"Vol/vol (vol terugbrengen)",DE:"Voll/voll (voll zurückgeben)"},
-  emptyempty:{EN:"Empty to empty",IT:"Vuoto/vuoto",ES:"Vacío/vacío",FR:"Vide/vide",NL:"Leeg/leeg",DE:"Leer/leer"},
-  fullempty:{EN:"Full, return empty",IT:"Pieno, riconsegna vuoto",ES:"Lleno, devolución vacío",FR:"Plein, restitution à vide",NL:"Vol, leeg terugbrengen",DE:"Voll, leer zurückgeben"},
-  fullemptyrefund:{EN:"Full, unused fuel refunded",IT:"Pieno, carburante non usato rimborsato",ES:"Lleno, combustible no usado reembolsado",FR:"Plein, carburant non utilisé remboursé",NL:"Vol, ongebruikte brandstof terugbetaald",DE:"Voll, nicht genutzter Kraftstoff erstattet"},
-  fullemptyfree:{EN:"Full, return empty (free)",IT:"Pieno, riconsegna vuoto (gratis)",ES:"Lleno, devolución vacío (gratis)",FR:"Plein, restitution à vide (gratuit)",NL:"Vol, leeg terugbrengen (gratis)",DE:"Voll, leer zurückgeben (gratis)"},
-  halfhalf:{EN:"Half to half",IT:"Metà/metà",ES:"Mitad/mitad",FR:"Moitié/moitié",NL:"Half/half",DE:"Halb/halb"},
-  samelevel:{EN:"Same level",IT:"Stesso livello",ES:"Mismo nivel",FR:"Même niveau",NL:"Zelfde niveau",DE:"Gleicher Stand"},
-  unknown:{EN:"Not specified",IT:"Non specificato",ES:"No especificado",FR:"Non spécifié",NL:"Niet gespecificeerd",DE:"Nicht angegeben"},
+  fullfull:{EN:"Full to full (return full)",RO:"Plin la plin (returnare plin)",IT:"Pieno/pieno (riconsegna col pieno)",ES:"Lleno/lleno (devolución con depósito lleno)",FR:"Plein/plein (restitution avec le plein)",NL:"Vol/vol (vol terugbrengen)",DE:"Voll/voll (voll zurückgeben)"},
+  emptyempty:{EN:"Empty to empty",RO:"Gol la gol",IT:"Vuoto/vuoto",ES:"Vacío/vacío",FR:"Vide/vide",NL:"Leeg/leeg",DE:"Leer/leer"},
+  fullempty:{EN:"Full, return empty",RO:"Plin, returnare gol",IT:"Pieno, riconsegna vuoto",ES:"Lleno, devolución vacío",FR:"Plein, restitution à vide",NL:"Vol, leeg terugbrengen",DE:"Voll, leer zurückgeben"},
+  fullemptyrefund:{EN:"Full, unused fuel refunded",RO:"Plin, combustibilul nefolosit se rambursează",IT:"Pieno, carburante non usato rimborsato",ES:"Lleno, combustible no usado reembolsado",FR:"Plein, carburant non utilisé remboursé",NL:"Vol, ongebruikte brandstof terugbetaald",DE:"Voll, nicht genutzter Kraftstoff erstattet"},
+  fullemptyfree:{EN:"Full, return empty (free)",RO:"Plin, returnare gol (gratuit)",IT:"Pieno, riconsegna vuoto (gratis)",ES:"Lleno, devolución vacío (gratis)",FR:"Plein, restitution à vide (gratuit)",NL:"Vol, leeg terugbrengen (gratis)",DE:"Voll, leer zurückgeben (gratis)"},
+  halfhalf:{EN:"Half to half",RO:"Jumătate la jumătate",IT:"Metà/metà",ES:"Mitad/mitad",FR:"Moitié/moitié",NL:"Half/half",DE:"Halb/halb"},
+  samelevel:{EN:"Same level",RO:"Același nivel",IT:"Stesso livello",ES:"Mismo nivel",FR:"Même niveau",NL:"Zelfde niveau",DE:"Gleicher Stand"},
+  unknown:{EN:"Not specified",RO:"Nespecificat",IT:"Non specificato",ES:"No especificado",FR:"Non spécifié",NL:"Niet gespecificeerd",DE:"Nicht angegeben"},
 };
 function fuelLabel(p,lang){ const m=FUEL[p]; return m?(m[lang]||m.EN):(p||"—"); }
 function dtLocal(ms,defH){ if(!ms) return ""; const d=new Date(ms); const z=n=>String(n).padStart(2,"0"); const hh=defH!=null?z(defH):z(d.getHours()); const mm=defH!=null?"00":z(d.getMinutes()); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}T${hh}:${mm}`; }
 
 const CF = {
   EN:{open:"Search & book a car",title:"Car rental",pickup:"Pick-up location",dropoff:"Drop-off location",same:"Drop-off same as pick-up",from:"Pick-up date & time",to:"Drop-off date & time",age:"Driver age",res:"Country of residence (ISO)",search:"Search cars",searching:"Searching…",results:"Available cars",none:"No cars available for these dates / location.",total:"Total",deposit:"Security deposit",fuel:"Fuel policy",mileage:"Mileage",unlimited:"Unlimited km",limited:"km included",extraKm:"Extra km",excess:"Insurance excess (CDW / theft)",cancel:"Cancellation policy",included:"What's included",extras:"Optional extras",onreq:"On request — confirmed by supplier",driver:"Driver details",fn:"First name",ln:"Last name",email:"Email",phone:"Phone",bdate:"Date of birth",bcountry:"Country of birth (ISO)",rcity:"City of residence",rcountry:"Country of residence (ISO)",raddr:"Address",cont:"Continue",back:"Back",toDriver:"Continue to driver details",toPay:"Continue to payment",payTitle:"Payment",payNote:"💳 Online card payment is being activated. Your car and details are saved — once enabled you'll pay securely here and the booking is confirmed instantly.",payBtn:"Pay & confirm booking",doneTitle:"Booking confirmed!",doneMsg:"You'll receive the confirmation details by email.",ref:"Booking reference",voucher:"View voucher",close:"Done",payErr:"Payment could not be completed. Please try again.",bookErr:"Payment taken but the booking is still pending — our team will confirm it shortly.",driverSel:"Main driver",choose:"— choose —",yrs:"yrs",freeCancel:"Free cancellation until",cancelFee:"Cancellation fee from",nonref:"Non-refundable",reqFields:"Please select the driver and fill email, phone and date of birth."},
+  RO:{open:"Caută & rezervă o mașină",title:"Închiriere auto",pickup:"Locație preluare",dropoff:"Locație predare",same:"Predare în același loc ca preluarea",from:"Data & ora preluării",to:"Data & ora predării",age:"Vârsta șoferului",res:"Țara de reședință (ISO)",search:"Caută mașini",searching:"Se caută…",results:"Mașini disponibile",none:"Nu sunt mașini disponibile pentru aceste date / locație.",total:"Total",deposit:"Depozit de garanție",fuel:"Politică combustibil",mileage:"Kilometraj",unlimited:"Km nelimitați",limited:"km incluși",extraKm:"Km suplimentari",excess:"Franșiză asigurare (CDW / furt)",cancel:"Politică de anulare",included:"Ce este inclus",extras:"Opțiuni suplimentare",onreq:"La cerere — confirmată de furnizor",driver:"Detalii șofer",fn:"Prenume",ln:"Nume",email:"Email",phone:"Telefon",bdate:"Data nașterii",bcountry:"Țara de naștere (ISO)",rcity:"Orașul de reședință",rcountry:"Țara de reședință (ISO)",raddr:"Adresă",cont:"Continuă",back:"Înapoi",toDriver:"Continuă la detaliile șoferului",toPay:"Continuă la plată",payTitle:"Plată",payNote:"💳 Plata online cu cardul este în curs de activare. Mașina și datele tale sunt salvate — odată activată, vei plăti în siguranță aici, iar rezervarea este confirmată instant.",payBtn:"Plătește & confirmă rezervarea",doneTitle:"Rezervare confirmată!",doneMsg:"Vei primi detaliile de confirmare pe email.",ref:"Număr de rezervare",voucher:"Vezi voucherul",close:"Gata",payErr:"Plata nu a putut fi finalizată. Te rugăm să încerci din nou.",bookErr:"Plata a fost efectuată, dar rezervarea este încă în așteptare — echipa noastră o va confirma în curând.",driverSel:"Șofer principal",choose:"— alege —",yrs:"ani",freeCancel:"Anulare gratuită până la",cancelFee:"Taxă de anulare de la",nonref:"Nerambursabil",reqFields:"Te rugăm să selectezi șoferul și să completezi emailul, telefonul și data nașterii."},
   IT:{open:"Cerca e prenota un'auto",title:"Noleggio auto",pickup:"Luogo di ritiro",dropoff:"Luogo di riconsegna",same:"Riconsegna nello stesso luogo",from:"Data e ora ritiro",to:"Data e ora riconsegna",age:"Età conducente",res:"Paese di residenza (ISO)",search:"Cerca auto",searching:"Ricerca…",results:"Auto disponibili",none:"Nessuna auto disponibile per queste date / luogo.",total:"Totale",deposit:"Cauzione",fuel:"Politica carburante",mileage:"Chilometraggio",unlimited:"Km illimitati",limited:"km inclusi",extraKm:"Km extra",excess:"Franchigia (danni / furto)",cancel:"Politica di cancellazione",included:"Cosa è incluso",extras:"Extra opzionali",onreq:"Su richiesta — confermata dal fornitore",driver:"Dati conducente",fn:"Nome",ln:"Cognome",email:"Email",phone:"Telefono",bdate:"Data di nascita",bcountry:"Paese di nascita (ISO)",rcity:"Città di residenza",rcountry:"Paese di residenza (ISO)",raddr:"Indirizzo",cont:"Continua",back:"Indietro",toDriver:"Continua ai dati conducente",toPay:"Continua al pagamento",payTitle:"Pagamento",payNote:"💳 Il pagamento online con carta è in fase di attivazione. L'auto e i tuoi dati sono salvati — una volta attivo pagherai in sicurezza qui e la prenotazione sarà confermata subito.",payBtn:"Paga e conferma prenotazione",doneTitle:"Prenotazione confermata!",doneMsg:"Riceverai i dettagli della conferma via email.",ref:"Riferimento prenotazione",voucher:"Vedi voucher",close:"Fatto",payErr:"Pagamento non riuscito. Riprova.",bookErr:"Pagamento effettuato ma la prenotazione è in attesa — il nostro team la confermerà a breve.",driverSel:"Conducente principale",choose:"— scegli —",yrs:"anni",freeCancel:"Cancellazione gratuita fino al",cancelFee:"Penale di cancellazione da",nonref:"Non rimborsabile",reqFields:"Seleziona il conducente e inserisci email, telefono e data di nascita."},
   ES:{open:"Buscar y reservar un coche",title:"Alquiler de coche",pickup:"Lugar de recogida",dropoff:"Lugar de devolución",same:"Devolución en el mismo lugar",from:"Fecha y hora de recogida",to:"Fecha y hora de devolución",age:"Edad del conductor",res:"País de residencia (ISO)",search:"Buscar coches",searching:"Buscando…",results:"Coches disponibles",none:"No hay coches disponibles para estas fechas / lugar.",total:"Total",deposit:"Fianza",fuel:"Política de combustible",mileage:"Kilometraje",unlimited:"Km ilimitados",limited:"km incluidos",extraKm:"Km extra",excess:"Franquicia (daños / robo)",cancel:"Política de cancelación",included:"Qué está incluido",extras:"Extras opcionales",onreq:"Bajo petición — confirmado por el proveedor",driver:"Datos del conductor",fn:"Nombre",ln:"Apellido",email:"Email",phone:"Teléfono",bdate:"Fecha de nacimiento",bcountry:"País de nacimiento (ISO)",rcity:"Ciudad de residencia",rcountry:"País de residencia (ISO)",raddr:"Dirección",cont:"Continuar",back:"Atrás",toDriver:"Continuar a datos del conductor",toPay:"Continuar al pago",payTitle:"Pago",payNote:"💳 El pago online con tarjeta se está activando. Tu coche y tus datos están guardados — una vez activo pagarás de forma segura aquí y la reserva se confirmará al instante.",payBtn:"Pagar y confirmar reserva",doneTitle:"¡Reserva confirmada!",doneMsg:"Recibirás los detalles de la confirmación por email.",ref:"Referencia de reserva",voucher:"Ver voucher",close:"Hecho",payErr:"No se pudo completar el pago. Inténtalo de nuevo.",bookErr:"Pago realizado pero la reserva sigue pendiente — nuestro equipo la confirmará en breve.",driverSel:"Conductor principal",choose:"— elegir —",yrs:"años",freeCancel:"Cancelación gratuita hasta",cancelFee:"Penalización de cancelación desde",nonref:"No reembolsable",reqFields:"Selecciona el conductor e introduce email, teléfono y fecha de nacimiento."},
   FR:{open:"Rechercher et réserver une voiture",title:"Location de voiture",pickup:"Lieu de prise en charge",dropoff:"Lieu de restitution",same:"Restitution au même endroit",from:"Date et heure de prise en charge",to:"Date et heure de restitution",age:"Âge du conducteur",res:"Pays de résidence (ISO)",search:"Rechercher des voitures",searching:"Recherche…",results:"Voitures disponibles",none:"Aucune voiture disponible pour ces dates / ce lieu.",total:"Total",deposit:"Caution",fuel:"Politique carburant",mileage:"Kilométrage",unlimited:"Km illimités",limited:"km inclus",extraKm:"Km supplémentaires",excess:"Franchise (dommages / vol)",cancel:"Politique d'annulation",included:"Ce qui est inclus",extras:"Options",onreq:"Sur demande — confirmé par le fournisseur",driver:"Coordonnées du conducteur",fn:"Prénom",ln:"Nom",email:"Email",phone:"Téléphone",bdate:"Date de naissance",bcountry:"Pays de naissance (ISO)",rcity:"Ville de résidence",rcountry:"Pays de résidence (ISO)",raddr:"Adresse",cont:"Continuer",back:"Retour",toDriver:"Continuer vers le conducteur",toPay:"Continuer vers le paiement",payTitle:"Paiement",payNote:"💳 Le paiement en ligne par carte est en cours d'activation. Votre voiture et vos données sont enregistrées — une fois activé, vous paierez en toute sécurité ici et la réservation sera confirmée instantanément.",payBtn:"Payer et confirmer la réservation",doneTitle:"Réservation confirmée !",doneMsg:"Vous recevrez les détails de confirmation par email.",ref:"Référence de réservation",voucher:"Voir le bon",close:"Terminé",payErr:"Le paiement n'a pas pu aboutir. Veuillez réessayer.",bookErr:"Paiement effectué mais la réservation est en attente — notre équipe la confirmera sous peu.",driverSel:"Conducteur principal",choose:"— choisir —",yrs:"ans",freeCancel:"Annulation gratuite jusqu'au",cancelFee:"Frais d'annulation à partir de",nonref:"Non remboursable",reqFields:"Sélectionnez le conducteur et saisissez email, téléphone et date de naissance."},
@@ -3453,6 +3561,7 @@ const CF = {
 };
 const CFX = {
   EN:{dateErr:"Drop-off must be after pick-up, and dates can't be in the past.",all:"All",auto:"Automatic",manual:"Manual",expired:"This quote is no longer available — please search again.",seats:"seats",bags:"bags",backResults:"Back to results",zeroExc:"Zero excess",gearbox:"Gearbox",debitCard:"Debit card",step:{search:"Search",results:"Results",detail:"Details",driver:"Driver",payment:"Payment"}},
+  RO:{dateErr:"Data de returnare trebuie să fie după cea de preluare, iar datele nu pot fi în trecut.",all:"Toate",auto:"Automată",manual:"Manuală",expired:"Această ofertă nu mai este disponibilă — te rugăm să cauți din nou.",seats:"locuri",bags:"bagaje",backResults:"Înapoi la rezultate",zeroExc:"Fără franșiză",gearbox:"Cutie de viteze",debitCard:"Card de debit",step:{search:"Căutare",results:"Rezultate",detail:"Detalii",driver:"Șofer",payment:"Plată"}},
   IT:{dateErr:"La riconsegna dev'essere dopo il ritiro e le date non possono essere nel passato.",all:"Tutti",auto:"Automatico",manual:"Manuale",expired:"Questa quotazione non è più disponibile — cerca di nuovo.",seats:"posti",bags:"bagagli",backResults:"Torna ai risultati",zeroExc:"Franchigia azzerata",gearbox:"Cambio",debitCard:"Carta di debito",step:{search:"Ricerca",results:"Risultati",detail:"Dettaglio",driver:"Conducente",payment:"Pagamento"}},
   ES:{dateErr:"La devolución debe ser posterior a la recogida y las fechas no pueden ser pasadas.",all:"Todos",auto:"Automático",manual:"Manual",expired:"Esta cotización ya no está disponible — busca de nuevo.",seats:"plazas",bags:"maletas",backResults:"Volver a resultados",zeroExc:"Franquicia cero",gearbox:"Cambio",debitCard:"Tarjeta de débito",step:{search:"Búsqueda",results:"Resultados",detail:"Detalles",driver:"Conductor",payment:"Pago"}},
   FR:{dateErr:"La restitution doit être après la prise en charge et les dates ne peuvent pas être passées.",all:"Tous",auto:"Automatique",manual:"Manuelle",expired:"Cette offre n'est plus disponible — veuillez rechercher à nouveau.",seats:"places",bags:"bagages",backResults:"Retour aux résultats",zeroExc:"Sans franchise",gearbox:"Boîte",debitCard:"Carte de débit",step:{search:"Recherche",results:"Résultats",detail:"Détails",driver:"Conducteur",payment:"Paiement"}},
@@ -3947,6 +4056,7 @@ function CarRentalFlow({b,lang,onClose}){
 // ═══════════════════ BAGAGLIO EXTRA (semi-automatico) ═══════════════════
 const BF = {
   EN:{open:"Add baggage",title:"Extra baggage",none:"None",total:"Total",toPay:"Continue to payment",pay:"Pay & request baggage",payTitle:"Payment",doneTitle:"Request received!",doneMsg:"We're adding your baggage to your flight. You'll receive a confirmation email shortly.",close:"Done",pick:"Choose baggage per passenger and flight",noflight:"Extra baggage is available only for bookings with a flight.",cutoff:"Extra baggage can no longer be added: less than 24 hours to departure. You can still add it directly on the airline's website.",payErr:"Payment could not be completed. Please try again.",bookErr:"Payment authorized but the request is still pending — our team will confirm shortly.",hold:"You'll be charged only once the baggage is confirmed.",airline:"Airline",outbound:"Outbound",ret:"Return",included:"Already included",cabin:"cabin bag",checked:"checked bag",personal:"personal item",retDiff:"Different baggage for the return",wholeTrip:"Outbound & return",loading:"Loading airline baggage prices…",weightNote:"The weights shown are indicative and may vary by airline. For exact allowances, always check your booking on the airline's website."},
+  RO:{open:"Adaugă bagaj",title:"Bagaj suplimentar",none:"Niciunul",total:"Total",toPay:"Continuă spre plată",pay:"Plătește și solicită bagajul",payTitle:"Plată",doneTitle:"Cerere primită!",doneMsg:"Adăugăm bagajul tău la zbor. Vei primi în scurt timp un e-mail de confirmare.",close:"Gata",pick:"Alege bagajul pentru fiecare pasager și zbor",noflight:"Bagajul suplimentar este disponibil doar pentru rezervările cu zbor.",cutoff:"Bagajul suplimentar nu mai poate fi adăugat: mai sunt sub 24 de ore până la plecare. Îl poți adăuga în continuare direct pe site-ul companiei aeriene.",payErr:"Plata nu a putut fi finalizată. Te rugăm să încerci din nou.",bookErr:"Plata a fost autorizată, dar cererea este încă în așteptare — echipa noastră o va confirma în curând.",hold:"Vei fi taxat doar după ce bagajul este confirmat.",airline:"Companie aeriană",outbound:"Dus",ret:"Întors",included:"Deja inclus",cabin:"bagaj de cabină",checked:"bagaj de cală",personal:"obiect personal",retDiff:"Bagaj diferit pentru retur",wholeTrip:"Dus și întors",loading:"Se încarcă prețurile pentru bagaje ale companiei aeriene…",weightNote:"Greutățile afișate sunt orientative și pot varia în funcție de compania aeriană. Pentru limitele exacte, verifică mereu rezervarea ta pe site-ul companiei aeriene."},
   IT:{open:"Aggiungi bagaglio",title:"Bagaglio extra",none:"Nessuno",total:"Totale",toPay:"Continua al pagamento",pay:"Paga e richiedi il bagaglio",payTitle:"Pagamento",doneTitle:"Richiesta ricevuta!",doneMsg:"Stiamo aggiungendo il bagaglio al tuo volo. Riceverai a breve un'email di conferma.",close:"Fatto",pick:"Scegli il bagaglio per ogni passeggero e volo",noflight:"Il bagaglio extra è disponibile solo per prenotazioni con volo.",cutoff:"Il bagaglio extra non è più aggiungibile: mancano meno di 24 ore alla partenza. Puoi aggiungerlo direttamente sul sito della compagnia aerea.",payErr:"Pagamento non riuscito. Riprova.",bookErr:"Pagamento autorizzato ma la richiesta è in attesa — il team confermerà a breve.",hold:"L'addebito avverrà solo a bagaglio confermato.",airline:"Compagnia",outbound:"Andata",ret:"Ritorno",included:"Già inclusi",cabin:"bagaglio a mano",checked:"bagaglio in stiva",personal:"oggetto personale",retDiff:"Bagagli diversi al ritorno",wholeTrip:"Andata e ritorno",loading:"Carichiamo le tariffe bagagli delle compagnie…",weightNote:"I pesi indicati sono indicativi e possono variare in base alla compagnia. Per le franchigie esatte, verifica sempre la tua prenotazione sul sito della compagnia aerea."},
   ES:{open:"Añadir equipaje",title:"Equipaje extra",none:"Ninguno",total:"Total",toPay:"Continuar al pago",pay:"Pagar y solicitar equipaje",payTitle:"Pago",doneTitle:"¡Solicitud recibida!",doneMsg:"Estamos añadiendo tu equipaje al vuelo. Recibirás un email de confirmación en breve.",close:"Hecho",pick:"Elige el equipaje por pasajero y vuelo",noflight:"El equipaje extra está disponible solo para reservas con vuelo.",cutoff:"El equipaje extra ya no se puede añadir: faltan menos de 24 horas para la salida. Puedes añadirlo directamente en el sitio web de la aerolínea.",payErr:"No se pudo completar el pago. Inténtalo de nuevo.",bookErr:"Pago autorizado pero la solicitud sigue pendiente — nuestro equipo confirmará en breve.",hold:"Solo se te cobrará cuando el equipaje esté confirmado.",airline:"Aerolínea",outbound:"Ida",ret:"Vuelta",included:"Ya incluidos",cabin:"equipaje de mano",checked:"equipaje facturado",personal:"objeto personal",retDiff:"Equipaje diferente a la vuelta",wholeTrip:"Ida y vuelta",loading:"Cargando las tarifas de equipaje de las aerolíneas…",weightNote:"Los pesos indicados son orientativos y pueden variar según la aerolínea. Para las franquicias exactas, consulta siempre tu reserva en el sitio web de la aerolínea."},
   FR:{open:"Ajouter un bagage",title:"Bagage supplémentaire",none:"Aucun",total:"Total",toPay:"Continuer vers le paiement",pay:"Payer et demander le bagage",payTitle:"Paiement",doneTitle:"Demande reçue !",doneMsg:"Nous ajoutons votre bagage à votre vol. Vous recevrez un email de confirmation sous peu.",close:"Terminé",pick:"Choisissez le bagage par passager et par vol",noflight:"Le bagage supplémentaire est disponible uniquement pour les réservations avec vol.",cutoff:"Le bagage supplémentaire ne peut plus être ajouté : moins de 24 heures avant le départ. Vous pouvez l'ajouter directement sur le site de la compagnie aérienne.",payErr:"Le paiement n'a pas pu aboutir. Veuillez réessayer.",bookErr:"Paiement autorisé mais la demande est en attente — notre équipe confirmera sous peu.",hold:"Vous ne serez débité qu'une fois le bagage confirmé.",airline:"Compagnie",outbound:"Aller",ret:"Retour",included:"Déjà inclus",cabin:"bagage cabine",checked:"bagage en soute",personal:"objet personnel",retDiff:"Bagages différents au retour",wholeTrip:"Aller-retour",loading:"Chargement des tarifs bagages des compagnies…",weightNote:"Les poids indiqués sont indicatifs et peuvent varier selon la compagnie. Pour les franchises exactes, vérifiez toujours votre réservation sur le site de la compagnie aérienne."},
@@ -4190,6 +4300,30 @@ const TF = {
     doneTitle:"Transfer booked!",doneMsg:"Your transfer is confirmed. Driver details and meeting point will appear in your reserved area before pick-up.",close:"Done",
     payErr:"Payment could not be completed. Please try again.",bookErr:"Payment done but booking is finalising — our team will confirm shortly.",
     previewOff:"Preview mode — payment is disabled for now. The flow is fully functional; real payments start at go-live."},
+  RO:{open:"Rezervă transfer",title:"Transfer aeroport",loading:"Se încarcă călătoria ta…",
+    tripType:"De ce ai nevoie?",tripRound:"Dus-întors",tripOut:"Doar dus",tripRet:"Doar dus (retur)",
+    tripRoundD:"Aeroport ⇄ cazare",tripOutD:"Spre cazarea ta",tripRetD:"Spre aeroport",
+    legOut:"Tur",legRet:"Retur",from:"Preluare",to:"Destinație",change:"schimbă",set:"Setează",
+    searchLoc:"Caută aeroport, hotel sau adresă…",secAirports:"Aeroporturi",secPlaces:"Locații",
+    noFound:"Niciun rezultat — continuă să scrii",bFlight:"din zborul tău",bBooking:"din rezervarea ta",bConfirmed:"confirmat",bEnter:"de setat",
+    addrReview:"Verifică dacă această adresă este corectă — caută din nou pentru a o schimba.",addrConfirm:"Am verificat că această adresă este corectă",
+    chooseAcc:"Ce cazare?",accSuggested:"sugerată",otherLoc:"Caută altă locație",
+    when:"Data și ora preluării",retHint:"Zborul tău decolează la {t} — preluare recomandată cu 3h mai devreme.",
+    pax:"Pasageri",flightNum:"Numărul zborului",flightHint:"Precompletat din zborul tău — te rugăm să verifici.",flightOpt:"opțional",
+    flightReq:"obligatoriu",flightWhy:"Șoferul urmărește acest zbor pentru a ajusta preluarea dacă întârzie. Este obligatoriu conform companiei de transfer.",needFlight:"Te rugăm să introduci numărul zborului pentru a continua.",
+    flightSection:"Zborul tău",netLabel:"NET",staffPay:"Rezervă ca Better Bookings",staffNote:"Preț net, fără taxă — furnizorul facturează către Better Bookings. Înregistrat pe rezervare; fără email de client.",staffBadge:"Staff · net",flightSel:"Selectează zborul",flyingTo:"Zbor spre",flyingFrom:"Zbor din",depAirport:"Aeroport de plecare",arrAirport:"Aeroport de sosire",airlineOpt:"Companie aeriană (opțional)",airlinePh:"ex. Ryanair",flightSearchBtn:"Caută zboruri",flightsFound:"zbor(uri) găsite",flightNoneFound:"Niciun zbor găsit — încearcă alt aeroport sau introdu numărul manual.",flightManualExp:"Sau introdu numărul zborului manual",foSearchPh:"Caută aeroport…",
+    next:"Continuă",back:"Înapoi",searchBtn:"Vezi prețurile",searching:"Se caută…",
+    dateErr:"Te rugăm să alegi o dată și oră valide.",needLoc:"Te rugăm să setezi preluarea și destinația.",needVerify:"Te rugăm să verifici adresa.",
+    needAirport:"Una dintre locații trebuie să fie un aeroport — alege-l din lista de Aeroporturi.",
+    none:"Nu sunt transferuri disponibile pentru această rută.",seats:"locuri",freeCancel:"Anulare gratuită până la",select:"Selectează",
+    perLegOut:"Tur",perLegRet:"Retur",vehTitle:"Alege vehiculul",orSimilar:"sau similar",
+    paxTitle:"Detalii pasageri",ttl:"Titlu",first:"Prenume",last:"Nume",email:"Email",
+    areaCode:"Prefix",phone:"Telefon",
+    toPay:"Continuă spre plată",pay:"Plătește și rezervă",
+    hold:"Vei fi taxat acum; se aplică anulare gratuită conform celor afișate.",total:"Total",totalRound:"Total dus-întors",
+    doneTitle:"Transfer rezervat!",doneMsg:"Transferul tău este confirmat. Detaliile șoferului și punctul de întâlnire vor apărea în contul tău înainte de preluare.",close:"Gata",
+    payErr:"Plata nu a putut fi finalizată. Te rugăm să încerci din nou.",bookErr:"Plata a fost efectuată, dar rezervarea este în curs de finalizare — echipa noastră o va confirma în curând.",
+    previewOff:"Mod previzualizare — plata este dezactivată momentan. Fluxul este complet funcțional; plățile reale încep la lansare."},
   IT:{open:"Prenota transfer",title:"Transfer",loading:"Carico il tuo viaggio…",
     tripType:"Cosa ti serve?",tripRound:"Andata e ritorno",tripOut:"Solo andata",tripRet:"Solo ritorno",
     tripRoundD:"Aeroporto ⇄ struttura",tripOutD:"Verso la struttura",tripRetD:"Verso l'aeroporto",
@@ -5039,6 +5173,7 @@ export default function App(){
       .then(r=>{ if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
       .then(data=>{
         if(!data?.bookingReference){ setState("error"); setErrMsg("Booking not found."); return; }
+        BOOKING_CUR = data.currency==="RON"&&Number(data.fxRate)>0 ? { code:"RON", fx:Number(data.fxRate) } : null;
         setBooking(data);
         const l=LANG_MAP[data.customerlanguage]||"EN";
         setLang(T[l]?l:"EN");
@@ -5168,7 +5303,7 @@ function Tours({b,lang}){
       :lang==="ES"?"¿Quieres anular este alquiler de coche? El pago será liberado o reembolsado."
       :lang==="FR"?"Voulez-vous annuler cette location de voiture ? Le paiement sera libéré ou remboursé."
       :lang==="DE"?"Möchten Sie diesen Mietwagen stornieren? Die Zahlung wird freigegeben oder erstattet."
-      :lang==="NL"?"Wil je deze autohuur annuleren? De betaling wordt vrijgegeven of terugbetaald."
+      :lang==="RO"?"Vrei să anulezi această închiriere auto? Plata va fi eliberată sau rambursată.":lang==="NL"?"Wil je deze autohuur annuleren? De betaling wordt vrijgegeven of terugbetaald."
       :"Do you want to cancel this car rental? The payment will be released or refunded.";
     if(!window.confirm(msg)) return;
     setCxState(s=>({...s,[ref]:"cancelling"}));
@@ -5290,7 +5425,7 @@ function Tours({b,lang}){
 
     {/* ── Hotels ── */}
     {hotels.length>0&&<div style={{marginBottom:48}}>
-      <SectionHdr num={1} title={lang==="IT"?"Alloggio":lang==="ES"?"Alojamiento":lang==="FR"?"Hébergement":lang==="DE"?"Unterkunft":lang==="NL"?"Verblijf":"Accommodation"}/>
+      <SectionHdr num={1} title={lang==="IT"?"Alloggio":lang==="ES"?"Alojamiento":lang==="FR"?"Hébergement":lang==="DE"?"Unterkunft":lang==="RO"?"Cazare":lang==="NL"?"Verblijf":"Accommodation"}/>
       <div className="bb-hotel-grid">
         {hotels.map((h,i)=>{
           const loc=parseLocBB(h.loc||h.location||"");
@@ -5323,7 +5458,7 @@ function Tours({b,lang}){
               <span style={{display:"inline-flex",alignItems:"center",gap:5,
                 background:"#fff3ee",borderRadius:6,padding:"3px 10px",
                 fontSize:".75rem",fontWeight:600,color:C.orange}}>
-                <Ico name="bb-nights" size={13}/> {nights} {lang==="IT"?"notte/i":lang==="ES"?"noche(s)":lang==="FR"?"nuit(s)":lang==="DE"?"Nacht/Nächte":lang==="NL"?"nacht(en)":"night(s)"}
+                <Ico name="bb-nights" size={13}/> {nights} {lang==="IT"?"notte/i":lang==="ES"?"noche(s)":lang==="FR"?"nuit(s)":lang==="DE"?"Nacht/Nächte":lang==="RO"?"noapte/nopți":lang==="NL"?"nacht(en)":"night(s)"}
               </span>
               {loc.address&&<div style={{display:"flex",alignItems:"flex-start",gap:7,
                 marginTop:10,fontSize:".78rem",color:C.mid,lineHeight:1.45}}>
@@ -5336,14 +5471,14 @@ function Tours({b,lang}){
                   style={{display:"inline-flex",alignItems:"center",gap:5,fontSize:".8rem",
                     fontWeight:600,color:C.orange,textDecoration:"none"}}>
                   <Ico name="bb-external" size={12}/>
-                  {lang==="IT"?"Apri →":lang==="ES"?"Abrir →":lang==="FR"?"Ouvrir →":lang==="DE"?"Öffnen →":lang==="NL"?"Openen →":"Open →"}
+                  {lang==="IT"?"Apri →":lang==="ES"?"Abrir →":lang==="FR"?"Ouvrir →":lang==="DE"?"Öffnen →":lang==="RO"?"Deschide →":lang==="NL"?"Openen →":"Open →"}
                 </a>}
                 {loc.maps&&<a href={loc.maps} target="_blank" rel="noopener noreferrer"
                   style={{display:"inline-flex",alignItems:"center",gap:6,padding:"7px 14px",
                     background:C.orange,color:"#fff",fontSize:".78rem",fontWeight:600,
                     borderRadius:8,textDecoration:"none"}}>
                   <Ico name="bb-navigation" size={13} light/>
-                  {lang==="IT"?"Indicazioni":lang==="ES"?"Cómo llegar":lang==="FR"?"Itinéraire":lang==="DE"?"Wegbeschreibung":lang==="NL"?"Routebeschrijving":"Directions"}
+                  {lang==="IT"?"Indicazioni":lang==="ES"?"Cómo llegar":lang==="FR"?"Itinéraire":lang==="DE"?"Wegbeschreibung":lang==="RO"?"Indicații rutiere":lang==="NL"?"Routebeschrijving":"Directions"}
                 </a>}
               </div>
             </div>
@@ -5376,11 +5511,11 @@ function Tours({b,lang}){
               {v.open&&<div style={{display:"inline-flex",alignItems:"center",gap:4,
                 background:"#f0fdf4",border:"1px solid #bbf7d0",borderRadius:6,
                 padding:"2px 9px",fontSize:".68rem",fontWeight:700,color:"#16a34a",marginBottom:8}}>
-                <Ico name="bb-pending" size={12} style={{"--bb-ico-line":"#16a34a","--bb-ico-fill":"#DCFCE7"}}/> {lang==="IT"?"Ticket Aperto":lang==="ES"?"Ticket Abierto":lang==="FR"?"Billet Ouvert":lang==="DE"?"Offenes Ticket":lang==="NL"?"Open Ticket":"Open Ticket"}
+                <Ico name="bb-pending" size={12} style={{"--bb-ico-line":"#16a34a","--bb-ico-fill":"#DCFCE7"}}/> {lang==="IT"?"Ticket Aperto":lang==="ES"?"Ticket Abierto":lang==="FR"?"Billet Ouvert":lang==="DE"?"Offenes Ticket":lang==="RO"?"Bilet deschis":lang==="NL"?"Open Ticket":"Open Ticket"}
               </div>}
               {(dep||arr)&&<div style={{fontSize:".75rem",color:C.mid,marginTop:4,lineHeight:1.55}}>
-                {dep&&<div>{lang==="IT"?"Partenza":lang==="ES"?"Salida":lang==="FR"?"Départ":lang==="DE"?"Abfahrt":lang==="NL"?"Vertrek":"Departure"}: {dep}</div>}
-                {arr&&<div>{lang==="IT"?"Arrivo":lang==="ES"?"Llegada":lang==="FR"?"Arrivée":lang==="DE"?"Ankunft":lang==="NL"?"Aankomst":"Arrival"}: {arr}</div>}
+                {dep&&<div>{lang==="IT"?"Partenza":lang==="ES"?"Salida":lang==="FR"?"Départ":lang==="DE"?"Abfahrt":lang==="RO"?"Plecare":lang==="NL"?"Vertrek":"Departure"}: {dep}</div>}
+                {arr&&<div>{lang==="IT"?"Arrivo":lang==="ES"?"Llegada":lang==="FR"?"Arrivée":lang==="DE"?"Ankunft":lang==="RO"?"Sosire":lang==="NL"?"Aankomst":"Arrival"}: {arr}</div>}
               </div>}
               {v.url&&<a href={v.url} target="_blank" rel="noopener noreferrer"
                 style={{display:"inline-flex",alignItems:"center",gap:5,marginTop:10,
@@ -5388,19 +5523,19 @@ function Tours({b,lang}){
                   border:`1px solid ${clr}33`,borderRadius:7,padding:"5px 12px",
                   background:bg,transition:"opacity .15s"}}>
                 <Ico name="bb-external" size={12} style={{"--bb-ico-line":clr,"--bb-ico-fill":bg}}/>
-                {lang==="IT"?"Apri →":lang==="ES"?"Abrir →":lang==="FR"?"Ouvrir →":lang==="DE"?"Öffnen →":lang==="NL"?"Openen →":"Open →"}
+                {lang==="IT"?"Apri →":lang==="ES"?"Abrir →":lang==="FR"?"Ouvrir →":lang==="DE"?"Öffnen →":lang==="RO"?"Deschide →":lang==="NL"?"Openen →":"Open →"}
               </a>}
               {v.type===6&&v.ref&&(cxState[v.ref]==="cancelled"
-                ? <div style={{marginTop:10,fontSize:".75rem",fontWeight:600,color:"#c0392b"}}>✓ {lang==="IT"?"Annullato":lang==="ES"?"Anulado":lang==="FR"?"Annulé":lang==="DE"?"Storniert":lang==="NL"?"Geannuleerd":"Cancelled"}</div>
+                ? <div style={{marginTop:10,fontSize:".75rem",fontWeight:600,color:"#c0392b"}}>✓ {lang==="IT"?"Annullato":lang==="ES"?"Anulado":lang==="FR"?"Annulé":lang==="DE"?"Storniert":lang==="RO"?"Anulat":lang==="NL"?"Geannuleerd":"Cancelled"}</div>
                 : cxState[v.ref]==="notfree"
-                ? <div style={{marginTop:10,fontSize:".72rem",color:"#874d00",background:"#fff7e6",border:"1px solid #ffd591",borderRadius:7,padding:"7px 10px",lineHeight:1.4}}>{lang==="IT"?"Il periodo di cancellazione gratuita è terminato. Per annullare contatta il servizio clienti.":lang==="ES"?"El periodo de cancelación gratuita ha terminado. Para anular contacta con atención al cliente.":lang==="FR"?"La période d'annulation gratuite est terminée. Pour annuler, contactez le service client.":lang==="DE"?"Der kostenlose Stornierungszeitraum ist abgelaufen. Zum Stornieren kontaktieren Sie den Kundenservice.":lang==="NL"?"De gratis annuleringsperiode is voorbij. Neem contact op met de klantenservice om te annuleren.":"The free cancellation period has ended. Please contact customer service to cancel."}</div>
+                ? <div style={{marginTop:10,fontSize:".72rem",color:"#874d00",background:"#fff7e6",border:"1px solid #ffd591",borderRadius:7,padding:"7px 10px",lineHeight:1.4}}>{lang==="IT"?"Il periodo di cancellazione gratuita è terminato. Per annullare contatta il servizio clienti.":lang==="ES"?"El periodo de cancelación gratuita ha terminado. Para anular contacta con atención al cliente.":lang==="FR"?"La période d'annulation gratuite est terminée. Pour annuler, contactez le service client.":lang==="DE"?"Der kostenlose Stornierungszeitraum ist abgelaufen. Zum Stornieren kontaktieren Sie den Kundenservice.":lang==="RO"?"Perioada de anulare gratuită s-a încheiat. Te rugăm să contactezi serviciul clienți pentru a anula.":lang==="NL"?"De gratis annuleringsperiode is voorbij. Neem contact op met de klantenservice om te annuleren.":"The free cancellation period has ended. Please contact customer service to cancel."}</div>
                 : <button onClick={()=>cancelCar(v.ref)} disabled={cxState[v.ref]==="cancelling"}
                     style={{marginTop:10,display:"block",background:"none",border:"none",color:"#c0392b",
                       fontSize:".75rem",fontWeight:600,cursor:cxState[v.ref]==="cancelling"?"default":"pointer",
                       padding:0,textDecoration:"underline"}}>
                     {cxState[v.ref]==="cancelling"?(lang==="IT"?"Annullamento…":"Cancelling…")
-                      :cxState[v.ref]==="error"?(lang==="IT"?"Errore, riprova":lang==="ES"?"Error, reintenta":lang==="FR"?"Erreur, réessayer":lang==="DE"?"Fehler, erneut":lang==="NL"?"Fout, opnieuw":"Error, retry")
-                      :(lang==="IT"?"Annulla noleggio":lang==="ES"?"Anular alquiler":lang==="FR"?"Annuler la location":lang==="DE"?"Mietwagen stornieren":lang==="NL"?"Autohuur annuleren":"Cancel rental")}
+                      :cxState[v.ref]==="error"?(lang==="IT"?"Errore, riprova":lang==="ES"?"Error, reintenta":lang==="FR"?"Erreur, réessayer":lang==="DE"?"Fehler, erneut":lang==="RO"?"Eroare, încearcă din nou":lang==="NL"?"Fout, opnieuw":"Error, retry")
+                      :(lang==="IT"?"Annulla noleggio":lang==="ES"?"Anular alquiler":lang==="FR"?"Annuler la location":lang==="DE"?"Mietwagen stornieren":lang==="RO"?"Anulează închirierea auto":lang==="NL"?"Autohuur annuleren":"Cancel rental")}
                   </button>)}
             </div>
           </div>;
